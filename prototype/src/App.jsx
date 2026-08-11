@@ -340,7 +340,7 @@ function ServiceLogo({ item, size = "row" }) {
   return <Icon name={item.icon} size={size === "inspector" ? 32 : 21} weight="duotone" />;
 }
 
-function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, openMenuId, onToggleMenu, onActivity, onSettings }) {
+function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, openMenuId, onToggleMenu, onActivity, onSettings, activityCount }) {
   const visibleSpaces = spaces.filter((space) => !space.archived);
   const personal = visibleSpaces.filter((space) => space.type === "Personal");
   const business = visibleSpaces.filter((space) => space.type === "Business");
@@ -354,9 +354,9 @@ function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, op
       <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
       <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
       <div className="nav-rule" />
-      <button className="nav-link nav-link--quiet" onClick={onActivity}>
+      <button className="nav-link nav-link--quiet" onClick={onActivity} aria-label={`Activity, ${activityCount} unresolved actions`}>
         <Icon name="ph-activity" />
-        <span>Activity</span>
+        <span>Activity{activityCount > 0 && <span className="nav-badge"> {activityCount}</span>}</span>
       </button>
       <button className="nav-link nav-link--quiet" onClick={onSettings}>
         <Icon name="ph-gear-six" />
@@ -412,6 +412,7 @@ function App() {
   const [reusableFields, setReusableFields] = useState(initialReusableFields);
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
+  const activityCount = 2;
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
   const typeScale = typeScales[fontSize];
@@ -617,7 +618,7 @@ function App() {
         <div className="brand-lockup">
           <div className="brand-name">Agent Vault</div>
         </div>
-        <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} />
+        <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} activityCount={activityCount} />
         <div className="sidebar-foot">
           <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
           <div><strong>{currentUser}</strong><small>{!selectedSpace ? "No Space Selected" : selectedSpace.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
