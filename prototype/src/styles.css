@@ -78,15 +78,12 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .search-field input::placeholder { color: var(--ink-faint); }
 .search-field button { padding: 3px; border: 0; background: transparent; color: var(--ink-faint); }
 kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; }
-.filter-button { width: 44px; border: 1px solid var(--hairline); border-radius: 8px; color: var(--ink-muted); }
-.filter-button:hover { border-color: var(--gold); color: var(--gold); }
 .category-tabs { display: flex; align-items: center; gap: 4px; padding: 24px 0 20px; overflow-x: auto; border-bottom: 1px solid var(--hairline); }
 .category-tabs button { flex: none; padding: 7px 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
 .category-tabs button:hover { color: var(--gold); }
 .category-tabs button.is-selected { background: var(--surface); border-color: var(--hairline); color: var(--ink); }
 .category-tabs .category-add { margin-left: auto; padding-inline: 7px; color: var(--ink-faint); }
 .list-meta { display: flex; justify-content: space-between; padding: 20px 4px 10px; color: var(--ink-faint); font-size: 9px; }
-.list-meta span:last-child { display: flex; align-items: center; gap: 6px; }
 .item-list { border-top: 1px solid var(--hairline); }
 .item-row { width: 100%; display: grid; grid-template-columns: 26px 36px minmax(150px, 1fr) 78px 42px 60px 18px; align-items: center; gap: 10px; padding: 16px 4px; border: 0; border-bottom: 1px solid var(--hairline); background: transparent; text-align: left; transition: background 180ms var(--ease), padding 180ms var(--ease); }
 .item-row:hover, .item-row.is-selected { background: rgba(125, 93, 40, .055); }

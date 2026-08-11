@@ -7,7 +7,7 @@ const spaces = [
   { id: "baine", name: "Baine Industries", type: "Business", icon: "ph-briefcase" },
 ];
 
-const categories = ["All items", "Banking", "ERP", "Housing", "Utilities", "Taxes"];
+const commonCategories = ["Banking", "ERP", "Housing", "Utilities", "Taxes"];
 
 const initialItems = [
   {
@@ -327,9 +327,22 @@ function App() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState("banking");
   const [items, setItems] = useState(initialItems);
+  const [customCategories, setCustomCategories] = useState([]);
   const [modal, setModal] = useState(null);
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
+  const scopedItems = activeSpace === "all" ? items : items.filter((item) => item.spaceId === activeSpace);
+  const availableCategories = useMemo(() => {
+    const itemCategories = scopedItems.map((item) => item.category);
+    const addedCategories = customCategories
+      .filter((category) => activeSpace === "all" || category.spaceId === "all" || category.spaceId === activeSpace)
+      .map((category) => category.name);
+    return ["All items", ...new Set([...commonCategories.filter((category) => itemCategories.includes(category)), ...itemCategories, ...addedCategories])];
+  }, [activeSpace, customCategories, scopedItems]);
+  const categoryOptions = useMemo(() => {
+    const addedCategories = customCategories.map((category) => category.name);
+    return [...new Set([...commonCategories, ...items.map((item) => item.category), ...addedCategories])];
+  }, [customCategories, items]);
   const visibleItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return items.filter((item) => {
@@ -340,7 +353,7 @@ function App() {
     });
   }, [activeCategory, activeSpace, items, query]);
 
-  const selectedItem = items.find((item) => item.id === selectedId) || visibleItems[0] || items[0];
+  const selectedItem = visibleItems.find((item) => item.id === selectedId) || visibleItems[0];
   const selectedItemSpace = spaces.find((space) => space.id === selectedItem.spaceId);
 
   function selectSpace(spaceId) {
@@ -371,6 +384,16 @@ function App() {
     };
     setItems((current) => [newItem, ...current]);
     setSelectedId(newItem.id);
+    setModal(null);
+  }
+
+  function addCategory(event) {
+    event.preventDefault();
+    const name = new FormData(event.currentTarget).get("categoryName")?.toString().trim();
+    if (!name) return;
+    const scopeId = activeSpace === "all" ? "all" : activeSpace;
+    setCustomCategories((current) => current.some((category) => category.name.toLowerCase() === name.toLowerCase() && (category.spaceId === scopeId || category.spaceId === "all")) ? current : [...current, { name, spaceId: scopeId }]);
+    setActiveCategory("All items");
     setModal(null);
   }
 
@@ -415,19 +438,17 @@ function App() {
               <Icon name="ph-magnifying-glass" size={19} />
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search service, field label, category…" aria-label="Search vault items" />
               {query && <button onClick={() => setQuery("")} aria-label="Clear search"><Icon name="ph-x" size={14} /></button>}
-              <kbd>⌘ K</kbd>
             </label>
-            <button className="filter-button" aria-label="Open filters"><Icon name="ph-sliders-horizontal" size={18} /></button>
           </div>
 
           <div className="category-tabs" role="tablist" aria-label="Vault categories">
-            {categories.map((category) => (
+            {availableCategories.map((category) => (
               <button key={category} className={activeCategory === category ? "is-selected" : ""} onClick={() => setActiveCategory(category)} role="tab" aria-selected={activeCategory === category}>{category}</button>
             ))}
-            <button className="category-add" aria-label="Add category"><Icon name="ph-plus" size={14} /></button>
+            <button className="category-add" onClick={() => setModal("category")} aria-label="Add category"><Icon name="ph-plus" size={14} /></button>
           </div>
 
-          <div className="list-meta"><span>{visibleItems.length.toString().padStart(2, "0")} RECORDS</span><span>UPDATED RECENTLY <Icon name="ph-caret-down" size={12} /></span></div>
+          <div className="list-meta"><span>{visibleItems.length.toString().padStart(2, "0")} RECORDS</span></div>
           <section className="item-list" aria-label="Vault items">
             {visibleItems.length ? visibleItems.map((item, index) => (
               <button key={item.id} className={`item-row ${selectedItem?.id === item.id ? "is-selected" : ""}`} onClick={() => setSelectedId(item.id)}>
@@ -456,7 +477,8 @@ function App() {
         <div className="record-foot"><span>RECORD ID</span><code>item_{selectedItem.id}</code></div>
       </aside>}
 
-      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select name="category" defaultValue="Banking"><option>Banking</option><option>ERP</option><option>Housing</option><option>Utilities</option><option>Taxes</option></select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
+      {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
+      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select name="category" defaultValue={categoryOptions[0]}>{categoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
       {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${selectedSpace?.name || "ALL SPACES"}`}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can be reused across its Vault Items, with an item-level override when the account needs something different.</div><div className="core-modal-list"><FieldRow label="Full name" value="Adam Ironside" inherited /><FieldRow label="Email" value="adam@example.dev" inherited /><FieldRow label="Address" value="123 Market St" inherited /><FieldRow label="Phone" value="+1 555 010 0198" inherited /></div><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button><button className="button button--dark" onClick={() => setModal(null)}>Save changes</button></div></Modal>}
     </div>
   );
