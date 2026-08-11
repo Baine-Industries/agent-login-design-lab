@@ -413,6 +413,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
   const [pendingRequest, setPendingRequest] = useState(true);
+  const [recentActivity, setRecentActivity] = useState(null);
   const activityCount = (pendingRequest ? 1 : 0) + 1;
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
@@ -466,21 +467,22 @@ function App() {
     if (next) setSelectedId(next.id);
   }
 
-  function openActivityItem(itemId) {
+  function openActivityItem(itemId, { edit = false } = {}) {
     const item = items.find((candidate) => candidate.id === itemId);
     if (!item) return;
     setActiveSpace(item.spaceId);
     setActiveCategory("All items");
     setSelectedId(item.id);
-    setModal(null);
+    setModal(edit ? { type: "edit", itemId: item.id } : null);
   }
 
   function openActivityRequest() {
     setModal("request");
   }
 
-  function resolvePendingRequest() {
+  function resolvePendingRequest(outcome) {
     setPendingRequest(false);
+    setRecentActivity({ title: `Create Vault Item ${outcome}`, detail: "Adam · just now", status: outcome });
     setModal("activity");
   }
 
@@ -698,8 +700,8 @@ function App() {
 
       {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" maxLength={spaceNameMaxLength} placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
       {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row settings-row--stacked"><div><strong>Text size</strong><span>Choose a comfortable reading size.</span></div><div className="font-size-options" role="group" aria-label="Text size">{Object.keys(typeScales).map((size) => <button key={size} type="button" className={`font-size-option ${fontSize === size ? "is-selected" : ""}`} onClick={() => setFontSize(size)} aria-pressed={fontSize === size}>{size[0].toUpperCase() + size.slice(1)}</button>)}</div></div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Use light mode" : "Use dark mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
-      {modal === "activity" && <ActivityModal pendingRequest={pendingRequest} onClose={() => setModal(null)} onSelectItem={openActivityItem} onSelectRequest={openActivityRequest} />}
-      {modal === "request" && <RequestReviewModal onClose={() => setModal(null)} onApprove={resolvePendingRequest} onReject={resolvePendingRequest} />}
+      {modal === "activity" && <ActivityModal pendingRequest={pendingRequest} recentActivity={recentActivity} onClose={() => setModal(null)} onSelectItem={openActivityItem} onSelectRequest={openActivityRequest} />}
+      {modal === "request" && <RequestReviewModal onClose={() => setModal(null)} onApprove={() => resolvePendingRequest("approved")} onReject={() => resolvePendingRequest("rejected")} />}
       {spaceAction?.action === "rename" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Rename ${actionSpace.name}`} eyebrow={`${actionSpace.type.toUpperCase()} VAULT SPACE`}><form onSubmit={renameSpace}><label className="form-field"><input name="spaceName" maxLength={spaceNameMaxLength} aria-label="Space name" defaultValue={actionSpace.name} required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark">Save name</button></div></form></Modal>}
       {spaceAction?.action === "merge" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Merge ${actionSpace.name}`} eyebrow="MOVE VAULT RECORDS"><form onSubmit={mergeSpace}><div className="form-intro">Move all Vault Items and records into another {actionSpace.type} Vault Space, then remove this space.</div>{mergeTargets.length ? <label className="form-field"><span>Merge into</span><select name="targetSpaceId" defaultValue={mergeTargets[0].id}>{mergeTargets.map((space) => <option key={space.id} value={space.id}>{space.name}</option>)}</select></label> : <div className="settings-empty">No same-type Vault Spaces are available to merge into.</div>}<div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark" disabled={!mergeTargets.length}>Merge space</button></div></form></Modal>}
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
@@ -712,7 +714,7 @@ function App() {
   );
 }
 
-function ActivityModal({ pendingRequest, onClose, onSelectItem, onSelectRequest }) {
+function ActivityModal({ pendingRequest, recentActivity, onClose, onSelectItem, onSelectRequest }) {
   return <Modal onClose={onClose} title="Activity" eyebrow="AGENT VAULT / GLOBAL">
     <div className="activity-intro">Requests, active tasks, and changes across your Vault Spaces.</div>
     <section className="activity-group">
@@ -725,11 +727,11 @@ function ActivityModal({ pendingRequest, onClose, onSelectItem, onSelectRequest 
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Needs attention</div>
-      <button className="activity-row activity-row--action" onClick={() => onSelectItem("banking")} aria-label="Open Billing address mapping for Chase Checking"><span className="activity-dot activity-dot--attention" /><div><strong>Billing address mapping</strong><small>Chase Checking · exact site label unknown</small></div><em>Open</em></button>
+      <button className="activity-row activity-row--action" onClick={() => onSelectItem("banking", { edit: true })} aria-label="Open Billing address mapping for Chase Checking"><span className="activity-dot activity-dot--attention" /><div><strong>Billing address mapping</strong><small>Chase Checking · exact site label unknown</small></div><em>Open</em></button>
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Recent activity</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>
+      {recentActivity ? <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>{recentActivity.title}</strong><small>{recentActivity.detail}</small></div><em>{recentActivity.status}</em></div> : <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>}
     </section>
   </Modal>;
 }
