@@ -1,7 +1,7 @@
 # Agent Vault prototype design QA
 
 source visual truth: `/Users/immortalcourt/Downloads/WhatsApp Image 2026-08-10 at 23.49.32.jpeg`, `/Users/immortalcourt/Downloads/WhatsApp Image 2026-08-10 at 23.49.32(1).jpeg`, `/Users/immortalcourt/Downloads/WhatsApp Image 2026-08-10 at 23.49.32(2).jpeg`, and the Imrahil Website Redesign style system at `/Users/immortalcourt/imrahil-website-redesign/docs/design/paper-editorial-design-language.md`
-implementation screenshot: `/Users/immortalcourt/worktrees/agent-login-design-studio/prototype/qa-implementation.png`
+implementation screenshot: `/Users/immortalcourt/worktrees/agent-login-design-studio/prototype/qa-implementation.png` (branded iteration)
 comparison sheet: `/Users/immortalcourt/worktrees/agent-login-design-studio/prototype/qa-comparison.png`
 viewport: browser reported 1210 x 860 CSS px; implementation capture 1197 x 851 px. The requested 1440 x 1024 override was constrained by the in-app browser surface. Source references were normalized into a 1440 x 1040 comparison sheet for visual review; they are style references rather than a single pixel-identical target.
 state: initial Adam Personal Vault Space, Falador Mutual selected, inspector open
@@ -18,6 +18,8 @@ Focused implementation inspection confirmed:
 - Add Vault Item opens a working form and creates a redacted in-memory record;
 - Core Info review opens a working modal;
 - console error/warning log was empty;
+- the branded iteration renders nine local logo assets in the list and selected-item inspector: Chase, State Farm, NetSuite, PG&E, Google, Amazon, Target, Dropbox, and Vanguard;
+- logo containers use no surrounding border or background, keeping the brand marks visually direct in both the list and inspector;
 - `npm run build` passed;
 - `npm run test:sites` passed 4/4.
 
@@ -26,6 +28,24 @@ Focused implementation inspection confirmed:
 No actionable P0, P1, or P2 fidelity findings remain.
 
 The implementation intentionally adapts the supplied references into a desktop management surface rather than copying their login demo, cover card, or system-map layout literally. The visual system is preserved while the hierarchy is changed to serve the resolved Agent Vault model: Vault Spaces on the left, Vault Items in the center, and a selected-item inspector on the right.
+
+## Iteration history
+
+### Brand marks iteration — 2026-08-11
+
+Request: replace generic service glyphs with recognizable company logos like the supplied prior prototype.
+
+Fix: added local, cached logo assets under `prototype/public/logos/`, seeded the Personal space with the nine services shown in the reference, and added the selected service logo to the inspector header. The starting state now selects Chase Checking to match the reference composition.
+
+Evidence: the branded comparison sheet and implementation capture show nine list logos plus the Chase inspector mark. Browser state reported `list: 9`, `logos: 9`, and `selected: Chase Checking`.
+
+### Logo container polish — 2026-08-11
+
+Request: remove the box around the company logos.
+
+Fix: removed the border and background from `.service-glyph` and `.inspector-logo` while preserving their alignment and intrinsic logo sizing.
+
+Evidence: browser computed styles report `border: 0px none` and a transparent background for both logo containers.
 
 ## Follow-up polish
 

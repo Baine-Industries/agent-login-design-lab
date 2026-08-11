@@ -11,3 +11,5 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## Prototype-specific design decision
 
 This slice adapts the Imrahil Website Redesign paper-editorial system: Inter UI copy, Manrope display headings, IBM Plex Mono annotation labels, warm paper surfaces, low-contrast hairlines, and restrained gold/rust/moss accents. The layout is Vault Space-first with a center Vault Item list and right inspector. Keep the approval rail, live browser, and task workbench out of this slice.
+
+Use recognizable local service brand marks when a Vault Item represents a known company. Cache display assets in `public/logos/` rather than depending on a live logo request at runtime; keep the logo a visual identifier, not a trust or security claim.

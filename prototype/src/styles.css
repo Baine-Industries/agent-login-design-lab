@@ -92,7 +92,12 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .item-row:hover, .item-row.is-selected { background: rgba(125, 93, 40, .055); }
 .item-row.is-selected { box-shadow: inset 2px 0 var(--gold); padding-left: 8px; }
 .item-index { color: var(--ink-faint); font-family: var(--mono); font-size: 10px; }
-.service-glyph { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--hairline); border-radius: 8px; background: var(--ground); color: var(--gold); }
+.service-glyph { width: 32px; height: 32px; display: grid; place-items: center; color: var(--gold); overflow: hidden; }
+.service-logo { display: block; object-fit: contain; }
+.service-logo--row { width: 23px; height: 23px; }
+.inspector-identity { display: flex; align-items: center; gap: 14px; }
+.inspector-logo { width: 64px; height: 64px; flex: none; display: grid; place-items: center; overflow: hidden; }
+.service-logo--inspector { width: 46px; height: 46px; }
 .item-copy { min-width: 0; }
 .item-copy strong, .item-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .item-copy strong { font-size: 13px; font-weight: 500; }

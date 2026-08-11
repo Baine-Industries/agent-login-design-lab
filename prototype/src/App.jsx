@@ -13,10 +13,11 @@ const initialItems = [
   {
     id: "banking",
     spaceId: "adam",
-    service: "Harborline Checking",
-    descriptor: "Primary checking account",
+    service: "Chase Checking",
+    descriptor: "Checking account",
     category: "Banking",
     icon: "ph-bank",
+    logo: "/logos/chase.jpg",
     account: "adam@example.dev",
     site: "harborline.example",
     fields: 8,
@@ -32,10 +33,11 @@ const initialItems = [
   {
     id: "insurance",
     spaceId: "adam",
-    service: "Falador Mutual",
+    service: "State Farm Insurance",
     descriptor: "Home policy",
     category: "Housing",
     icon: "ph-shield-check",
+    logo: "/logos/state-farm.png",
     account: "Policy · GE-4077",
     site: "falador-mutual.example",
     fields: 14,
@@ -46,6 +48,146 @@ const initialItems = [
     custom: [
       { label: "Street address", siteLabel: "address_line_1", value: "Inherited · 123 Market St" },
       { label: "Policy number", siteLabel: "policy_number", value: "GE-4077" },
+    ],
+  },
+  {
+    id: "netsuite",
+    spaceId: "adam",
+    service: "NetSuite ERP",
+    descriptor: "Business operations",
+    category: "ERP",
+    icon: "ph-chart-line-up",
+    logo: "/logos/netsuite.png",
+    account: "adam@imrahiltech.dev",
+    site: "netsuite.example",
+    fields: 18,
+    updated: "Yesterday",
+    username: "adam@imrahiltech.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Company code", siteLabel: "company_code", value: "IMR-1000" },
+      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Inherited · 123 Market St" },
+    ],
+  },
+  {
+    id: "pge",
+    spaceId: "adam",
+    service: "PG&E Utilities",
+    descriptor: "Electric service",
+    category: "Utilities",
+    icon: "ph-lightning",
+    logo: "/logos/pge.png",
+    account: "adam@example.dev",
+    site: "pge.example",
+    fields: 10,
+    updated: "2d ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Service address", siteLabel: "service_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Account number", siteLabel: "account_number", value: "CU-88931" },
+    ],
+  },
+  {
+    id: "google-workspace",
+    spaceId: "adam",
+    service: "Google Workspace",
+    descriptor: "Email and files",
+    category: "ERP",
+    icon: "ph-google-logo",
+    logo: "/logos/google.png",
+    account: "adam@example.dev",
+    site: "workspace.google.com",
+    fields: 12,
+    updated: "3d ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Recovery email", siteLabel: "recovery_email", value: "Inherited · recovery@example.dev" },
+      { label: "Workspace domain", siteLabel: "workspace_domain", value: "example.dev" },
+    ],
+  },
+  {
+    id: "amazon",
+    spaceId: "adam",
+    service: "Amazon",
+    descriptor: "Shopping account",
+    category: "Banking",
+    icon: "ph-shopping-bag-open",
+    logo: "/logos/amazon.png",
+    account: "adam@example.dev",
+    site: "amazon.com",
+    fields: 8,
+    updated: "4d ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Delivery address", siteLabel: "address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Phone", siteLabel: "phone_number", value: "Inherited · +1 555 010 0198" },
+    ],
+  },
+  {
+    id: "target",
+    spaceId: "adam",
+    service: "Target RedCard",
+    descriptor: "Retail account",
+    category: "Banking",
+    icon: "ph-credit-card",
+    logo: "/logos/target.png",
+    account: "adam@example.dev",
+    site: "target.com",
+    fields: 9,
+    updated: "5d ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Shipping address", siteLabel: "shipping_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Card nickname", siteLabel: "card_nickname", value: "Household" },
+    ],
+  },
+  {
+    id: "dropbox",
+    spaceId: "adam",
+    service: "Dropbox",
+    descriptor: "Cloud files",
+    category: "ERP",
+    icon: "ph-dropbox-logo",
+    logo: "/logos/dropbox.png",
+    account: "adam@example.dev",
+    site: "dropbox.com",
+    fields: 7,
+    updated: "6d ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Recovery phone", siteLabel: "recovery_phone", value: "Inherited · +1 555 010 0198" },
+      { label: "Team name", siteLabel: "team_name", value: "Personal files" },
+    ],
+  },
+  {
+    id: "vanguard",
+    spaceId: "adam",
+    service: "Vanguard Brokerage",
+    descriptor: "Investment account",
+    category: "Banking",
+    icon: "ph-chart-line-up",
+    logo: "/logos/vanguard.jpg",
+    account: "adam@example.dev",
+    site: "vanguard.com",
+    fields: 13,
+    updated: "1w ago",
+    username: "adam@example.dev",
+    password: "••••••••••••",
+    mfa: "••••••••••••",
+    custom: [
+      { label: "Account nickname", siteLabel: "account_nickname", value: "Long-term" },
+      { label: "Mailing address", siteLabel: "mailing_address_line_1", value: "Inherited · 123 Market St" },
     ],
   },
   {
@@ -130,7 +272,12 @@ function Icon({ name, size = 18, weight = "regular" }) {
   return <i className={`ph ${name} ${weight}`} style={{ fontSize: size }} aria-hidden="true" />;
 }
 
-function SpaceNav({ activeSpace, onSelect }) {
+function ServiceLogo({ item, size = "row" }) {
+  if (item.logo) return <img className={`service-logo service-logo--${size}`} src={item.logo} alt={`${item.service} logo`} />;
+  return <Icon name={item.icon} size={size === "inspector" ? 32 : 21} weight="duotone" />;
+}
+
+function SpaceNav({ activeSpace, onSelect, itemCount }) {
   const personal = spaces.filter((space) => space.type === "Personal");
   const business = spaces.filter((space) => space.type === "Business");
 
@@ -139,7 +286,7 @@ function SpaceNav({ activeSpace, onSelect }) {
       <button className={`nav-link ${activeSpace === "all" ? "is-active" : ""}`} onClick={() => onSelect("all")}>
         <Icon name="ph-squares-four" />
         <span>All spaces</span>
-        <small>06</small>
+        <small>{String(itemCount).padStart(2, "0")}</small>
       </button>
       <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} />
       <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} />
@@ -178,7 +325,7 @@ function App() {
   const [activeSpace, setActiveSpace] = useState("adam");
   const [activeCategory, setActiveCategory] = useState("All items");
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState("insurance");
+  const [selectedId, setSelectedId] = useState("banking");
   const [items, setItems] = useState(initialItems);
   const [modal, setModal] = useState(null);
 
@@ -237,7 +384,7 @@ function App() {
             <div className="brand-meta">LOCAL-FIRST / PRIVATE</div>
           </div>
         </div>
-        <SpaceNav activeSpace={activeSpace} onSelect={selectSpace} />
+        <SpaceNav activeSpace={activeSpace} onSelect={selectSpace} itemCount={items.length} />
         <div className="sidebar-foot">
           <span className="status-dot" />
           <div><strong>On this device</strong><small>Secrets stay local</small></div>
@@ -285,7 +432,7 @@ function App() {
             {visibleItems.length ? visibleItems.map((item, index) => (
               <button key={item.id} className={`item-row ${selectedItem?.id === item.id ? "is-selected" : ""}`} onClick={() => setSelectedId(item.id)}>
                 <span className="item-index">{String(index + 1).padStart(2, "0")}</span>
-                <span className="service-glyph"><Icon name={item.icon} size={21} weight="duotone" /></span>
+                <span className="service-glyph"><ServiceLogo item={item} /></span>
                 <span className="item-copy"><strong>{item.service}</strong><small>{item.descriptor} · {item.account}</small></span>
                 <span className={`category-mark category-mark--${item.category.toLowerCase()}`}>{item.category}</span>
                 <span className="item-fields"><Icon name="ph-brackets-curly" size={13} /> {item.fields}</span>
@@ -299,7 +446,7 @@ function App() {
 
       {selectedItem && <aside className="inspector" aria-label="Selected Vault Item">
         <div className="inspector-head">
-          <div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div>
+          <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
           <button className="icon-button" aria-label="Close inspector"><Icon name="ph-x" size={18} /></button>
         </div>
         <div className="inspector-actions"><button className="button button--light button--small"><Icon name="ph-pencil-simple" size={15} /> Edit fields</button><button className="icon-button" aria-label="More item actions"><Icon name="ph-dots-three" size={19} /></button></div>
