@@ -21,3 +21,5 @@ The left rail is the top-level Vault Space manager: switch spaces, create spaces
 Keep the center Vault Item list scrollable without visible scrollbar chrome; scrolling is an available behavior, not a persistent visual marker.
 
 The left Vault Space rail is closed for this prototype pass. Reopen that decision before adding new navigation, status, or management controls.
+
+Agent-native structure is implicit in the product and should not be announced with visible `AGENT-READABLE` labels or machine-syntax badges. Keep the center list human-focused; field counts and relative update times remain open decisions, while any external-link affordance must only appear when it actually opens the service site.
