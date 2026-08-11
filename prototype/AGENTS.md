@@ -30,6 +30,16 @@ The full category seed set is context-sensitive: Personal and Business Vault Spa
 
 Core Info is editable per Vault Space. In the future Vault Item editor, matching Core Info values prefill the item fields for faster entry; the user can edit the populated value directly without an inheritance or override control.
 
+Editing is explicit and commit-oriented. Vault Item and Core Info surfaces are read-only by default; an explicit Edit action opens a working draft. Closing or cancelling a dirty draft requires a discard confirmation. `Save draft` may preserve human work, but only `Save & Compile` validates the fields and replaces the agent-readable snapshot. Agent ID never reads uncompiled working values. If an item has newer draft values, show a concise pending-compilation state and keep the last compiled snapshot available to the agent until compilation succeeds.
+
+Compilation is the safety boundary for agent use. Before compiling, validate required values, field types, canonical machine keys, duplicate/conflicting mappings, and exact Site Field Labels. Compilation should fail with an actionable field-level message rather than silently guessing an ambiguous mapping. The compiled record is read-only in the inspector; edits always return to a new draft.
+
+Reusable custom fields are typed saved values, not hidden inheritance. A user can explicitly choose a previously filled field—such as an email, credit card, phone number, address, or Tax ID—when creating or editing another Vault Item or Vault Space. Keep the human label, semantic type, canonical key, and exact Site Field Label mapping separate. Reusing a field fills the destination draft; it does not silently update other records. Updating the saved reusable value or applying it across several destinations requires an explicit confirmation with the affected destinations listed.
+
+Reusable fields may be offered across Vault Spaces, but selection is always explicit because a value can belong to a different person, family member, business, or legal entity. Core Info remains owned by its Vault Space; a reusable field is a user-owned library value that can be copied into a destination draft. Cross-space live synchronization is not part of this slice.
+
+Person identity data should be granular enough for real forms: first name, middle name, middle initial, last name, full name, preferred name, prefix, and suffix. Full name and middle initial may be suggested from the component fields, but the stored value and whether it was manually entered remain explicit so multi-part names are not guessed incorrectly.
+
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
 
 The center page heading leads with the active Vault Space name. Do not add decorative section numbering such as `01 / VAULT MANAGEMENT` unless it carries a real navigation or workflow purpose.

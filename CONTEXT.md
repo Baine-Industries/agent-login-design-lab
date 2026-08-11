@@ -7,6 +7,10 @@ Status: active
 - **Agent Vault**: The local source of truth for a person's user-owned vault items, including account credentials, account metadata, and personal or business data needed for approved tasks.
 - **Vault Item**: A service or account record in Agent Vault. A Vault Item may contain login fields and typed personal, business, or service-specific fields.
 - **Core Info**: Reusable local personal or business information, such as a name, contact detail, or address, that can prefill matching fields in Vault Items. The populated value remains directly editable for the individual item.
+- **Reusable Field**: A typed, user-selected value saved for reuse in more than one Vault Item or Vault Space, such as an email address, credit card, or Tax ID. Reuse is an explicit fill action; it does not silently synchronize every destination.
+- **Working Value**: A human-editable value in an item or Core Info editor. It is a draft until the user commits and compiles it.
+- **Compiled Agent Record**: The validated, read-only snapshot of a Vault Record that Agent ID may receive when an applicable Access Grant is active. Agent ID reads the last compiled snapshot, not uncompiled working values.
+- **Compilation**: The explicit commit boundary that validates field types, machine keys, and Site Field Labels, then produces a new Compiled Agent Record. Saving a draft does not make it agent-readable.
 - **Vault Space**: A named container within Agent Vault for one Personal person or Business entity. A Vault Space owns its own Core Info and Vault Items; users may create multiple spaces for family members, businesses, or other supported ownership contexts.
 - **Space Lifecycle**: A Vault Space may be renamed, merged into another Vault Space of the same Space Type, archived for later retrieval under global settings, or permanently deleted together with its records.
 - **Site Field Label**: The field name or mapping used to target the corresponding field on a service's website. It may differ from the human-facing label shown in the Vault UI.
@@ -18,6 +22,7 @@ Status: active
 - **Category**: A searchable user-facing service grouping such as Banking, Housing, Utilities, Taxes, ERP, or a custom category. Categories organize Vault Items without requiring a permanent navigation tree.
 - **Vault Record**: A secret-safe machine-readable representation of a Vault Space or Vault Item used by the UI and retrieval surfaces. It carries identity and metadata, not raw secret values.
 - **Field Descriptor**: The structured identity and state of a Vault Item field, including its machine key, human label, type, Site Field Label, and whether its value was prefilled from Core Info. A descriptor does not contain a secret value.
+- **Field Mapping**: The deliberate association between a reusable or Core Info field and a service's Site Field Label. Human labels may be friendly; the mapped Site Field Label must preserve the exact website field name needed by the adapter.
 - **Agent-native**: A product boundary that is machine-readable and structured for agent access while remaining understandable and useful in the human UI.
 - **Approval rail**: A future UI surface for reviewing and approving Access Grant requests. It is outside the first vault-management prototype.
 
