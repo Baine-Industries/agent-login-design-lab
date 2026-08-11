@@ -27,7 +27,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 
 ## Agent-first mutation frontier
 
-The next design frontier is the shared agent-write surface, documented in [the agent-write contract](../research/agent-write-contract.md). It requires Form Observations, Mutation Requests, scoped Access Grants, renewable item-level Agent Edit Locks, provenance, and immutable Agent Activity. The desktop companion is a compact macOS menu-bar or Windows system-tray popover; Agent Vault exposes the full Agent Activity view from the left rail. The Activity request-review path is now prototyped; live engine mutation and task locks remain deferred.
+The next design frontier is the shared agent-write surface, documented in [the agent-write contract](../research/agent-write-contract.md). It requires Form Observations, Mutation Requests, scoped Access Grants, renewable item-level Agent Edit Locks, provenance, and immutable Agent Activity. The desktop companion is a compact macOS menu-bar or Windows system-tray popover; Agent Vault exposes the full Agent Activity view from the left rail. The Activity request-review and active-task lock paths are now prototyped; live engine mutation and task transport remain deferred.
 
 ## Deferred
 
