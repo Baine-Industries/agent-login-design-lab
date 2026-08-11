@@ -413,6 +413,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
   const [pendingRequest, setPendingRequest] = useState(true);
+  const [taskRunning, setTaskRunning] = useState(true);
   const [recentActivity, setRecentActivity] = useState(null);
   const attentionItem = items.find((item) => item.custom.some((field) => field.needsAttention));
   const activityCount = (pendingRequest ? 1 : 0) + (attentionItem ? 1 : 0);
@@ -456,6 +457,7 @@ function App() {
 
   const selectedItem = items.find((item) => item.id === selectedId && (activeSpace === "all" || item.spaceId === activeSpace)) || visibleItems[0];
   const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
+  const selectedItemLocked = taskRunning && selectedItem?.id === "insurance";
   const coreInfoSpace = selectedItemSpace || selectedSpace;
   const coreInfo = coreInfoSpace ? coreInfoBySpace[coreInfoSpace.id] || emptyCoreInfo : emptyCoreInfo;
   const coreInfoDraft = coreInfoSpace ? coreDraftsBySpace[coreInfoSpace.id] : undefined;
@@ -479,6 +481,17 @@ function App() {
 
   function openActivityRequest() {
     setModal("request");
+  }
+
+  function openActivityTask() {
+    openActivityItem("insurance");
+    setModal("task");
+  }
+
+  function stopActiveTask() {
+    setTaskRunning(false);
+    setRecentActivity({ title: "Updating Falador Mutual stopped", detail: "Adam · just now", status: "Stopped" });
+    setModal("activity");
   }
 
   function resolvePendingRequest(outcome) {
@@ -660,11 +673,11 @@ function App() {
         </div>
         <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} activityCount={activityCount} />
         <div className="sidebar-foot">
-          <div className="sidebar-agent-status" aria-label="Agent working">
-            <span className="agent-working-animation" aria-hidden="true" />
-            <strong>Agent Working</strong>
-            <small>Updating Falador Mutual</small>
-          </div>
+          {taskRunning && <div className="sidebar-agent-status" aria-label="Agent Working">
+              <span className="agent-working-animation" aria-hidden="true" />
+              <strong>Agent Working</strong>
+              <small>Updating Falador Mutual</small>
+            </div>}
           <div className="sidebar-user-status">
             <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
             <div><strong>{currentUser}</strong><small>{!selectedSpace ? "No Space Selected" : selectedSpace.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
@@ -724,7 +737,7 @@ function App() {
         {selectedItem ? <>
         <div className="inspector-head">
           <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
-          <button className="button button--light button--small inspector-edit" onClick={openEditItem}><Icon name="ph-pencil-simple" size={14} /> Edit</button>
+          <div className="inspector-action"><span className={selectedItemLocked ? "lock-note" : "lock-note lock-note--hidden"}>{selectedItemLocked && <><Icon name="ph-lock-key" size={12} /> Agent Working</>}</span><button className="button button--light button--small inspector-edit" onClick={openEditItem} disabled={selectedItemLocked}><Icon name="ph-pencil-simple" size={14} /> {selectedItemLocked ? "View only" : "Edit"}</button></div>
         </div>
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="Verification" value="User prompt if required" /></section>
         <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><FieldRow label="Full name" value={coreInfo.fullName} prefilled /><FieldRow label="Email" value={coreInfo.email} prefilled /><FieldRow label="Address" value={coreInfo.address} prefilled /></section>
@@ -735,8 +748,9 @@ function App() {
 
       {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" maxLength={spaceNameMaxLength} placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
       {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row settings-row--stacked"><div><strong>Text size</strong><span>Choose a comfortable reading size.</span></div><div className="font-size-options" role="group" aria-label="Text size">{Object.keys(typeScales).map((size) => <button key={size} type="button" className={`font-size-option ${fontSize === size ? "is-selected" : ""}`} onClick={() => setFontSize(size)} aria-pressed={fontSize === size}>{size[0].toUpperCase() + size.slice(1)}</button>)}</div></div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Use light mode" : "Use dark mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
-      {modal === "activity" && <ActivityModal pendingRequest={pendingRequest} attentionItem={attentionItem} recentActivity={recentActivity} onClose={() => setModal(null)} onSelectItem={openActivityItem} onSelectRequest={openActivityRequest} />}
+      {modal === "activity" && <ActivityModal pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} onClose={() => setModal(null)} onSelectItem={openActivityItem} onSelectRequest={openActivityRequest} onSelectTask={openActivityTask} />}
       {modal === "request" && <RequestReviewModal onClose={() => setModal(null)} onApprove={() => resolvePendingRequest("approved")} onReject={() => resolvePendingRequest("rejected")} />}
+      {modal === "task" && <TaskDetailModal onClose={() => setModal(null)} onOpenItem={() => openActivityItem("insurance")} onStop={stopActiveTask} />}
       {spaceAction?.action === "rename" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Rename ${actionSpace.name}`} eyebrow={`${actionSpace.type.toUpperCase()} VAULT SPACE`}><form onSubmit={renameSpace}><label className="form-field"><input name="spaceName" maxLength={spaceNameMaxLength} aria-label="Space name" defaultValue={actionSpace.name} required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark">Save name</button></div></form></Modal>}
       {spaceAction?.action === "merge" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Merge ${actionSpace.name}`} eyebrow="MOVE VAULT RECORDS"><form onSubmit={mergeSpace}><div className="form-intro">Move all Vault Items and records into another {actionSpace.type} Vault Space, then remove this space.</div>{mergeTargets.length ? <label className="form-field"><span>Merge into</span><select name="targetSpaceId" defaultValue={mergeTargets[0].id}>{mergeTargets.map((space) => <option key={space.id} value={space.id}>{space.name}</option>)}</select></label> : <div className="settings-empty">No same-type Vault Spaces are available to merge into.</div>}<div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark" disabled={!mergeTargets.length}>Merge space</button></div></form></Modal>}
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
@@ -749,7 +763,7 @@ function App() {
   );
 }
 
-function ActivityModal({ pendingRequest, attentionItem, recentActivity, onClose, onSelectItem, onSelectRequest }) {
+function ActivityModal({ pendingRequest, taskRunning, attentionItem, recentActivity, onClose, onSelectItem, onSelectRequest, onSelectTask }) {
   return <Modal onClose={onClose} title="Activity" eyebrow="AGENT VAULT / GLOBAL">
     <div className="activity-intro">Requests, active tasks, and changes across your Vault Spaces.</div>
     <section className="activity-group">
@@ -758,7 +772,7 @@ function ActivityModal({ pendingRequest, attentionItem, recentActivity, onClose,
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Active tasks</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--active" /><div><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></div><em>Running</em></div>
+      {taskRunning ? <button className="activity-row activity-row--action" onClick={onSelectTask} aria-label="Open Updating Falador Mutual task"><span className="activity-dot activity-dot--active" /><div><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></div><em>Open</em></button> : <div className="activity-empty">No active tasks.</div>}
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Needs attention</div>
@@ -768,6 +782,18 @@ function ActivityModal({ pendingRequest, attentionItem, recentActivity, onClose,
       <div className="activity-group__title">Recent activity</div>
       {recentActivity ? <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>{recentActivity.title}</strong><small>{recentActivity.detail}</small></div><em>{recentActivity.status}</em></div> : <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>}
     </section>
+  </Modal>;
+}
+
+function TaskDetailModal({ onClose, onOpenItem, onStop }) {
+  return <Modal onClose={onClose} title="Updating Falador Mutual" eyebrow="ACTIVE TASK">
+    <div className="request-intro">The agent is updating the Adam Vault Space. The State Farm Insurance item is locked while this task runs.</div>
+    <section className="request-details">
+      <div><span>Target</span><strong>State Farm Insurance</strong></div>
+      <div><span>Vault Space</span><strong>Adam</strong></div>
+      <div><span>Status</span><strong>Agent Working</strong></div>
+    </section>
+    <div className="modal-actions"><button className="button button--light" onClick={onOpenItem}>View locked item</button><button className="button button--danger" onClick={onStop}>Stop task</button></div>
   </Modal>;
 }
 
