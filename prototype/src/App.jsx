@@ -662,7 +662,8 @@ function App() {
         <div className="sidebar-foot">
           <div className="sidebar-agent-status" aria-label="Agent working">
             <span className="agent-working-animation" aria-hidden="true" />
-            <div><strong>Agent working</strong><small>Update Falador Mutual</small></div>
+            <strong>Agent working</strong>
+            <small>Update Falador Mutual</small>
           </div>
           <div className="sidebar-user-status">
             <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
