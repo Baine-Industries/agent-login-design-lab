@@ -19,3 +19,5 @@ Keep the center category row scoped to categories represented in the active Vaul
 The left rail is the top-level Vault Space manager: switch spaces, create spaces with a type-specific icon, and use each space's overflow menu for rename, same-type merge, archive, or permanent delete. Global Settings owns archived-space recovery and theme. Do not show item counts in the left rail. The footer shows the current user and the active space's `Vault Access Live` or `No Vault Access` state.
 
 Keep the center Vault Item list scrollable without visible scrollbar chrome; scrolling is an available behavior, not a persistent visual marker.
+
+The left Vault Space rail is closed for this prototype pass. Reopen that decision before adding new navigation, status, or management controls.
