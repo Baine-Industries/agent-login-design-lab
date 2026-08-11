@@ -19,7 +19,9 @@ KISS findings:
 - Add Personal, Add Business, Recently viewed, and Settings are visible controls but do not have working prototype behavior.
 - The local-first footer is useful trust context, but it should stay short.
 
-Decision frontier: keep the rail to scope switching plus working creation/settings actions; remove or defer dead controls until each has a real flow.
+Decision resolved in this pass: the rail owns Vault Space switching and management, global Settings, and the active space's `Vault Access Live` / `No Vault Access` status. Item counts are removed. `Recently viewed` is removed from the first slice. Settings now opens a global surface for theme and archived-space recovery.
+
+Space management is intentionally grouped under a Codex-style overflow menu: Rename, Merge, Archive, and Delete. Merge is limited to the same Space Type so Core Info and ownership boundaries remain coherent. Archive hides a space but keeps it recoverable under Settings; Delete permanently removes the space and its records.
 
 ## Center — Vault Item management
 

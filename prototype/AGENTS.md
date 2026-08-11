@@ -15,3 +15,5 @@ This slice adapts the Imrahil Website Redesign paper-editorial system: Inter UI 
 Use recognizable local service brand marks when a Vault Item represents a known company. Cache display assets in `public/logos/` rather than depending on a live logo request at runtime; keep the logo a visual identifier, not a trust or security claim.
 
 Keep the center category row scoped to categories represented in the active Vault Space, plus categories explicitly added by the user. Do not show static empty categories or controls whose interaction is not implemented; search, category add, and item creation should each have one clear job.
+
+The left rail is the top-level Vault Space manager: switch spaces, create spaces with a type-specific icon, and use each space's overflow menu for rename, same-type merge, archive, or permanent delete. Global Settings owns archived-space recovery and theme. Do not show item counts in the left rail. The footer shows the current user and the active space's `Vault Access Live` or `No Vault Access` state.

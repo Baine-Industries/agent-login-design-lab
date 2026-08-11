@@ -1,11 +1,28 @@
 import { useMemo, useState } from "react";
 
-const spaces = [
-  { id: "adam", name: "Adam", type: "Personal", icon: "ph-user" },
-  { id: "family", name: "Family", type: "Personal", icon: "ph-users-three" },
-  { id: "imrahil", name: "Imrahil Technologies", type: "Business", icon: "ph-buildings" },
-  { id: "baine", name: "Baine Industries", type: "Business", icon: "ph-briefcase" },
+const initialSpaces = [
+  { id: "adam", name: "Adam", type: "Personal", icon: "ph-user", accessLive: true },
+  { id: "family", name: "Family", type: "Personal", icon: "ph-users-three", accessLive: false },
+  { id: "imrahil", name: "Imrahil Technologies", type: "Business", icon: "ph-buildings", accessLive: false },
+  { id: "baine", name: "Baine Industries", type: "Business", icon: "ph-briefcase", accessLive: false },
 ];
+
+const spaceIconOptions = {
+  Personal: [
+    { value: "ph-user", label: "Person" },
+    { value: "ph-users-three", label: "Family" },
+    { value: "ph-house", label: "Home" },
+    { value: "ph-heart", label: "Care" },
+  ],
+  Business: [
+    { value: "ph-buildings", label: "Building" },
+    { value: "ph-briefcase", label: "Briefcase" },
+    { value: "ph-storefront", label: "Storefront" },
+    { value: "ph-factory", label: "Factory" },
+  ],
+};
+
+const currentUser = "Adam";
 
 const commonCategories = ["Banking", "ERP", "Housing", "Utilities", "Taxes"];
 
@@ -277,25 +294,21 @@ function ServiceLogo({ item, size = "row" }) {
   return <Icon name={item.icon} size={size === "inspector" ? 32 : 21} weight="duotone" />;
 }
 
-function SpaceNav({ activeSpace, onSelect, itemCount }) {
-  const personal = spaces.filter((space) => space.type === "Personal");
-  const business = spaces.filter((space) => space.type === "Business");
+function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, openMenuId, onToggleMenu, onSettings }) {
+  const visibleSpaces = spaces.filter((space) => !space.archived);
+  const personal = visibleSpaces.filter((space) => space.type === "Personal");
+  const business = visibleSpaces.filter((space) => space.type === "Business");
 
   return (
     <nav className="space-nav" aria-label="Vault navigation">
       <button className={`nav-link ${activeSpace === "all" ? "is-active" : ""}`} onClick={() => onSelect("all")}>
         <Icon name="ph-squares-four" />
         <span>All spaces</span>
-        <small>{String(itemCount).padStart(2, "0")}</small>
       </button>
-      <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} />
-      <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} />
+      <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
+      <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
       <div className="nav-rule" />
-      <button className="nav-link nav-link--quiet">
-        <Icon name="ph-clock-counter-clockwise" />
-        <span>Recently viewed</span>
-      </button>
-      <button className="nav-link nav-link--quiet">
+      <button className="nav-link nav-link--quiet" onClick={onSettings}>
         <Icon name="ph-gear-six" />
         <span>Settings</span>
       </button>
@@ -303,25 +316,35 @@ function SpaceNav({ activeSpace, onSelect, itemCount }) {
   );
 }
 
-function SpaceGroup({ title, spaces: groupSpaces, activeSpace, onSelect }) {
+function SpaceGroup({ title, spaces: groupSpaces, activeSpace, onSelect, onAddSpace, openMenuId, onToggleMenu, onSpaceAction }) {
   return (
     <section className="space-group">
       <div className="space-group__head">
         <span>{title}</span>
-        <button aria-label={`Add ${title.toLowerCase()}`}><Icon name="ph-plus" size={14} /></button>
+        <button onClick={() => onAddSpace(title.startsWith("Personal") ? "Personal" : "Business")} aria-label={`Add ${title.toLowerCase()}`}><Icon name="ph-plus" size={14} /></button>
       </div>
       {groupSpaces.map((space) => (
-        <button key={space.id} className={`nav-link ${activeSpace === space.id ? "is-active" : ""}`} onClick={() => onSelect(space.id)}>
-          <Icon name={space.icon} />
-          <span>{space.name}</span>
-          {activeSpace === space.id && <span className="nav-active-dot" />}
-        </button>
+        <div className="space-row" key={space.id}>
+          <button className={`nav-link ${activeSpace === space.id ? "is-active" : ""}`} onClick={() => onSelect(space.id)}>
+            <Icon name={space.icon} />
+            <span>{space.name}</span>
+            {activeSpace === space.id && <span className="nav-active-dot" />}
+          </button>
+          <button className="space-more" onClick={() => onToggleMenu(space.id)} aria-label={`Manage ${space.name}`} aria-expanded={openMenuId === space.id}><Icon name="ph-dots-three" size={17} /></button>
+          {openMenuId === space.id && <div className="space-menu" role="menu">
+            <button onClick={() => onSpaceAction("rename", space.id)} role="menuitem"><Icon name="ph-pencil-simple" size={14} /> Rename</button>
+            <button onClick={() => onSpaceAction("merge", space.id)} role="menuitem"><Icon name="ph-arrows-left-right" size={14} /> Merge</button>
+            <button onClick={() => onSpaceAction("archive", space.id)} role="menuitem"><Icon name="ph-archive" size={14} /> Archive</button>
+            <button className="is-danger" onClick={() => onSpaceAction("delete", space.id)} role="menuitem"><Icon name="ph-trash" size={14} /> Delete</button>
+          </div>}
+        </div>
       ))}
     </section>
   );
 }
 
 function App() {
+  const [spaces, setSpaces] = useState(initialSpaces);
   const [activeSpace, setActiveSpace] = useState("adam");
   const [activeCategory, setActiveCategory] = useState("All items");
   const [query, setQuery] = useState("");
@@ -329,6 +352,11 @@ function App() {
   const [items, setItems] = useState(initialItems);
   const [customCategories, setCustomCategories] = useState([]);
   const [modal, setModal] = useState(null);
+  const [spaceMenuId, setSpaceMenuId] = useState(null);
+  const [spaceAction, setSpaceAction] = useState(null);
+  const [spaceDraftType, setSpaceDraftType] = useState("Personal");
+  const [spaceDraftIcon, setSpaceDraftIcon] = useState(spaceIconOptions.Personal[0].value);
+  const [darkMode, setDarkMode] = useState(false);
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
   const scopedItems = activeSpace === "all" ? items : items.filter((item) => item.spaceId === activeSpace);
@@ -354,13 +382,72 @@ function App() {
   }, [activeCategory, activeSpace, items, query]);
 
   const selectedItem = visibleItems.find((item) => item.id === selectedId) || visibleItems[0];
-  const selectedItemSpace = spaces.find((space) => space.id === selectedItem.spaceId);
+  const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
 
   function selectSpace(spaceId) {
     setActiveSpace(spaceId);
     setActiveCategory("All items");
+    setSpaceMenuId(null);
     const next = items.find((item) => spaceId === "all" || item.spaceId === spaceId);
     if (next) setSelectedId(next.id);
+  }
+
+  function openCreateSpace(type) {
+    setSpaceDraftType(type);
+    setSpaceDraftIcon(spaceIconOptions[type][0].value);
+    setSpaceMenuId(null);
+    setModal("space");
+  }
+
+  function createSpace(event) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const name = form.get("spaceName")?.toString().trim();
+    if (!name) return;
+    const newSpace = { id: `space-${Date.now()}`, name, type: spaceDraftType, icon: spaceDraftIcon, accessLive: false };
+    setSpaces((current) => [...current, newSpace]);
+    setActiveSpace(newSpace.id);
+    setActiveCategory("All items");
+    setModal(null);
+  }
+
+  function openSpaceAction(action, spaceId) {
+    setSpaceMenuId(null);
+    setSpaceAction({ action, spaceId });
+  }
+
+  function renameSpace(event) {
+    event.preventDefault();
+    const name = new FormData(event.currentTarget).get("spaceName")?.toString().trim();
+    if (!name || !spaceAction) return;
+    setSpaces((current) => current.map((space) => space.id === spaceAction.spaceId ? { ...space, name } : space));
+    setSpaceAction(null);
+  }
+
+  function archiveSpace() {
+    if (!spaceAction) return;
+    setSpaces((current) => current.map((space) => space.id === spaceAction.spaceId ? { ...space, archived: true } : space));
+    if (activeSpace === spaceAction.spaceId) setActiveSpace("all");
+    setSpaceAction(null);
+  }
+
+  function deleteSpace() {
+    if (!spaceAction) return;
+    setSpaces((current) => current.filter((space) => space.id !== spaceAction.spaceId));
+    setItems((current) => current.filter((item) => item.spaceId !== spaceAction.spaceId));
+    if (activeSpace === spaceAction.spaceId) setActiveSpace("all");
+    setSpaceAction(null);
+  }
+
+  function mergeSpace(event) {
+    event.preventDefault();
+    if (!spaceAction) return;
+    const targetId = new FormData(event.currentTarget).get("targetSpaceId")?.toString();
+    if (!targetId) return;
+    setItems((current) => current.map((item) => item.spaceId === spaceAction.spaceId ? { ...item, spaceId: targetId } : item));
+    setSpaces((current) => current.filter((space) => space.id !== spaceAction.spaceId));
+    if (activeSpace === spaceAction.spaceId) setActiveSpace(targetId);
+    setSpaceAction(null);
   }
 
   function addVaultItem(event) {
@@ -397,8 +484,12 @@ function App() {
     setModal(null);
   }
 
+  const archivedSpaces = spaces.filter((space) => space.archived);
+  const actionSpace = spaceAction ? spaces.find((space) => space.id === spaceAction.spaceId) : null;
+  const mergeTargets = actionSpace ? spaces.filter((space) => !space.archived && space.id !== actionSpace.id && space.type === actionSpace.type) : [];
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${darkMode ? "is-dark" : ""}`}>
       <aside className="sidebar">
         <div className="brand-lockup">
           <div className="brand-mark"><Icon name="ph-vault" size={22} weight="duotone" /></div>
@@ -407,10 +498,10 @@ function App() {
             <div className="brand-meta">LOCAL-FIRST / PRIVATE</div>
           </div>
         </div>
-        <SpaceNav activeSpace={activeSpace} onSelect={selectSpace} itemCount={items.length} />
+        <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} />
         <div className="sidebar-foot">
-          <span className="status-dot" />
-          <div><strong>On this device</strong><small>Secrets stay local</small></div>
+          <span className={`status-dot ${selectedSpace?.accessLive ? "" : "status-dot--offline"}`} />
+          <div><strong>{currentUser}</strong><small>{selectedSpace?.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
         </div>
       </aside>
 
@@ -477,6 +568,12 @@ function App() {
         <div className="record-foot"><span>RECORD ID</span><code>item_{selectedItem.id}</code></div>
       </aside>}
 
+      {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
+      {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Dark mode" : "Light mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
+      {spaceAction?.action === "rename" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Rename ${actionSpace.name}`} eyebrow={`${actionSpace.type.toUpperCase()} VAULT SPACE`}><form onSubmit={renameSpace}><label className="form-field"><span>Space name</span><input name="spaceName" defaultValue={actionSpace.name} required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark">Save name</button></div></form></Modal>}
+      {spaceAction?.action === "merge" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Merge ${actionSpace.name}`} eyebrow="MOVE VAULT RECORDS"><form onSubmit={mergeSpace}><div className="form-intro">Move all Vault Items and records into another {actionSpace.type} Vault Space, then remove this space.</div>{mergeTargets.length ? <label className="form-field"><span>Merge into</span><select name="targetSpaceId" defaultValue={mergeTargets[0].id}>{mergeTargets.map((space) => <option key={space.id} value={space.id}>{space.name}</option>)}</select></label> : <div className="settings-empty">No same-type Vault Spaces are available to merge into.</div>}<div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark" disabled={!mergeTargets.length}>Merge space</button></div></form></Modal>}
+      {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
+      {spaceAction?.action === "delete" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Delete ${actionSpace.name}?`} eyebrow="PERMANENT ACTION"><div className="form-intro">This permanently deletes the Vault Space and every Vault Item inside it. This cannot be undone.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--danger" onClick={deleteSpace}>Delete permanently</button></div></Modal>}
       {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
       {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select name="category" defaultValue={categoryOptions[0]}>{categoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
       {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${selectedSpace?.name || "ALL SPACES"}`}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can be reused across its Vault Items, with an item-level override when the account needs something different.</div><div className="core-modal-list"><FieldRow label="Full name" value="Adam Ironside" inherited /><FieldRow label="Email" value="adam@example.dev" inherited /><FieldRow label="Address" value="123 Market St" inherited /><FieldRow label="Phone" value="+1 555 010 0198" inherited /></div><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button><button className="button button--dark" onClick={() => setModal(null)}>Save changes</button></div></Modal>}
@@ -486,6 +583,10 @@ function App() {
 
 function FieldRow({ label, value, mono = false, inherited = false }) {
   return <div className="field-row"><span>{label}</span><strong className={mono ? "is-mono" : ""}>{value}</strong>{inherited && <small><Icon name="ph-link" size={12} /> inherited</small>}</div>;
+}
+
+function SpaceIconPicker({ type, value, onChange }) {
+  return <div className="space-icon-picker">{spaceIconOptions[type].map((option) => <button type="button" key={option.value} className={value === option.value ? "is-selected" : ""} onClick={() => onChange(option.value)} aria-label={option.label} aria-pressed={value === option.value}><Icon name={option.value} size={22} /></button>)}</div>;
 }
 
 function Modal({ title, eyebrow, children, onClose }) {
