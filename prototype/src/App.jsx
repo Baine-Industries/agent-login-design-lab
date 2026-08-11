@@ -381,7 +381,7 @@ function App() {
     });
   }, [activeCategory, activeSpace, items, query]);
 
-  const selectedItem = visibleItems.find((item) => item.id === selectedId) || visibleItems[0];
+  const selectedItem = items.find((item) => item.id === selectedId && (activeSpace === "all" || item.spaceId === activeSpace)) || visibleItems[0];
   const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
 
   function selectSpace(spaceId) {
@@ -505,7 +505,6 @@ function App() {
         <header className="topbar">
           <div className="crumbs"><span>VAULT</span><Icon name="ph-slash" size={12} /><span>{selectedSpace?.name || "ALL SPACES"}</span></div>
           <div className="topbar-actions">
-            <span className="agent-note"><Icon name="ph-brackets-curly" size={14} /> AGENT-READABLE</span>
             <button className="button button--dark" onClick={() => setModal("add")}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
           </div>
         </header>
@@ -543,16 +542,14 @@ function App() {
                 <span className="service-glyph"><ServiceLogo item={item} /></span>
                 <span className="item-copy"><strong>{item.service}</strong><small>{item.descriptor} · {item.account}</small></span>
                 <span className={`category-mark category-mark--${item.category.toLowerCase()}`}>{item.category}</span>
-                <span className="item-fields"><Icon name="ph-brackets-curly" size={13} /> {item.fields}</span>
-                <span className="item-updated">{item.updated}</span>
-                <Icon name="ph-arrow-up-right" size={17} />
               </button>
             )) : <div className="empty-state"><Icon name="ph-binoculars" size={30} /><strong>No records found</strong><span>Try another field label, service, or category.</span></div>}
           </section>
         </div>
       </main>
 
-      {selectedItem && <aside className="inspector" aria-label="Selected Vault Item">
+      <aside className="inspector" aria-label="Selected Vault Item">
+        {selectedItem ? <>
         <div className="inspector-head">
           <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
           <button className="icon-button" aria-label="Close inspector"><Icon name="ph-x" size={18} /></button>
@@ -561,8 +558,9 @@ function App() {
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="MFA secret" value={selectedItem.mfa} mono /></section>
         <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><div className="core-info-callout"><Icon name="ph-arrows-clockwise" size={18} /><div><strong>Reusable by default</strong><span>These values come from this Vault Space.</span></div><button onClick={() => setModal("core")}>Review</button></div><FieldRow label="Full name" value="Adam Ironside" inherited /><FieldRow label="Email" value="adam@example.dev" inherited /><FieldRow label="Address" value="123 Market St" inherited /></section>
         <section className="inspector-section"><div className="section-title"><span>CUSTOM FIELDS</span><button className="text-action"><Icon name="ph-plus" size={13} /> Add field</button></div>{selectedItem.custom.map((field) => <div className="custom-field" key={field.siteLabel}><div className="custom-field__main"><strong>{field.label}</strong><span>{field.value}</span></div><code>{field.siteLabel}</code></div>)}</section>
-        <div className="record-foot"><span>RECORD ID</span><code>item_{selectedItem.id}</code></div>
-      </aside>}
+        <div className="record-foot"><span>UPDATED {selectedItem.updated}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
+        </> : <div className="inspector-empty"><span className="eyebrow">VAULT ITEM</span><h2>No Vault Item selected</h2><p>Select a record to inspect it.</p></div>}
+      </aside>
 
       {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
       {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Dark mode" : "Light mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}

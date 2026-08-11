@@ -38,7 +38,7 @@ KISS findings resolved in this pass:
 - Removed the non-functional `⌘ K` hint.
 - When a filter returns no records, the stale inspector no longer remains open for an item outside the result set.
 
-Remaining decision: whether row field counts and the external-arrow affordance earn their space after the left and right audits are settled.
+Resolved after the center audit: field counts and relative update times were removed from list rows, freshness moved to the inspector, and the external-arrow affordance was removed until it can open the service website.
 
 ## Center pane audit — 2026-08-11
 
@@ -56,7 +56,6 @@ User goal: find a service or account quickly, narrow the list when needed, and s
 
 ### Notable risks
 
-- Each row exposes a field-count token, relative update time, and an external-arrow affordance. The field count and update time are secondary metadata; the arrow currently selects the Vault Item rather than opening an external site, so its meaning is ambiguous.
 - The category add control is icon-only. Its accessible label is present, but the visible affordance depends on the user understanding that the plus creates a category rather than filtering or adding a Vault Item.
 - Search is currently exact substring matching across service, account, category, site, and custom-field labels. It is a good prototype behavior, but it is not yet the future semantic/RAG query contract.
 
@@ -64,7 +63,7 @@ User goal: find a service or account quickly, narrow the list when needed, and s
 
 - Keep the current three primary interactions: search, category filtering, and row selection.
 - Keep `Add Vault Item` as the single primary creation action and `Manage Core Info` as the space-level secondary action.
-- Before implementation polish, decide whether to remove the row field-count token and update time, and either rename the external arrow to a clear item action or remove it.
+- Keep record freshness in the inspector and only introduce an external-link action when it opens the service website.
 - Preserve the no-results behavior and the dynamic category list.
 
 Accessibility evidence is limited to the captured DOM and visible states. Keyboard traversal, focus order, zoom resilience, and assistive-technology announcements still need a separate check.
