@@ -33,11 +33,9 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .app-shell.is-dark .button--light { border-color: rgba(242, 238, 227, .16); box-shadow: 0 1px 1px rgba(0, 0, 0, .18); }
 .app-shell.is-dark .button--dark:hover { background: #d9d4c7; color: #252824; }
 .sidebar { height: 100vh; min-height: 0; display: flex; flex-direction: column; overflow: hidden; padding: 30px 18px 20px; background: var(--ground); border-right: 1px solid var(--hairline); }
-.brand-lockup { display: flex; align-items: center; gap: 11px; padding: 0 10px 35px; }
-.brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid var(--gold); border-radius: 8px; color: var(--gold); }
+.brand-lockup { display: flex; align-items: center; padding: 0 10px 35px; }
 .brand-name { font-family: var(--display); font-size: 19px; font-weight: 500; letter-spacing: -0.02em; }
-.brand-meta, .eyebrow, .crumbs, .space-group__head, .list-meta, .section-title, .record-foot, .agent-note { font-family: var(--mono); text-transform: uppercase; letter-spacing: .13em; font-size: 10px; }
-.brand-meta { margin-top: 2px; color: var(--ink-faint); font-size: 8px; letter-spacing: .11em; }
+.eyebrow, .crumbs, .space-group__head, .list-meta, .section-title, .record-foot, .agent-note { font-family: var(--mono); text-transform: uppercase; letter-spacing: .13em; font-size: 10px; }
 .space-nav { display: grid; gap: 4px; }
 .nav-link { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; text-align: left; font-size: 13px; transition: background 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease); }
 .nav-link:hover { background: rgba(33, 37, 40, .04); }

@@ -492,11 +492,7 @@ function App() {
     <div className={`app-shell ${darkMode ? "is-dark" : ""}`}>
       <aside className="sidebar">
         <div className="brand-lockup">
-          <div className="brand-mark"><Icon name="ph-vault" size={22} weight="duotone" /></div>
-          <div>
-            <div className="brand-name">Agent Vault</div>
-            <div className="brand-meta">LOCAL-FIRST / PRIVATE</div>
-          </div>
+          <div className="brand-name">Agent Vault</div>
         </div>
         <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} />
         <div className="sidebar-foot">
