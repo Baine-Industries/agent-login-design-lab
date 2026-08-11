@@ -406,7 +406,6 @@ function App() {
   const [coreInfoBySpace, setCoreInfoBySpace] = useState(initialCoreInfo);
   const [coreDraftsBySpace, setCoreDraftsBySpace] = useState({});
   const [reusableFields, setReusableFields] = useState(initialReusableFields);
-  const [itemDrafts, setItemDrafts] = useState({});
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
 
@@ -452,7 +451,6 @@ function App() {
   const coreInfoSpace = selectedItemSpace || selectedSpace;
   const coreInfo = coreInfoSpace ? coreInfoBySpace[coreInfoSpace.id] || emptyCoreInfo : emptyCoreInfo;
   const coreInfoDraft = coreInfoSpace ? coreDraftsBySpace[coreInfoSpace.id] : undefined;
-  const selectedItemDraft = selectedItem ? itemDrafts[selectedItem.id] : undefined;
 
   function selectSpace(spaceId) {
     setActiveSpace(spaceId);
@@ -555,7 +553,6 @@ function App() {
     setActiveSpace(spaceId);
     setActiveCategory("All items");
     setSelectedId(newItem.id);
-    setItemDrafts((current) => ({ ...current, [newItem.id]: newItem }));
     setModal({ type: "edit", itemId: newItem.id });
   }
 
@@ -569,18 +566,8 @@ function App() {
     setModal(null);
   }
 
-  function saveItemDraft(itemId, draft) {
-    setItemDrafts((current) => ({ ...current, [itemId]: draft }));
-    setModal(null);
-  }
-
-  function compileItem(itemId, draft) {
-    setItems((current) => current.map((item) => item.id === itemId ? { ...item, ...draft, updated: "Just now", compiledAt: "Just now" } : item));
-    setItemDrafts((current) => {
-      const next = { ...current };
-      delete next[itemId];
-      return next;
-    });
+  function saveItem(itemId, draft) {
+    setItems((current) => current.map((item) => item.id === itemId ? { ...item, ...draft, updated: "Just now" } : item));
     setModal(null);
   }
 
@@ -600,7 +587,7 @@ function App() {
   }
 
   function saveReusableField(field, sourceSpaceId) {
-    if (!field?.label || !field.value || !field.siteLabel) return;
+    if (!field?.label || !field.value) return;
     const duplicate = reusableFields.some((saved) => saved.label.toLowerCase() === field.label.toLowerCase() && saved.value === field.value && saved.sourceSpaceId === sourceSpaceId);
     if (duplicate) return;
     setReusableFields((current) => [...current, { ...field, id: `reusable-${Date.now()}`, sourceSpaceId }]);
@@ -610,7 +597,6 @@ function App() {
   const actionSpace = spaceAction ? spaces.find((space) => space.id === spaceAction.spaceId) : null;
   const mergeTargets = actionSpace ? spaces.filter((space) => !space.archived && space.id !== actionSpace.id && space.type === actionSpace.type) : [];
   const editItem = modal?.type === "edit" ? items.find((item) => item.id === modal.itemId) : null;
-  const editItemDraft = editItem ? itemDrafts[editItem.id] || editItem : null;
 
   return (
     <div className={`app-shell ${darkMode ? "is-dark" : ""}`} style={{ "--type-scale": typeScale }}>
@@ -679,11 +665,10 @@ function App() {
           <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
           <button className="button button--light button--small inspector-edit" onClick={openEditItem}><Icon name="ph-pencil-simple" size={14} /> Edit</button>
         </div>
-        {selectedItemDraft && <div className="compile-state compile-state--pending"><Icon name="ph-pencil-simple" size={14} /><span>Draft changes are not agent-readable.</span></div>}
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="Verification" value="User prompt if required" /></section>
         <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><FieldRow label="Full name" value={coreInfo.fullName} prefilled /><FieldRow label="Email" value={coreInfo.email} prefilled /><FieldRow label="Address" value={coreInfo.address} prefilled /></section>
         <section className="inspector-section"><div className="section-title"><span>CUSTOM FIELDS</span></div>{selectedItem.custom.map((field) => <div className="custom-field" key={field.siteLabel}><div className="custom-field__main"><strong>{field.label}</strong><span>{field.value}</span></div><code>{field.siteLabel}</code></div>)}</section>
-        <div className="record-foot"><span>{selectedItemDraft ? "DRAFT NOT COMPILED" : `COMPILED ${selectedItem.compiledAt || selectedItem.updated}`}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
+        <div className="record-foot"><span>SAVED {selectedItem.updated}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
         </> : <div className="inspector-empty"><span className="eyebrow">VAULT ITEM</span><h2>No Vault Item selected</h2><p>Select a record to inspect it.</p></div>}
       </aside>
 
@@ -694,9 +679,9 @@ function App() {
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
       {spaceAction?.action === "delete" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Delete ${actionSpace.name}?`} eyebrow="PERMANENT ACTION"><div className="form-intro">This permanently deletes the Vault Space and every Vault Item inside it. This cannot be undone.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--danger" onClick={deleteSpace}>Delete permanently</button></div></Modal>}
       {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
-      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A new Vault Item starts as a draft. You will finish the fields and compile it before an agent can use it.</div><label className="form-field"><span>Vault Space</span><select name="spaceId" value={addItemSpaceId} onChange={(event) => setAddItemSpaceId(event.target.value)} required><option value="" disabled>Choose a Vault Space</option>{spaces.filter((space) => !space.archived).map((space) => <option key={space.id} value={space.id}>{space.name} · {space.type}</option>)}</select></label><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select key={addItemSpaceId} name="category" defaultValue={addItemCategoryOptions[0]}>{addItemCategoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Continue to draft</button></div></form></Modal>}
+      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">Start with the service basics. You can finish the record and save it in the next step.</div><label className="form-field"><span>Vault Space</span><select name="spaceId" value={addItemSpaceId} onChange={(event) => setAddItemSpaceId(event.target.value)} required><option value="" disabled>Choose a Vault Space</option>{spaces.filter((space) => !space.archived).map((space) => <option key={space.id} value={space.id}>{space.name} · {space.type}</option>)}</select></label><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select key={addItemSpaceId} name="category" defaultValue={addItemCategoryOptions[0]}>{addItemCategoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Continue to edit</button></div></form></Modal>}
       {modal === "core" && coreInfoSpace && <CoreInfoModal space={coreInfoSpace} value={coreInfoDraft || coreInfo} hasDraft={Boolean(coreInfoDraft)} onSaveDraft={saveCoreInfoDraft} onCompile={compileCoreInfo} onClose={() => setModal(null)} />}
-      {editItem && <EditItemModal item={editItemDraft} spaces={spaces} categoryOptions={categoryOptions.filter((category) => category !== "All items")} reusableFields={reusableFields} onSaveDraft={saveItemDraft} onCompile={compileItem} onSaveReusableField={saveReusableField} onClose={() => setModal(null)} />}
+      {editItem && <EditItemModal item={editItem} spaces={spaces} categoryOptions={categoryOptions.filter((category) => category !== "All items")} reusableFields={reusableFields} onSave={saveItem} onSaveReusableField={saveReusableField} onClose={() => setModal(null)} />}
     </div>
   );
 }
@@ -750,7 +735,7 @@ function CoreInfoModal({ space, value, hasDraft, onSaveDraft, onCompile, onClose
   </Modal>;
 }
 
-function EditItemModal({ item, spaces, categoryOptions, reusableFields, onSaveDraft, onCompile, onSaveReusableField, onClose }) {
+function EditItemModal({ item, spaces, categoryOptions, reusableFields, onSave, onSaveReusableField, onClose }) {
   const [draft, setDraft] = useState(() => ({ ...item, custom: item.custom.map((field) => ({ type: "text", ...field })) }));
   const [reusableId, setReusableId] = useState("");
   const [showReusablePicker, setShowReusablePicker] = useState(false);
@@ -806,24 +791,23 @@ function EditItemModal({ item, spaces, categoryOptions, reusableFields, onSaveDr
     onClose();
   }
 
-  function submit(event, compile) {
+  function submit(event) {
     event.preventDefault();
-    const nextDraft = { ...draft, custom: draft.custom.map((field) => ({ ...field, siteLabel: field.siteLabel.trim() })) };
+    const nextDraft = { ...draft, custom: draft.custom.map((field) => ({ ...field, siteLabel: (field.siteLabel || "").trim() })) };
     if (!nextDraft.service.trim() || !nextDraft.account.trim()) {
-      setValidationMessage("Add a service name and account label before compiling.");
+      setValidationMessage("Add a service name and account label before saving.");
       return;
     }
-    if (compile && nextDraft.custom.some((field) => !field.label.trim() || !field.value.trim() || !field.siteLabel.trim())) {
-      setValidationMessage("Finish each field label and value before compiling.");
+    if (nextDraft.custom.some((field) => !field.label.trim() || !field.value.trim())) {
+      setValidationMessage("Finish each field label and value before saving.");
       return;
     }
-    if (compile) onCompile(item.id, nextDraft);
-    else onSaveDraft(item.id, nextDraft);
+    onSave(item.id, nextDraft);
   }
 
-  return <Modal onClose={close} title={`Edit ${item.service}`} eyebrow={`DRAFT / ${sourceSpace?.name || "VAULT SPACE"}`}>
-    <form onSubmit={(event) => submit(event, true)}>
-      <div className="form-intro">Make your changes here. The agent uses the last compiled version until you compile this draft.</div>
+  return <Modal onClose={close} title={`Edit ${item.service}`} eyebrow={`VAULT ITEM / ${sourceSpace?.name || "VAULT SPACE"}`}>
+    <form onSubmit={submit}>
+      <div className="form-intro">Make your changes here. They take effect when you save.</div>
       {validationMessage && <div className="form-error" role="alert">{validationMessage}</div>}
       <section className="edit-form-section">
         <div className="edit-form-section__head"><span className="section-title">RECORD</span></div>
@@ -840,7 +824,7 @@ function EditItemModal({ item, spaces, categoryOptions, reusableFields, onSaveDr
         {showReusablePicker && <div className="reuse-picker"><label className="form-field"><span>Saved field</span><select value={reusableId} onChange={(event) => setReusableId(event.target.value)}><option value="">Choose a field from any Vault Space</option>{reusableFields.map((field) => <option key={field.id} value={field.id}>{field.label} · {reusableFieldTypes.find((type) => type.value === field.type)?.label || field.type} · {spaces.find((space) => space.id === field.sourceSpaceId)?.name || "Unknown Space"}</option>)}</select></label><button type="button" className="button button--light button--small" onClick={useReusableField} disabled={!reusableId}>Use selected field</button></div>}
         <div className="edit-custom-list">{draft.custom.map((field, index) => <div className="edit-custom-row" key={`${field.siteLabel}-${index}`}><div className="edit-custom-row__head"><span className="field-number">FIELD {String(index + 1).padStart(2, "0")}</span><button type="button" className="text-button text-button--quiet" onClick={() => removeCustomField(index)}>Remove</button></div><div className="form-grid"><label className="form-field"><span>Label</span><input value={field.label} onChange={(event) => updateCustom(index, "label", event.target.value)} placeholder="e.g. Billing address" /></label><label className="form-field"><span>Value</span><input value={field.value} onChange={(event) => updateCustom(index, "value", event.target.value)} placeholder="Enter a value" /></label></div><div className="edit-field-meta"><label className="field-type"><span>Type</span><select value={field.type || "text"} onChange={(event) => updateCustom(index, "type", event.target.value)}><option value="text">Text</option>{reusableFieldTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label><button type="button" className="text-button text-button--quiet" onClick={() => setAdvancedFieldIndex(advancedFieldIndex === index ? null : index)}>{advancedFieldIndex === index ? "Hide exact site label" : "Add exact site label"}</button><button type="button" className="text-button text-button--quiet" onClick={() => saveReusable(index)} disabled={!field.label || !field.value}><Icon name="ph-bookmark-simple" size={13} /> Save for reuse</button></div>{advancedFieldIndex === index && <div className="advanced-field"><label className="form-field"><span>Website field label</span><input value={field.siteLabel} onChange={(event) => updateCustom(index, "siteLabel", event.target.value)} placeholder="Optional exact field name" /></label><p>Only add this when the website requires an exact field name. Leave it blank otherwise.</p></div>}</div>)}</div>
       </section>
-      <div className="modal-actions modal-actions--split"><span className="compile-note">Only compiled values are available to the agent.</span><div><button type="button" className="button button--light" onClick={close}>Cancel</button><button type="button" className="button button--light" onClick={() => submit({ preventDefault() {} }, false)}>Save draft</button><button type="submit" className="button button--dark">Save &amp; Compile</button></div></div>
+      <div className="modal-actions"><button type="submit" className="button button--dark">Save</button></div>
     </form>
   </Modal>;
 }
@@ -854,7 +838,7 @@ function SpaceIconPicker({ type, value, onChange }) {
 }
 
 function Modal({ title, eyebrow, children, onClose }) {
-  return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal-head"><div><span className="eyebrow">{eyebrow}</span><h2 id="modal-title">{title}</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><Icon name="ph-x" size={19} /></button></div>{children}</div></div>;
+  return <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}><div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div className="modal-head"><div><span className="eyebrow">{eyebrow}</span><h2 id="modal-title">{title}</h2></div><button className="icon-button" onClick={onClose} aria-label="Close"><Icon name="ph-x" size={19} /></button></div><div className="modal-body">{children}</div></div></div>;
 }
 
 export { App };

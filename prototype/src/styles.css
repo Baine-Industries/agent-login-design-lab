@@ -155,12 +155,13 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .inspector-empty p { margin: 8px 0 0; font-size: calc(12px * var(--type-scale)); }
 
 .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(33, 37, 40, .20); }
-.modal { width: min(100%, 560px); max-height: min(680px, calc(100vh - 48px)); overflow: auto; padding: 28px; border: 1px solid var(--hairline); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow-panel); }
-.modal { scrollbar-width: none; -ms-overflow-style: none; }
-.modal::-webkit-scrollbar { display: none; }
+.modal { width: min(100%, 560px); max-height: min(680px, calc(100vh - 48px)); display: flex; flex-direction: column; overflow: hidden; padding: 28px; border: 1px solid var(--hairline); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow-panel); }
 .modal-head { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--hairline); }
 .modal-head .eyebrow { margin-bottom: 9px; }
 .modal-head h2 { margin: 0; font-family: var(--display); font-size: 28px; font-weight: 300; letter-spacing: -.03em; }
+.modal-body { min-height: 0; overflow: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.modal-body::-webkit-scrollbar { display: none; }
+.modal-body > form { margin: 0; }
 .form-intro, .core-modal-copy { padding: 18px 0 22px; color: var(--ink-muted); font-size: 13px; line-height: 1.55; }
 .form-field { display: grid; gap: 7px; margin-bottom: 16px; }
 .form-field > span { color: var(--ink-muted); font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
@@ -194,6 +195,7 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .secret-field { min-width: 0; }
 .secret-field .form-field { margin-bottom: 4px; }
 .secret-field input:disabled { color: var(--ink-muted); cursor: not-allowed; opacity: 1; }
+.modal-actions { position: sticky; bottom: 0; z-index: 1; background: var(--panel); }
 .modal-actions--split { align-items: center; justify-content: space-between; }
 .modal-actions--split > div { display: flex; gap: 9px; }
 .compile-note { max-width: 190px; color: var(--ink-muted); font-size: 11px; line-height: 1.35; }
