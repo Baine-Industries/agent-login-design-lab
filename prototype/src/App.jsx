@@ -24,7 +24,16 @@ const spaceIconOptions = {
 
 const currentUser = "Adam";
 
-const commonCategories = ["Banking", "ERP", "Housing", "Utilities", "Taxes"];
+const personalCategories = [
+  "Banking", "Credit Cards", "Investing", "Insurance", "Healthcare", "Housing", "Utilities", "Taxes", "Government", "Education", "Travel", "Shopping", "Subscriptions", "Transportation", "Legal", "Employment", "Family", "Documents", "Communications", "Other",
+];
+
+const businessCategories = [
+  "Banking", "Accounting", "ERP", "Finance", "Payroll", "HR", "CRM & Sales", "Procurement", "Vendors", "Contracts", "Insurance", "Taxes", "Legal", "Compliance", "Government", "IT & Infrastructure", "Hosting & Domains", "Marketing", "Analytics", "Communications", "Office & Facilities", "Utilities", "Travel", "Other",
+];
+
+const categorySeedsByType = { Personal: personalCategories, Business: businessCategories };
+const commonCategories = [...new Set([...personalCategories, ...businessCategories])];
 
 const initialItems = [
   {
@@ -368,9 +377,13 @@ function App() {
     return ["All items", ...new Set([...commonCategories.filter((category) => itemCategories.includes(category)), ...itemCategories, ...addedCategories])];
   }, [activeSpace, customCategories, scopedItems]);
   const categoryOptions = useMemo(() => {
-    const addedCategories = customCategories.map((category) => category.name);
-    return [...new Set([...commonCategories, ...items.map((item) => item.category), ...addedCategories])];
-  }, [customCategories, items]);
+    const seededCategories = activeSpace === "all" ? commonCategories : categorySeedsByType[selectedSpace?.type] || commonCategories;
+    const itemCategories = scopedItems.map((item) => item.category);
+    const addedCategories = customCategories
+      .filter((category) => activeSpace === "all" || category.spaceId === "all" || category.spaceId === activeSpace)
+      .map((category) => category.name);
+    return [...new Set([...seededCategories, ...itemCategories, ...addedCategories])];
+  }, [activeSpace, customCategories, scopedItems, selectedSpace?.type]);
   const visibleItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return items.filter((item) => {
@@ -503,7 +516,10 @@ function App() {
 
       <main className="main-stage">
         <header className="topbar">
-          <div className="crumbs"><span>VAULT</span><Icon name="ph-slash" size={12} /><span>{selectedSpace?.name || "ALL SPACES"}</span></div>
+          <div className="topbar-left">
+            <div className="crumbs"><span>VAULT</span><Icon name="ph-slash" size={12} /><span>{selectedSpace?.name || "ALL SPACES"}</span></div>
+            <button className="button button--light button--small" onClick={() => setModal("core")}><Icon name="ph-address-book" size={15} /> Manage Core Info</button>
+          </div>
           <div className="topbar-actions">
             <button className="button button--dark" onClick={() => setModal("add")}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
           </div>
@@ -516,7 +532,6 @@ function App() {
               <h1>{selectedSpace ? selectedSpace.name : "All spaces"}</h1>
               <p>{selectedSpace ? `${selectedSpace.type} Vault Space · ${visibleItems.length} items` : `${visibleItems.length} items across your Vault Spaces`}</p>
             </div>
-            <button className="button button--light" onClick={() => setModal("core")}><Icon name="ph-address-book" size={16} /> Manage Core Info</button>
           </section>
 
           <div className="search-row">

@@ -25,3 +25,5 @@ The left Vault Space rail is closed for this prototype pass. Reopen that decisio
 Agent-native structure is implicit in the product and should not be announced with visible `AGENT-READABLE` labels or machine-syntax badges. Keep the center list human-focused; field counts and relative update times remain open decisions, while any external-link affordance must only appear when it actually opens the service site.
 
 Center pane decisions: the right inspector remains structurally open; selecting a row switches the inspected Vault Item. Rows show only the service identity, descriptor/account context, and category. Record freshness appears in the inspector, not the list. Search covers human-visible metadata and custom-field labels/values, never password or MFA secrets. The default list stays flat, and categories may vary by Personal versus Business Space Type.
+
+The full category seed set is context-sensitive: Personal and Business Vault Spaces receive different category options, while All Spaces exposes the union and custom categories remain scoped to their owning Space. Manage Core Info belongs in the top-left Vault breadcrumb bar beside the active Vault Space.
