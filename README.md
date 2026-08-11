@@ -53,6 +53,7 @@ The current UI concept emphasizes:
 See:
 
 - `AGENTS.md`
+- `docs/design/developer-handoff.md` — developer-agent pickup note with build-now callouts and deferred boundaries
 - `docs/ui/concept-summary.md`
 - `docs/contracts/engine-ui-boundary.md`
 - `docs/parallel-ui-workflow.md`

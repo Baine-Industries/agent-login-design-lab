@@ -42,6 +42,10 @@ Read these before making changes:
 3. `docs/contracts/engine-ui-boundary.md`
 4. `docs/ui/concept-summary.md`
 
+For backend or attach-layer pickup, also read
+`docs/design/developer-handoff.md`. It labels the current implementation
+callouts and the deferred boundaries without duplicating the domain contracts.
+
 ## Branch model
 
 ### Protected branch
