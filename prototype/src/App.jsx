@@ -26,13 +26,40 @@ const currentUser = "Adam";
 const spaceNameMaxLength = 32;
 const typeScales = { small: 1, medium: 1.12, large: 1.25 };
 
-const emptyCoreInfo = { fullName: "", email: "", address: "", phone: "" };
-const initialCoreInfo = {
-  adam: { fullName: "Adam Ironside", email: "adam@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
-  family: { fullName: "Adam Ironside", email: "family@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
-  imrahil: { fullName: "Imrahil Technologies", email: "admin@imrahiltech.dev", address: "123 Stonebrook Way", phone: "+1 555 010 0198" },
-  baine: { fullName: "Baine Industries", email: "ops@baineindustries.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+const emptyCoreInfo = {
+  prefix: "",
+  firstName: "",
+  middleName: "",
+  middleInitial: "",
+  lastName: "",
+  suffix: "",
+  preferredName: "",
+  fullName: "",
+  email: "",
+  address: "",
+  phone: "",
 };
+const initialCoreInfo = {
+  adam: { ...emptyCoreInfo, firstName: "Adam", lastName: "Ironside", fullName: "Adam Ironside", email: "adam@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+  family: { ...emptyCoreInfo, firstName: "Adam", lastName: "Ironside", fullName: "Adam Ironside", email: "family@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+  imrahil: { ...emptyCoreInfo, fullName: "Imrahil Technologies", email: "admin@imrahiltech.dev", address: "123 Stonebrook Way", phone: "+1 555 010 0198" },
+  baine: { ...emptyCoreInfo, fullName: "Baine Industries", email: "ops@baineindustries.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+};
+
+const reusableFieldTypes = [
+  { value: "email", label: "Email" },
+  { value: "credit-card", label: "Credit card" },
+  { value: "tax-id", label: "Tax ID" },
+  { value: "address", label: "Address" },
+  { value: "phone", label: "Phone" },
+];
+
+const initialReusableFields = [
+  { id: "email-adam", label: "Primary email", type: "email", value: "adam@example.dev", sourceSpaceId: "adam", siteLabel: "email" },
+  { id: "address-adam", label: "Home address", type: "address", value: "123 Market St", sourceSpaceId: "adam", siteLabel: "address_line_1" },
+  { id: "card-adam", label: "Daily card", type: "credit-card", value: "•••• 4821", sourceSpaceId: "adam", siteLabel: "card_number" },
+  { id: "tax-imrahil", label: "Federal Tax ID", type: "tax-id", value: "••-•••4821", sourceSpaceId: "imrahil", siteLabel: "tax_id" },
+];
 
 const personalCategories = [
   "Banking", "Credit Cards", "Investing", "Insurance", "Healthcare", "Housing", "Utilities", "Taxes", "Government", "Education", "Travel", "Shopping", "Subscriptions", "Transportation", "Legal", "Employment", "Family", "Documents", "Communications", "Other",
@@ -62,7 +89,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Prefilled · 123 Market St" },
       { label: "Account nickname", siteLabel: "account_nickname", value: "Daily checking" },
     ],
   },
@@ -82,7 +109,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Street address", siteLabel: "address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Street address", siteLabel: "address_line_1", value: "Prefilled · 123 Market St" },
       { label: "Policy number", siteLabel: "policy_number", value: "GE-4077" },
     ],
   },
@@ -103,7 +130,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Company code", siteLabel: "company_code", value: "IMR-1000" },
-      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Prefilled · 123 Market St" },
     ],
   },
   {
@@ -122,7 +149,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Service address", siteLabel: "service_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Service address", siteLabel: "service_address_line_1", value: "Prefilled · 123 Market St" },
       { label: "Account number", siteLabel: "account_number", value: "CU-88931" },
     ],
   },
@@ -142,7 +169,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Recovery email", siteLabel: "recovery_email", value: "Inherited · recovery@example.dev" },
+      { label: "Recovery email", siteLabel: "recovery_email", value: "Prefilled · recovery@example.dev" },
       { label: "Workspace domain", siteLabel: "workspace_domain", value: "example.dev" },
     ],
   },
@@ -162,8 +189,8 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Delivery address", siteLabel: "address_line_1", value: "Inherited · 123 Market St" },
-      { label: "Phone", siteLabel: "phone_number", value: "Inherited · +1 555 010 0198" },
+      { label: "Delivery address", siteLabel: "address_line_1", value: "Prefilled · 123 Market St" },
+      { label: "Phone", siteLabel: "phone_number", value: "Prefilled · +1 555 010 0198" },
     ],
   },
   {
@@ -182,7 +209,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Shipping address", siteLabel: "shipping_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Shipping address", siteLabel: "shipping_address_line_1", value: "Prefilled · 123 Market St" },
       { label: "Card nickname", siteLabel: "card_nickname", value: "Household" },
     ],
   },
@@ -202,7 +229,7 @@ const initialItems = [
     password: "••••••••••••",
     mfa: "••••••••••••",
     custom: [
-      { label: "Recovery phone", siteLabel: "recovery_phone", value: "Inherited · +1 555 010 0198" },
+      { label: "Recovery phone", siteLabel: "recovery_phone", value: "Prefilled · +1 555 010 0198" },
       { label: "Team name", siteLabel: "team_name", value: "Personal files" },
     ],
   },
@@ -223,7 +250,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Account nickname", siteLabel: "account_nickname", value: "Long-term" },
-      { label: "Mailing address", siteLabel: "mailing_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Mailing address", siteLabel: "mailing_address_line_1", value: "Prefilled · 123 Market St" },
     ],
   },
   {
@@ -242,7 +269,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Member name", siteLabel: "member_name", value: "Family space" },
-      { label: "Phone", siteLabel: "contact_phone", value: "Inherited · +1 555 010 0198" },
+      { label: "Phone", siteLabel: "contact_phone", value: "Prefilled · +1 555 010 0198" },
     ],
   },
   {
@@ -261,7 +288,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Company code", siteLabel: "company_code", value: "IMR-1000" },
-      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Inherited · 123 Stonebrook Way" },
+      { label: "Billing address", siteLabel: "billing_address_line_1", value: "Prefilled · 123 Stonebrook Way" },
     ],
   },
   {
@@ -280,7 +307,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Workspace name", siteLabel: "workspace_name", value: "Imrahil Technologies" },
-      { label: "Support email", siteLabel: "support_email", value: "Inherited · support@example.dev" },
+      { label: "Support email", siteLabel: "support_email", value: "Prefilled · support@example.dev" },
     ],
   },
   {
@@ -299,7 +326,7 @@ const initialItems = [
     mfa: "••••••••••••",
     custom: [
       { label: "Legal entity", siteLabel: "legal_entity_name", value: "Baine Industries" },
-      { label: "Tax address", siteLabel: "tax_address_line_1", value: "Inherited · 123 Market St" },
+      { label: "Tax address", siteLabel: "tax_address_line_1", value: "Prefilled · 123 Market St" },
     ],
   },
 ];
@@ -377,6 +404,9 @@ function App() {
   const [spaceDraftIcon, setSpaceDraftIcon] = useState(spaceIconOptions.Personal[0].value);
   const [addItemSpaceId, setAddItemSpaceId] = useState("adam");
   const [coreInfoBySpace, setCoreInfoBySpace] = useState(initialCoreInfo);
+  const [coreDraftsBySpace, setCoreDraftsBySpace] = useState({});
+  const [reusableFields, setReusableFields] = useState(initialReusableFields);
+  const [itemDrafts, setItemDrafts] = useState({});
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
 
@@ -421,6 +451,8 @@ function App() {
   const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
   const coreInfoSpace = selectedItemSpace || selectedSpace;
   const coreInfo = coreInfoSpace ? coreInfoBySpace[coreInfoSpace.id] || emptyCoreInfo : emptyCoreInfo;
+  const coreInfoDraft = coreInfoSpace ? coreDraftsBySpace[coreInfoSpace.id] : undefined;
+  const selectedItemDraft = selectedItem ? itemDrafts[selectedItem.id] : undefined;
 
   function selectSpace(spaceId) {
     setActiveSpace(spaceId);
@@ -440,6 +472,10 @@ function App() {
   function openAddItem() {
     setAddItemSpaceId(activeSpace === "all" ? "" : activeSpace);
     setModal("add");
+  }
+
+  function openEditItem() {
+    if (selectedItem) setModal({ type: "edit", itemId: selectedItem.id });
   }
 
   function createSpace(event) {
@@ -519,7 +555,8 @@ function App() {
     setActiveSpace(spaceId);
     setActiveCategory("All items");
     setSelectedId(newItem.id);
-    setModal(null);
+    setItemDrafts((current) => ({ ...current, [newItem.id]: newItem }));
+    setModal({ type: "edit", itemId: newItem.id });
   }
 
   function addCategory(event) {
@@ -532,25 +569,48 @@ function App() {
     setModal(null);
   }
 
-  function saveCoreInfo(event) {
-    event.preventDefault();
-    if (!coreInfoSpace) return;
-    const form = new FormData(event.currentTarget);
-    setCoreInfoBySpace((current) => ({
-      ...current,
-      [coreInfoSpace.id]: {
-        fullName: form.get("fullName")?.toString().trim() || "",
-        email: form.get("email")?.toString().trim() || "",
-        address: form.get("address")?.toString().trim() || "",
-        phone: form.get("phone")?.toString().trim() || "",
-      },
-    }));
+  function saveItemDraft(itemId, draft) {
+    setItemDrafts((current) => ({ ...current, [itemId]: draft }));
     setModal(null);
+  }
+
+  function compileItem(itemId, draft) {
+    setItems((current) => current.map((item) => item.id === itemId ? { ...item, ...draft, updated: "Just now", compiledAt: "Just now" } : item));
+    setItemDrafts((current) => {
+      const next = { ...current };
+      delete next[itemId];
+      return next;
+    });
+    setModal(null);
+  }
+
+  function saveCoreInfoDraft(spaceId, draft) {
+    setCoreDraftsBySpace((current) => ({ ...current, [spaceId]: draft }));
+    setModal(null);
+  }
+
+  function compileCoreInfo(spaceId, draft) {
+    setCoreInfoBySpace((current) => ({ ...current, [spaceId]: draft }));
+    setCoreDraftsBySpace((current) => {
+      const next = { ...current };
+      delete next[spaceId];
+      return next;
+    });
+    setModal(null);
+  }
+
+  function saveReusableField(field, sourceSpaceId) {
+    if (!field?.label || !field.value || !field.siteLabel) return;
+    const duplicate = reusableFields.some((saved) => saved.label.toLowerCase() === field.label.toLowerCase() && saved.value === field.value && saved.sourceSpaceId === sourceSpaceId);
+    if (duplicate) return;
+    setReusableFields((current) => [...current, { ...field, id: `reusable-${Date.now()}`, sourceSpaceId }]);
   }
 
   const archivedSpaces = spaces.filter((space) => space.archived);
   const actionSpace = spaceAction ? spaces.find((space) => space.id === spaceAction.spaceId) : null;
   const mergeTargets = actionSpace ? spaces.filter((space) => !space.archived && space.id !== actionSpace.id && space.type === actionSpace.type) : [];
+  const editItem = modal?.type === "edit" ? items.find((item) => item.id === modal.itemId) : null;
+  const editItemDraft = editItem ? itemDrafts[editItem.id] || editItem : null;
 
   return (
     <div className={`app-shell ${darkMode ? "is-dark" : ""}`} style={{ "--type-scale": typeScale }}>
@@ -617,11 +677,13 @@ function App() {
         {selectedItem ? <>
         <div className="inspector-head">
           <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
+          <button className="button button--light button--small inspector-edit" onClick={openEditItem}><Icon name="ph-pencil-simple" size={14} /> Edit</button>
         </div>
+        {selectedItemDraft && <div className="compile-state compile-state--pending"><Icon name="ph-pencil-simple" size={14} /><span>Draft changes are not agent-readable.</span></div>}
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="MFA secret" value={selectedItem.mfa} mono /></section>
         <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><FieldRow label="Full name" value={coreInfo.fullName} prefilled /><FieldRow label="Email" value={coreInfo.email} prefilled /><FieldRow label="Address" value={coreInfo.address} prefilled /></section>
         <section className="inspector-section"><div className="section-title"><span>CUSTOM FIELDS</span></div>{selectedItem.custom.map((field) => <div className="custom-field" key={field.siteLabel}><div className="custom-field__main"><strong>{field.label}</strong><span>{field.value}</span></div><code>{field.siteLabel}</code></div>)}</section>
-        <div className="record-foot"><span>UPDATED {selectedItem.updated}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
+        <div className="record-foot"><span>{selectedItemDraft ? "DRAFT NOT COMPILED" : `COMPILED ${selectedItem.compiledAt || selectedItem.updated}`}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
         </> : <div className="inspector-empty"><span className="eyebrow">VAULT ITEM</span><h2>No Vault Item selected</h2><p>Select a record to inspect it.</p></div>}
       </aside>
 
@@ -632,10 +694,133 @@ function App() {
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
       {spaceAction?.action === "delete" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Delete ${actionSpace.name}?`} eyebrow="PERMANENT ACTION"><div className="form-intro">This permanently deletes the Vault Space and every Vault Item inside it. This cannot be undone.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--danger" onClick={deleteSpace}>Delete permanently</button></div></Modal>}
       {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
-      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Vault Space</span><select name="spaceId" value={addItemSpaceId} onChange={(event) => setAddItemSpaceId(event.target.value)} required><option value="" disabled>Choose a Vault Space</option>{spaces.filter((space) => !space.archived).map((space) => <option key={space.id} value={space.id}>{space.name} · {space.type}</option>)}</select></label><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select key={addItemSpaceId} name="category" defaultValue={addItemCategoryOptions[0]}>{addItemCategoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
-      {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${coreInfoSpace?.name || "ALL SPACES"}`}><form onSubmit={saveCoreInfo}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can prefill its Vault Items, and each populated value can be edited when an item needs something different.</div><div className="core-modal-list"><label className="form-field"><span>Full name</span><input name="fullName" defaultValue={coreInfo.fullName} /></label><label className="form-field"><span>Email</span><input name="email" type="email" defaultValue={coreInfo.email} /></label><label className="form-field"><span>Address</span><input name="address" defaultValue={coreInfo.address} /></label><label className="form-field"><span>Phone</span><input name="phone" type="tel" defaultValue={coreInfo.phone} /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Close</button><button type="submit" className="button button--dark">Save changes</button></div></form></Modal>}
+      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A new Vault Item starts as a draft. You will finish the fields and compile it before an agent can use it.</div><label className="form-field"><span>Vault Space</span><select name="spaceId" value={addItemSpaceId} onChange={(event) => setAddItemSpaceId(event.target.value)} required><option value="" disabled>Choose a Vault Space</option>{spaces.filter((space) => !space.archived).map((space) => <option key={space.id} value={space.id}>{space.name} · {space.type}</option>)}</select></label><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select key={addItemSpaceId} name="category" defaultValue={addItemCategoryOptions[0]}>{addItemCategoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Continue to draft</button></div></form></Modal>}
+      {modal === "core" && coreInfoSpace && <CoreInfoModal space={coreInfoSpace} value={coreInfoDraft || coreInfo} hasDraft={Boolean(coreInfoDraft)} onSaveDraft={saveCoreInfoDraft} onCompile={compileCoreInfo} onClose={() => setModal(null)} />}
+      {editItem && <EditItemModal item={editItemDraft} spaces={spaces} reusableFields={reusableFields} onSaveDraft={saveItemDraft} onCompile={compileItem} onSaveReusableField={saveReusableField} onClose={() => setModal(null)} />}
     </div>
   );
+}
+
+function CoreInfoModal({ space, value, hasDraft, onSaveDraft, onCompile, onClose }) {
+  const [draft, setDraft] = useState(() => ({ ...emptyCoreInfo, ...value }));
+  const [dirty, setDirty] = useState(false);
+
+  function update(name, nextValue) {
+    setDraft((current) => ({ ...current, [name]: nextValue }));
+    setDirty(true);
+  }
+
+  function close() {
+    if (dirty && !window.confirm("Discard these Core Info changes?")) return;
+    onClose();
+  }
+
+  function submit(event, compile) {
+    event.preventDefault();
+    const next = { ...draft, fullName: draft.fullName || [draft.firstName, draft.middleName, draft.lastName].filter(Boolean).join(" ") };
+    if (compile) onCompile(space.id, next);
+    else onSaveDraft(space.id, next);
+  }
+
+  return <Modal onClose={close} title="Core Info" eyebrow={`REUSABLE / ${space.name}`}>
+    <form onSubmit={(event) => submit(event, true)}>
+      <div className="core-modal-copy">These values belong to {space.name}. They can prefill Vault Items, but the agent receives only the compiled version.</div>
+      {(hasDraft || dirty) && <div className="compile-state compile-state--pending"><Icon name="ph-pencil-simple" size={14} /> <span>Working changes are not agent-readable.</span></div>}
+      <div className="core-modal-list">
+        <div className="form-grid">
+          <label className="form-field"><span>First name</span><input value={draft.firstName} onChange={(event) => update("firstName", event.target.value)} /></label>
+          <label className="form-field"><span>Last name</span><input value={draft.lastName} onChange={(event) => update("lastName", event.target.value)} /></label>
+        </div>
+        <div className="form-grid">
+          <label className="form-field"><span>Middle name</span><input value={draft.middleName} onChange={(event) => update("middleName", event.target.value)} /></label>
+          <label className="form-field"><span>Middle initial</span><input value={draft.middleInitial} maxLength={2} onChange={(event) => update("middleInitial", event.target.value)} /></label>
+        </div>
+        <div className="form-grid">
+          <label className="form-field"><span>Prefix</span><input value={draft.prefix} onChange={(event) => update("prefix", event.target.value)} placeholder="Optional" /></label>
+          <label className="form-field"><span>Suffix</span><input value={draft.suffix} onChange={(event) => update("suffix", event.target.value)} placeholder="Optional" /></label>
+        </div>
+        <label className="form-field"><span>Preferred name</span><input value={draft.preferredName} onChange={(event) => update("preferredName", event.target.value)} placeholder="Optional" /></label>
+        <label className="form-field"><span>Full name</span><input value={draft.fullName} onChange={(event) => update("fullName", event.target.value)} /></label>
+        <label className="form-field"><span>Email</span><input value={draft.email} type="email" onChange={(event) => update("email", event.target.value)} /></label>
+        <label className="form-field"><span>Address</span><input value={draft.address} onChange={(event) => update("address", event.target.value)} /></label>
+        <label className="form-field"><span>Phone</span><input value={draft.phone} type="tel" onChange={(event) => update("phone", event.target.value)} /></label>
+      </div>
+      <div className="modal-actions modal-actions--split"><button type="button" className="button button--light" onClick={close}>Cancel</button><div><button type="button" className="button button--light" onClick={() => submit({ preventDefault() {} }, false)}>Save draft</button><button type="submit" className="button button--dark">Save &amp; Compile</button></div></div>
+    </form>
+  </Modal>;
+}
+
+function EditItemModal({ item, spaces, reusableFields, onSaveDraft, onCompile, onSaveReusableField, onClose }) {
+  const [draft, setDraft] = useState(() => ({ ...item, custom: item.custom.map((field) => ({ type: "text", ...field })) }));
+  const [reusableId, setReusableId] = useState("");
+  const [dirty, setDirty] = useState(false);
+  const [validationMessage, setValidationMessage] = useState("");
+  const sourceSpace = spaces.find((space) => space.id === item.spaceId);
+
+  function update(name, value) {
+    setDraft((current) => ({ ...current, [name]: value }));
+    setDirty(true);
+    setValidationMessage("");
+  }
+
+  function updateCustom(index, name, value) {
+    setDraft((current) => ({ ...current, custom: current.custom.map((field, fieldIndex) => fieldIndex === index ? { ...field, [name]: value } : field) }));
+    setDirty(true);
+    setValidationMessage("");
+  }
+
+  function addCustomField() {
+    setDraft((current) => ({ ...current, custom: [...current.custom, { label: "", siteLabel: "", value: "", type: "text" }] }));
+    setDirty(true);
+  }
+
+  function useReusableField() {
+    const saved = reusableFields.find((field) => field.id === reusableId);
+    if (!saved) return;
+    const alreadyAdded = draft.custom.some((field) => field.siteLabel === saved.siteLabel && field.value === saved.value);
+    if (!alreadyAdded) setDraft((current) => ({ ...current, custom: [...current.custom, { label: saved.label, siteLabel: saved.siteLabel, value: saved.value, type: saved.type, reusableFieldId: saved.id }] }));
+    setReusableId("");
+    setDirty(true);
+  }
+
+  function saveReusable(index) {
+    const field = draft.custom[index];
+    onSaveReusableField({ label: field.label, siteLabel: field.siteLabel, value: field.value, type: field.type || "text" }, item.spaceId);
+  }
+
+  function close() {
+    if (dirty && !window.confirm("Discard these item changes?")) return;
+    onClose();
+  }
+
+  function submit(event, compile) {
+    event.preventDefault();
+    if (!draft.service.trim() || !draft.account.trim()) {
+      setValidationMessage("Add a service name and account label before compiling.");
+      return;
+    }
+    if (draft.custom.some((field) => !field.label.trim() || !field.siteLabel.trim())) {
+      setValidationMessage("Every custom field needs a field name and exact website field label.");
+      return;
+    }
+    if (compile) onCompile(item.id, draft);
+    else onSaveDraft(item.id, draft);
+  }
+
+  return <Modal onClose={close} title={`Edit ${item.service}`} eyebrow={`WORKING DRAFT / ${sourceSpace?.name || "VAULT SPACE"}`}>
+    <form onSubmit={(event) => submit(event, true)}>
+      <div className="form-intro">Edit the human record first. Save &amp; Compile makes the validated snapshot available to the agent.</div>
+      {validationMessage && <div className="form-error" role="alert">{validationMessage}</div>}
+      <div className="form-grid"><label className="form-field"><span>Service name</span><input value={draft.service} onChange={(event) => update("service", event.target.value)} required /></label><label className="form-field"><span>Account label</span><input value={draft.account} onChange={(event) => update("account", event.target.value)} required /></label></div>
+      <div className="form-grid"><label className="form-field"><span>Category</span><input value={draft.category} onChange={(event) => update("category", event.target.value)} /></label><label className="form-field"><span>Site</span><input value={draft.site} onChange={(event) => update("site", event.target.value)} /></label></div>
+      <div className="form-field"><span>Login</span><input value={draft.username} onChange={(event) => update("username", event.target.value)} placeholder="Username or email" /></div>
+      <div className="form-grid"><label className="form-field"><span>Password</span><input value={draft.password} onChange={(event) => update("password", event.target.value)} /></label><label className="form-field"><span>MFA secret</span><input value={draft.mfa} onChange={(event) => update("mfa", event.target.value)} /></label></div>
+      <div className="edit-section-head"><span className="section-title">CUSTOM FIELDS</span><button type="button" className="text-button" onClick={addCustomField}><Icon name="ph-plus" size={13} /> Add field</button></div>
+      <div className="reuse-picker"><label className="form-field"><span>Use a saved field</span><select value={reusableId} onChange={(event) => setReusableId(event.target.value)}><option value="">Choose a field from any Vault Space</option>{reusableFields.map((field) => <option key={field.id} value={field.id}>{field.label} · {reusableFieldTypes.find((type) => type.value === field.type)?.label || field.type} · {spaces.find((space) => space.id === field.sourceSpaceId)?.name || "Unknown Space"}</option>)}</select></label><button type="button" className="button button--light button--small" onClick={useReusableField} disabled={!reusableId}>Fill field</button></div>
+      <div className="edit-custom-list">{draft.custom.map((field, index) => <div className="edit-custom-row" key={`${field.siteLabel}-${index}`}><div className="form-grid"><label className="form-field"><span>Field name</span><input value={field.label} onChange={(event) => updateCustom(index, "label", event.target.value)} placeholder="Human label" /></label><label className="form-field"><span>Type</span><select value={field.type || "text"} onChange={(event) => updateCustom(index, "type", event.target.value)}><option value="text">Text</option>{reusableFieldTypes.map((type) => <option key={type.value} value={type.value}>{type.label}</option>)}</select></label></div><div className="form-grid"><label className="form-field"><span>Value</span><input value={field.value} onChange={(event) => updateCustom(index, "value", event.target.value)} /></label><label className="form-field"><span>Exact website field label</span><input value={field.siteLabel} onChange={(event) => updateCustom(index, "siteLabel", event.target.value)} placeholder="billing_address_line_1" /></label></div><button type="button" className="text-button" onClick={() => saveReusable(index)} disabled={!field.label || !field.value || !field.siteLabel}><Icon name="ph-bookmark-simple" size={13} /> Save for reuse</button></div>)}</div>
+      <div className="modal-actions modal-actions--split"><button type="button" className="button button--light" onClick={close}>Cancel</button><div><button type="button" className="button button--light" onClick={() => submit({ preventDefault() {} }, false)}>Save draft</button><button type="submit" className="button button--dark">Save &amp; Compile</button></div></div>
+    </form>
+  </Modal>;
 }
 
 function FieldRow({ label, value, mono = false, prefilled = false }) {

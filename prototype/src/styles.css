@@ -126,6 +126,7 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 
 .inspector { min-width: 0; min-height: 0; height: 100vh; padding: 34px 24px 28px; background: var(--ground); border-left: 1px solid var(--hairline); overflow: hidden; }
 .inspector-head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 24px; border-bottom: 1px solid var(--hairline); }
+.inspector-edit { align-self: flex-start; flex: none; }
 .inspector-head .eyebrow { margin-bottom: 11px; font-size: calc(9px * var(--type-scale)); }
 .inspector-head h2 { margin: 0; font-family: var(--display); font-size: calc(25px * var(--type-scale)); font-weight: 400; line-height: 1.1; letter-spacing: -.03em; }
 .inspector-head p { margin: 7px 0 0; color: var(--ink-muted); font-size: calc(12px * var(--type-scale)); }
@@ -147,6 +148,8 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .custom-field code, .record-foot code { color: var(--gold); font-family: var(--mono); font-size: calc(9px * var(--type-scale)); }
 .record-foot { display: flex; justify-content: space-between; gap: 12px; padding-top: 20px; color: var(--ink-faint); font-size: calc(9px * var(--type-scale)); }
 .record-foot span { white-space: nowrap; }
+.compile-state { display: flex; align-items: center; gap: 7px; padding: 10px 12px; margin-top: 14px; border: 1px solid rgba(125, 93, 40, .28); border-radius: 7px; background: rgba(125, 93, 40, .08); color: var(--gold); font-size: calc(11px * var(--type-scale)); }
+.compile-state--pending { color: var(--rust); border-color: rgba(131, 71, 61, .28); background: rgba(131, 71, 61, .08); }
 .inspector-empty { display: grid; align-content: center; min-height: calc(100vh - 62px); color: var(--ink-muted); }
 .inspector-empty h2 { margin: 0; color: var(--ink); font-family: var(--display); font-size: calc(25px * var(--type-scale)); font-weight: 400; }
 .inspector-empty p { margin: 8px 0 0; font-size: calc(12px * var(--type-scale)); }
@@ -162,6 +165,20 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .form-field input, .form-field select { width: 100%; padding: 11px 12px; border: 1px solid var(--hairline); border-radius: 7px; outline: 0; background: var(--ground); color: var(--ink); font-size: 13px; }
 .form-field input:focus, .form-field select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(125, 93, 40, .12); }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-error { margin: 14px 0; padding: 10px 12px; border: 1px solid rgba(131, 71, 61, .3); border-radius: 7px; background: rgba(131, 71, 61, .08); color: var(--rust); font-size: 12px; line-height: 1.45; }
+.edit-section-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 0 8px; border-top: 1px solid var(--hairline); }
+.edit-section-head .section-title { margin: 0; }
+.text-button { display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; border: 0; background: transparent; color: var(--gold); font-family: var(--mono); font-size: 10px; letter-spacing: .03em; }
+.text-button:hover { color: var(--ink); }
+.text-button:disabled { cursor: not-allowed; color: var(--ink-faint); }
+.reuse-picker { display: flex; align-items: end; gap: 10px; padding: 10px 0 4px; border-bottom: 1px solid var(--hairline); }
+.reuse-picker .form-field { min-width: 0; flex: 1; }
+.reuse-picker .button { flex: none; margin-bottom: 16px; }
+.edit-custom-list { padding-bottom: 4px; }
+.edit-custom-row { padding: 12px 0 8px; border-bottom: 1px solid rgba(211, 204, 188, .7); }
+.edit-custom-row .form-field { margin-bottom: 10px; }
+.modal-actions--split { align-items: center; justify-content: space-between; }
+.modal-actions--split > div { display: flex; gap: 9px; }
 .space-icon-picker { display: flex; gap: 8px; }
 .space-icon-picker button { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--hairline); border-radius: 8px; background: var(--ground); color: var(--ink-muted); }
 .space-icon-picker button:hover, .space-icon-picker button.is-selected { border-color: var(--gold); color: var(--gold); background: var(--surface); }
