@@ -24,6 +24,14 @@ const spaceIconOptions = {
 
 const currentUser = "Adam";
 
+const emptyCoreInfo = { fullName: "", email: "", address: "", phone: "" };
+const initialCoreInfo = {
+  adam: { fullName: "Adam Ironside", email: "adam@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+  family: { fullName: "Adam Ironside", email: "family@example.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+  imrahil: { fullName: "Imrahil Technologies", email: "admin@imrahiltech.dev", address: "123 Stonebrook Way", phone: "+1 555 010 0198" },
+  baine: { fullName: "Baine Industries", email: "ops@baineindustries.dev", address: "123 Market St", phone: "+1 555 010 0198" },
+};
+
 const personalCategories = [
   "Banking", "Credit Cards", "Investing", "Insurance", "Healthcare", "Housing", "Utilities", "Taxes", "Government", "Education", "Travel", "Shopping", "Subscriptions", "Transportation", "Legal", "Employment", "Family", "Documents", "Communications", "Other",
 ];
@@ -365,6 +373,7 @@ function App() {
   const [spaceAction, setSpaceAction] = useState(null);
   const [spaceDraftType, setSpaceDraftType] = useState("Personal");
   const [spaceDraftIcon, setSpaceDraftIcon] = useState(spaceIconOptions.Personal[0].value);
+  const [coreInfoBySpace, setCoreInfoBySpace] = useState(initialCoreInfo);
   const [darkMode, setDarkMode] = useState(false);
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
@@ -396,6 +405,8 @@ function App() {
 
   const selectedItem = items.find((item) => item.id === selectedId && (activeSpace === "all" || item.spaceId === activeSpace)) || visibleItems[0];
   const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
+  const coreInfoSpace = selectedItemSpace || selectedSpace;
+  const coreInfo = coreInfoSpace ? coreInfoBySpace[coreInfoSpace.id] || emptyCoreInfo : emptyCoreInfo;
 
   function selectSpace(spaceId) {
     setActiveSpace(spaceId);
@@ -419,6 +430,7 @@ function App() {
     if (!name) return;
     const newSpace = { id: `space-${Date.now()}`, name, type: spaceDraftType, icon: spaceDraftIcon, accessLive: false };
     setSpaces((current) => [...current, newSpace]);
+    setCoreInfoBySpace((current) => ({ ...current, [newSpace.id]: emptyCoreInfo }));
     setActiveSpace(newSpace.id);
     setActiveCategory("All items");
     setModal(null);
@@ -497,6 +509,22 @@ function App() {
     setModal(null);
   }
 
+  function saveCoreInfo(event) {
+    event.preventDefault();
+    if (!coreInfoSpace) return;
+    const form = new FormData(event.currentTarget);
+    setCoreInfoBySpace((current) => ({
+      ...current,
+      [coreInfoSpace.id]: {
+        fullName: form.get("fullName")?.toString().trim() || "",
+        email: form.get("email")?.toString().trim() || "",
+        address: form.get("address")?.toString().trim() || "",
+        phone: form.get("phone")?.toString().trim() || "",
+      },
+    }));
+    setModal(null);
+  }
+
   const archivedSpaces = spaces.filter((space) => space.archived);
   const actionSpace = spaceAction ? spaces.find((space) => space.id === spaceAction.spaceId) : null;
   const mergeTargets = actionSpace ? spaces.filter((space) => !space.archived && space.id !== actionSpace.id && space.type === actionSpace.type) : [];
@@ -570,7 +598,7 @@ function App() {
         </div>
         <div className="inspector-actions"><button className="button button--light button--small"><Icon name="ph-pencil-simple" size={15} /> Edit fields</button><button className="icon-button" aria-label="More item actions"><Icon name="ph-dots-three" size={19} /></button></div>
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="MFA secret" value={selectedItem.mfa} mono /></section>
-        <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><div className="core-info-callout"><Icon name="ph-arrows-clockwise" size={18} /><div><strong>Reusable by default</strong><span>These values come from this Vault Space.</span></div><button onClick={() => setModal("core")}>Review</button></div><FieldRow label="Full name" value="Adam Ironside" inherited /><FieldRow label="Email" value="adam@example.dev" inherited /><FieldRow label="Address" value="123 Market St" inherited /></section>
+        <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><div className="core-info-callout"><Icon name="ph-arrows-clockwise" size={18} /><div><strong>Reusable by default</strong><span>These values come from this Vault Space.</span></div><button onClick={() => setModal("core")}>Review</button></div><FieldRow label="Full name" value={coreInfo.fullName} inherited /><FieldRow label="Email" value={coreInfo.email} inherited /><FieldRow label="Address" value={coreInfo.address} inherited /></section>
         <section className="inspector-section"><div className="section-title"><span>CUSTOM FIELDS</span><button className="text-action"><Icon name="ph-plus" size={13} /> Add field</button></div>{selectedItem.custom.map((field) => <div className="custom-field" key={field.siteLabel}><div className="custom-field__main"><strong>{field.label}</strong><span>{field.value}</span></div><code>{field.siteLabel}</code></div>)}</section>
         <div className="record-foot"><span>UPDATED {selectedItem.updated}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
         </> : <div className="inspector-empty"><span className="eyebrow">VAULT ITEM</span><h2>No Vault Item selected</h2><p>Select a record to inspect it.</p></div>}
@@ -584,7 +612,7 @@ function App() {
       {spaceAction?.action === "delete" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Delete ${actionSpace.name}?`} eyebrow="PERMANENT ACTION"><div className="form-intro">This permanently deletes the Vault Space and every Vault Item inside it. This cannot be undone.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--danger" onClick={deleteSpace}>Delete permanently</button></div></Modal>}
       {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
       {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select name="category" defaultValue={categoryOptions[0]}>{categoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
-      {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${selectedSpace?.name || "ALL SPACES"}`}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can be reused across its Vault Items, with an item-level override when the account needs something different.</div><div className="core-modal-list"><FieldRow label="Full name" value="Adam Ironside" inherited /><FieldRow label="Email" value="adam@example.dev" inherited /><FieldRow label="Address" value="123 Market St" inherited /><FieldRow label="Phone" value="+1 555 010 0198" inherited /></div><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button><button className="button button--dark" onClick={() => setModal(null)}>Save changes</button></div></Modal>}
+      {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${coreInfoSpace?.name || "ALL SPACES"}`}><form onSubmit={saveCoreInfo}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can be reused across its Vault Items, with an item-level override when the account needs something different.</div><div className="core-modal-list"><label className="form-field"><span>Full name</span><input name="fullName" defaultValue={coreInfo.fullName} /></label><label className="form-field"><span>Email</span><input name="email" type="email" defaultValue={coreInfo.email} /></label><label className="form-field"><span>Address</span><input name="address" defaultValue={coreInfo.address} /></label><label className="form-field"><span>Phone</span><input name="phone" type="tel" defaultValue={coreInfo.phone} /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Close</button><button type="submit" className="button button--dark">Save changes</button></div></form></Modal>}
     </div>
   );
 }
