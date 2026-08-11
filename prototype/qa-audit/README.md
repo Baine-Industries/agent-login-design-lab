@@ -40,6 +40,35 @@ KISS findings resolved in this pass:
 
 Remaining decision: whether row field counts and the external-arrow affordance earn their space after the left and right audits are settled.
 
+## Center pane audit — 2026-08-11
+
+Audit scope: the center Vault Item management pane only. Evidence was captured from the live prototype at the default Adam Vault Space state.
+
+User goal: find a service or account quickly, narrow the list when needed, and select the correct Vault Item for inspection.
+
+### Evidence and flow
+
+1. [Baseline list](./04-center-pane-baseline.jpg) — Healthy. The pane has one primary add action, one search field, a scoped category row, and a direct list of recognizable services.
+2. [Search for Chase](./05-center-pane-search-crop.jpg) — Healthy. Search returns one matching record, updates the record count, and keeps the selected Chase inspector coherent.
+3. [ERP category](./06-center-pane-erp-crop.jpg) — Healthy. The active tab is clear and the list reduces to the three ERP records in the active Vault Space.
+4. [No records](./07-center-pane-empty-crop.jpg) — Healthy. The empty state explains what to try next and the stale inspector closes when there is no matching record.
+5. [Add category](./08-center-add-category-crop.jpg) — Healthy with a discoverability caveat. The plus control opens a focused form, and adding `Travel` makes the category available without switching the current list away from `All items`.
+
+### Notable risks
+
+- Each row exposes a field-count token, relative update time, and an external-arrow affordance. The field count and update time are secondary metadata; the arrow currently selects the Vault Item rather than opening an external site, so its meaning is ambiguous.
+- The category add control is icon-only. Its accessible label is present, but the visible affordance depends on the user understanding that the plus creates a category rather than filtering or adding a Vault Item.
+- Search is currently exact substring matching across service, account, category, site, and custom-field labels. It is a good prototype behavior, but it is not yet the future semantic/RAG query contract.
+
+### Recommended center decisions
+
+- Keep the current three primary interactions: search, category filtering, and row selection.
+- Keep `Add Vault Item` as the single primary creation action and `Manage Core Info` as the space-level secondary action.
+- Before implementation polish, decide whether to remove the row field-count token and update time, and either rename the external arrow to a clear item action or remove it.
+- Preserve the no-results behavior and the dynamic category list.
+
+Accessibility evidence is limited to the captured DOM and visible states. Keyboard traversal, focus order, zoom resilience, and assistive-technology announcements still need a separate check.
+
 ## Right rail — Vault Item inspector
 
 Current strengths:
