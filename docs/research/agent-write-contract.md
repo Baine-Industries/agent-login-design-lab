@@ -50,7 +50,7 @@ The desktop companion uses the platform-native surface: a macOS menu-bar popover
 
 Pending requests drive the OS badge count. Active tasks show agent, target site, Vault Space, status, elapsed time, locked record, and Stop/Open actions. Needs Attention includes verification pauses, unknown field types, unstable mappings, expired requests, and blocked tasks. Full details open in Agent Vault.
 
-Agent Vault exposes one global `Agent Activity` destination beside Settings. It is a glanceable status and history view containing immutable Audit Records for agent and human changes, task history, provenance, reasons, and restore/correction relationships. Approve, reject, stop, and other task actions belong in the desktop companion or a future request-detail surface.
+Agent Vault exposes one global `Agent Activity` destination beside Settings. It is a glanceable status and history view containing immutable Audit Records for agent and human changes, task history, provenance, reasons, and restore/correction relationships. Needs-attention rows may deep-link to the affected Vault Item. Approve, reject, stop, and other task actions belong in the desktop companion or a future request-detail surface.
 
 ## Human UI boundary
 

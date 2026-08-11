@@ -218,6 +218,8 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .activity-group { padding: 15px 0; border-top: 1px solid var(--hairline); }
 .activity-group__title { margin-bottom: 10px; color: var(--ink-muted); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .activity-row { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 0; }
+.activity-row--action { width: 100%; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.activity-row--action:hover { background: var(--surface); }
 .activity-row > div { min-width: 0; }
 .activity-row strong, .activity-row small { display: block; }
 .activity-row strong { font-size: 13px; font-weight: 500; }
