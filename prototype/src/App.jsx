@@ -696,7 +696,7 @@ function ActivityModal({ onClose }) {
     <div className="activity-intro">Requests, active tasks, and changes across your Vault Spaces.</div>
     <section className="activity-group">
       <div className="activity-group__title">Pending requests</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--request" /><div><strong>Create Vault Item</strong><small>Northstar Health · Family</small></div><em>Review</em></div>
+      <div className="activity-row"><span className="activity-dot activity-dot--request" /><div><strong>Create Vault Item</strong><small>Northstar Health · Family</small></div><em>Pending</em></div>
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Active tasks</div>
@@ -704,7 +704,7 @@ function ActivityModal({ onClose }) {
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Needs attention</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--attention" /><div><strong>Billing address mapping</strong><small>Chase Checking · exact site label unknown</small></div><em>Review</em></div>
+      <div className="activity-row"><span className="activity-dot activity-dot--attention" /><div><strong>Billing address mapping</strong><small>Chase Checking · exact site label unknown</small></div><em>Needs attention</em></div>
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Recent activity</div>

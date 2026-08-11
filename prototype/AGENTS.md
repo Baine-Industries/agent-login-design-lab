@@ -42,6 +42,8 @@ The agent-write frontier is agent-first. Website form fields are temporary Form 
 
 The desktop companion is a compact macOS menu-bar or Windows system-tray surface with Pending Requests, Active Tasks, Needs Attention, and Recent Activity. Agent Activity is also a global left-rail destination beside Settings and contains immutable Audit Records for human and agent changes. Keep the human edit modal focused on direct record editing; agent controls belong in requests, task status, locks, and audit history.
 
+Agent Activity is a glanceable status and history view. Use status labels such as `Pending`, `Running`, `Needs attention`, and `Saved`; do not present inert action words. Approve, reject, stop, and other task actions belong in the desktop companion or a future request-detail surface.
+
 Person identity data should be granular enough for real forms: first name, middle name, middle initial, last name, full name, preferred name, prefix, and suffix. Full name and middle initial may be suggested from the component fields, but the stored value and whether it was manually entered remain explicit so multi-part names are not guessed incorrectly.
 
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
