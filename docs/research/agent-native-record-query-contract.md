@@ -13,7 +13,7 @@ What minimum structured record, field, category, keyword, and query semantics ca
 - Adapter payloads must not contain plaintext passwords, tokens, or decrypted secret material, and the UI must not depend on vault storage formats or direct decrypted-credential access (`docs/contracts/engine-ui-boundary.md:60-79`).
 - Agent Vault is the source of truth. A Vault Space owns Core Info and Vault Items; a Vault Item contains fixed login fields and typed custom fields (`CONTEXT.md:7-16`, `docs/design/agent-vault-frontend-brief.md:9-11`).
 - The first UI slice needs search, space switching, grouping by service/person/business, custom categories, and machine-readable field names, categories, and keywords (`docs/design/agent-vault-frontend-brief.md:13-24`).
-- Access Grant issuance, Agent ID transport, approval UI, and production secret architecture are deferred (`CONTEXT.md:19-21`, `docs/design/agent-vault-frontend-brief.md:26-32`).
+- Access Grant issuance, Agent ID transport, production approval transport, and production secret architecture are deferred (`CONTEXT.md:19-21`, `docs/design/agent-vault-frontend-brief.md:26-32`). The Agent Activity request-review UI is prototyped in memory.
 
 The referenced engine repository is not available in the local workspace, and the configured GitHub identity could not resolve `AdamGeorgesForges/agent-login-harness`. This recommendation therefore relies on the UI repository's documented boundary rather than unverified engine internals.
 

@@ -482,7 +482,34 @@ function App() {
 
   function resolvePendingRequest(outcome) {
     setPendingRequest(false);
-    setRecentActivity({ title: `Create Vault Item ${outcome}`, detail: "Adam · just now", status: outcome });
+    if (outcome === "approved") {
+      const northstarItem = {
+        id: "northstar-health",
+        spaceId: "family",
+        service: "Northstar Health",
+        descriptor: "Family member portal",
+        category: "Healthcare",
+        icon: "ph-heartbeat",
+        account: "Family account",
+        site: "northstar-health.example",
+        fields: 6,
+        updated: "just now",
+        username: "Not entered",
+        password: "••••••••••••",
+        mfa: "••••••••••••",
+        custom: [
+          { label: "Member name", siteLabel: "member_name", value: "Family space" },
+          { label: "Phone", siteLabel: "contact_phone", value: "Prefilled · +1 555 010 0198" },
+        ],
+      };
+      setItems((current) => current.some((item) => item.id === northstarItem.id) ? current : [...current, northstarItem]);
+      setActiveSpace("family");
+      setActiveCategory("All items");
+      setSelectedId(northstarItem.id);
+      setRecentActivity({ title: "Northstar Health added to Family", detail: "Adam · just now", status: "Added" });
+    } else {
+      setRecentActivity({ title: "Create Vault Item rejected", detail: "Adam · just now", status: "Rejected" });
+    }
     setModal("activity");
   }
 
