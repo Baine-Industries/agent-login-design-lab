@@ -552,7 +552,6 @@ function App() {
         {selectedItem ? <>
         <div className="inspector-head">
           <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
-          <button className="icon-button" aria-label="Close inspector"><Icon name="ph-x" size={18} /></button>
         </div>
         <div className="inspector-actions"><button className="button button--light button--small"><Icon name="ph-pencil-simple" size={15} /> Edit fields</button><button className="icon-button" aria-label="More item actions"><Icon name="ph-dots-three" size={19} /></button></div>
         <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="MFA secret" value={selectedItem.mfa} mono /></section>
