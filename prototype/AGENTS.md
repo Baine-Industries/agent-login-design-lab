@@ -33,3 +33,5 @@ Core Info is editable per Vault Space. Saving Full name, Email, Address, or Phon
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
 
 The center page heading leads with the active Vault Space name. Do not add decorative section numbering such as `01 / VAULT MANAGEMENT` unless it carries a real navigation or workflow purpose.
+
+Adding a Vault Item requires an owning Vault Space. The add form defaults to the active space, allows choosing any non-archived space, and switches to the created space after submission so the new record is visible.

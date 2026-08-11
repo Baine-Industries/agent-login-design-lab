@@ -374,6 +374,7 @@ function App() {
   const [spaceAction, setSpaceAction] = useState(null);
   const [spaceDraftType, setSpaceDraftType] = useState("Personal");
   const [spaceDraftIcon, setSpaceDraftIcon] = useState(spaceIconOptions.Personal[0].value);
+  const [addItemSpaceId, setAddItemSpaceId] = useState("adam");
   const [coreInfoBySpace, setCoreInfoBySpace] = useState(initialCoreInfo);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -394,6 +395,15 @@ function App() {
       .map((category) => category.name);
     return [...new Set([...seededCategories, ...itemCategories, ...addedCategories])];
   }, [activeSpace, customCategories, scopedItems, selectedSpace?.type]);
+  const addItemCategoryOptions = useMemo(() => {
+    const addSpace = spaces.find((space) => space.id === addItemSpaceId);
+    const seededCategories = addSpace ? categorySeedsByType[addSpace.type] : commonCategories;
+    const itemCategories = items.filter((item) => item.spaceId === addItemSpaceId).map((item) => item.category);
+    const addedCategories = customCategories
+      .filter((category) => category.spaceId === "all" || category.spaceId === addItemSpaceId)
+      .map((category) => category.name);
+    return [...new Set([...seededCategories, ...itemCategories, ...addedCategories])];
+  }, [addItemSpaceId, customCategories, items, spaces]);
   const visibleItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return items.filter((item) => {
@@ -422,6 +432,11 @@ function App() {
     setSpaceDraftIcon(spaceIconOptions[type][0].value);
     setSpaceMenuId(null);
     setModal("space");
+  }
+
+  function openAddItem() {
+    setAddItemSpaceId(activeSpace === "all" ? "" : activeSpace);
+    setModal("add");
   }
 
   function createSpace(event) {
@@ -479,9 +494,11 @@ function App() {
   function addVaultItem(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const spaceId = form.get("spaceId")?.toString();
+    if (!spaceId || !spaces.some((space) => space.id === spaceId && !space.archived)) return;
     const newItem = {
       id: `new-${Date.now()}`,
-      spaceId: activeSpace === "all" ? "adam" : activeSpace,
+      spaceId,
       service: form.get("service") || "New service",
       descriptor: "New Vault Item",
       category: form.get("category") || "Banking",
@@ -496,6 +513,8 @@ function App() {
       custom: [{ label: "Website field", siteLabel: "field_name", value: "Not added" }],
     };
     setItems((current) => [newItem, ...current]);
+    setActiveSpace(spaceId);
+    setActiveCategory("All items");
     setSelectedId(newItem.id);
     setModal(null);
   }
@@ -550,7 +569,7 @@ function App() {
             <button className="button button--light button--small" onClick={() => setModal("core")}><Icon name="ph-address-book" size={15} /> Manage Core Info</button>
           </div>
           <div className="topbar-actions">
-            <button className="button button--dark" onClick={() => setModal("add")}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
+            <button className="button button--dark" onClick={openAddItem}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
           </div>
         </header>
 
@@ -611,7 +630,7 @@ function App() {
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
       {spaceAction?.action === "delete" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Delete ${actionSpace.name}?`} eyebrow="PERMANENT ACTION"><div className="form-intro">This permanently deletes the Vault Space and every Vault Item inside it. This cannot be undone.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--danger" onClick={deleteSpace}>Delete permanently</button></div></Modal>}
       {modal === "category" && <Modal onClose={() => setModal(null)} title="Add category" eyebrow={`VAULT SPACE / ${selectedSpace?.name || "ALL SPACES"}`}><form onSubmit={addCategory}><div className="form-intro">Add a label when the current categories do not fit. It will appear here and can be used on new Vault Items.</div><label className="form-field"><span>Category name</span><input name="categoryName" placeholder="e.g. Travel" required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Add category</button></div></form></Modal>}
-      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select name="category" defaultValue={categoryOptions[0]}>{categoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
+      {modal === "add" && <Modal onClose={() => setModal(null)} title="Add Vault Item" eyebrow="NEW RECORD"><form onSubmit={addVaultItem}><div className="form-intro">A Vault Item holds one service/account record. Reusable Core Info can fill matching fields later.</div><label className="form-field"><span>Vault Space</span><select name="spaceId" value={addItemSpaceId} onChange={(event) => setAddItemSpaceId(event.target.value)} required><option value="" disabled>Choose a Vault Space</option>{spaces.filter((space) => !space.archived).map((space) => <option key={space.id} value={space.id}>{space.name} · {space.type}</option>)}</select></label><label className="form-field"><span>Service name</span><input name="service" placeholder="e.g. Harborline Checking" required /></label><label className="form-field"><span>Account label</span><input name="account" placeholder="e.g. Primary checking" required /></label><div className="form-grid"><label className="form-field"><span>Category</span><select key={addItemSpaceId} name="category" defaultValue={addItemCategoryOptions[0]}>{addItemCategoryOptions.map((category) => <option key={category}>{category}</option>)}</select></label><label className="form-field"><span>Site</span><input name="site" placeholder="service.example" /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create item</button></div></form></Modal>}
       {modal === "core" && <Modal onClose={() => setModal(null)} title="Core Info" eyebrow={`REUSABLE / ${coreInfoSpace?.name || "ALL SPACES"}`}><form onSubmit={saveCoreInfo}><div className="core-modal-copy">Core Info belongs to a Vault Space. Matching fields can be reused across its Vault Items, with an item-level override when the account needs something different.</div><div className="core-modal-list"><label className="form-field"><span>Full name</span><input name="fullName" defaultValue={coreInfo.fullName} /></label><label className="form-field"><span>Email</span><input name="email" type="email" defaultValue={coreInfo.email} /></label><label className="form-field"><span>Address</span><input name="address" defaultValue={coreInfo.address} /></label><label className="form-field"><span>Phone</span><input name="phone" type="tel" defaultValue={coreInfo.phone} /></label></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Close</button><button type="submit" className="button button--dark">Save changes</button></div></form></Modal>}
     </div>
   );
