@@ -68,7 +68,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .sidebar-agent-status strong, .sidebar-agent-status small { display: block; font-size: calc(11px * var(--type-scale)); font-weight: 500; }
 .sidebar-agent-status small { margin-top: 2px; color: var(--ink-faint); font-family: var(--mono); font-size: calc(9px * var(--type-scale)); }
 .sidebar-user-status { display: flex; align-items: center; gap: 10px; }
-.agent-working-animation { width: 100%; overflow: hidden; color: var(--gold); font-family: var(--mono); font-size: 10px; line-height: 1; white-space: nowrap; }
+.agent-working-animation { width: 100%; overflow: hidden; color: var(--gold); font-family: var(--mono); font-size: 20px; line-height: 1; white-space: nowrap; }
 .agent-working-animation::before { content: "⡿⢲⡻⢔⠖⠂⣐⠝⠑"; animation: braille-random 1800ms steps(1) infinite; }
 @keyframes braille-random {
   0%, 100% { content: "⡿⢲⡻⢔⠖⠂⣐⠝⠑"; }
