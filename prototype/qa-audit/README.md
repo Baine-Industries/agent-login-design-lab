@@ -57,3 +57,7 @@ Decision frontier: resolve the smallest useful inspector action set in the right
 ## Limits
 
 This is a visual and interaction audit of in-memory prototype behavior. It does not establish production accessibility conformance, keyboard support, persistence, security, or engine integration.
+
+## Dark mode follow-up — 2026-08-11
+
+The first dark-mode pass changed surface variables but left inherited text color on the light `body` value, making Settings and page headings nearly unreadable. The shell now sets its dark foreground color explicitly, and light buttons receive a visible dark-theme border. Browser computed-style verification confirms light text on the dark shell, Settings modal, heading, and theme control.

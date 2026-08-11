@@ -29,7 +29,9 @@ button { color: inherit; cursor: pointer; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
 
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: 220px minmax(520px, 1fr) 370px; background: var(--panel); }
-.app-shell.is-dark { --ground: #252824; --surface: #343831; --panel: #2d312d; --hairline: #50564d; --ink: #f2eee3; --ink-muted: #c5c1b5; --ink-faint: #98988d; --gold: #d0a75e; --rust: #d18173; --moss: #9bb88d; --shadow-panel: 0 18px 44px rgba(0, 0, 0, .24); }
+.app-shell.is-dark { --ground: #252824; --surface: #343831; --panel: #2d312d; --hairline: #50564d; --ink: #f2eee3; --ink-muted: #c5c1b5; --ink-faint: #98988d; --gold: #d0a75e; --rust: #d18173; --moss: #9bb88d; --shadow-panel: 0 18px 44px rgba(0, 0, 0, .24); color: var(--ink); }
+.app-shell.is-dark .button--light { border-color: rgba(242, 238, 227, .16); box-shadow: 0 1px 1px rgba(0, 0, 0, .18); }
+.app-shell.is-dark .button--dark:hover { background: #d9d4c7; color: #252824; }
 .sidebar { display: flex; flex-direction: column; min-height: 100vh; padding: 30px 18px 20px; background: var(--ground); border-right: 1px solid var(--hairline); }
 .brand-lockup { display: flex; align-items: center; gap: 11px; padding: 0 10px 35px; }
 .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid var(--gold); border-radius: 8px; color: var(--gold); }
