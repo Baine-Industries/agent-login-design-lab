@@ -12,7 +12,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 
 ## First slice
 
-- Vault index with search, scope, category, and site/account filtering.
+- Vault index with search, Space Type, category, and site/account filtering.
 - Vault Space switcher plus an all-spaces view; results can be grouped by service, person, or business.
 - Add and edit Vault Item flow.
 - Login fields plus typed personal, business, and service-specific fields.
@@ -21,6 +21,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 - Custom categories available from the start.
 - Seed categories for common Personal and Business services, including ERP for Business spaces; categories remain searchable labels and users can add more.
 - Machine-readable field names, categories, and keywords underneath the human UI.
+- The agent-native layer exposes secret-safe Vault Records and Field Descriptors with stable IDs, field types, Site Field Labels, Core Info source/override state, categories, keywords, and cross-space query metadata; it does not expose raw secret values.
 - Redacted or fake data in all examples and prototypes.
 
 ## Deferred

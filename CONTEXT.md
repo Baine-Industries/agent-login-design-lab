@@ -11,8 +11,11 @@ Status: active
 - **Site Field Label**: The field name or mapping used to target the corresponding field on a service's website. It may differ from the human-facing label shown in the Vault UI.
 - **Access Grant**: A short-lived, scoped authorization issued by Agent Vault and received by Agent ID. Its lifetime may be daily or session-based. An Access Grant authorizes specific field use; it is not a second vault and does not expose raw secrets to the model.
 - **Agent ID**: The receiving identity and handoff endpoint for an Access Grant. Agent ID is not the source of truth for vault items.
-- **Scope**: The type of a Vault Space, initially `Personal` or `Business`; it is not a separate vault or only a list filter.
+- **Space Type**: The ownership type of a Vault Space, initially `Personal` or `Business`; it is not a separate vault or only a list filter.
+- **Permission Scope**: The authorization boundary named by an adapter event, such as `vault_read`. It is distinct from a Vault Space's Space Type.
 - **Category**: A searchable user-facing service grouping such as Banking, Housing, Utilities, Taxes, ERP, or a custom category. Categories organize Vault Items without requiring a permanent navigation tree.
+- **Vault Record**: A secret-safe machine-readable representation of a Vault Space or Vault Item used by the UI and retrieval surfaces. It carries identity and metadata, not raw secret values.
+- **Field Descriptor**: The structured identity and state of a Vault Item field, including its machine key, human label, type, Site Field Label, and Core Info source or item override. A descriptor does not contain a secret value.
 - **Agent-native**: A product boundary that is machine-readable and structured for agent access while remaining understandable and useful in the human UI.
 - **Approval rail**: A future UI surface for reviewing and approving Access Grant requests. It is outside the first vault-management prototype.
 
