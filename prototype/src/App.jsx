@@ -662,8 +662,8 @@ function App() {
         <div className="sidebar-foot">
           <div className="sidebar-agent-status" aria-label="Agent working">
             <span className="agent-working-animation" aria-hidden="true" />
-            <strong>Agent working</strong>
-            <small>Update Falador Mutual</small>
+            <strong>Agent Working</strong>
+            <small>Updating Falador Mutual</small>
           </div>
           <div className="sidebar-user-status">
             <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
@@ -758,7 +758,7 @@ function ActivityModal({ pendingRequest, attentionItem, recentActivity, onClose,
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Active tasks</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--active" /><div><strong>Update Falador Mutual</strong><small>Adam · item locked</small></div><em>Running</em></div>
+      <div className="activity-row"><span className="activity-dot activity-dot--active" /><div><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></div><em>Running</em></div>
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Needs attention</div>

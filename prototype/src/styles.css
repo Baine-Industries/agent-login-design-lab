@@ -64,7 +64,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .nav-active-dot { width: 6px; height: 6px; flex: none !important; border-radius: 50%; background: var(--moss); }
 .nav-rule { height: 1px; margin: 24px 10px 12px; background: var(--hairline); }
 .sidebar-foot { display: grid; gap: 14px; margin-top: auto; padding: 15px 10px 2px; border-top: 1px solid var(--hairline); color: var(--ink-muted); }
-.sidebar-agent-status { display: grid; gap: 4px; }
+.sidebar-agent-status { display: grid; gap: 8px; }
 .sidebar-agent-status strong, .sidebar-agent-status small { display: block; font-size: calc(11px * var(--type-scale)); font-weight: 500; }
 .sidebar-agent-status small { margin-top: 2px; color: var(--ink-faint); font-family: var(--mono); font-size: calc(9px * var(--type-scale)); }
 .sidebar-user-status { display: flex; align-items: center; gap: 10px; }
