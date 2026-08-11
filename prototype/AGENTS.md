@@ -36,4 +36,6 @@ The center page heading leads with the active Vault Space name. Do not add decor
 
 Adding a Vault Item requires an owning Vault Space. The add form defaults to the active space, allows choosing any non-archived space, and switches to the created space after submission so the new record is visible.
 
-Global Settings includes three tuned text-size presets: Small preserves the current type scale, Medium is a restrained increase, and Large matches the larger reading scale approved in the prototype. The presets scale the app-wide typography without introducing continuous slider states.
+Global Settings includes three tuned text-size presets: Small preserves the current type scale, Medium is a restrained increase, and Large matches the larger reading scale approved in the prototype. The presets scale the app-wide typography without introducing continuous slider states. The preference is currently in-memory for the prototype; persist it per user or device in the production settings layer.
+
+The closed left and center slice contains no inert inspector actions. Vault Item field editing and custom-field creation belong to the next right-inspector slice. All Spaces shows `No Space Selected` in the footer because Access Status belongs to an active Vault Space.
