@@ -24,6 +24,7 @@ const spaceIconOptions = {
 
 const currentUser = "Adam";
 const spaceNameMaxLength = 32;
+const typeScales = { small: 1, medium: 1.12, large: 1.25 };
 
 const emptyCoreInfo = { fullName: "", email: "", address: "", phone: "" };
 const initialCoreInfo = {
@@ -377,8 +378,10 @@ function App() {
   const [addItemSpaceId, setAddItemSpaceId] = useState("adam");
   const [coreInfoBySpace, setCoreInfoBySpace] = useState(initialCoreInfo);
   const [darkMode, setDarkMode] = useState(false);
+  const [fontSize, setFontSize] = useState("small");
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
+  const typeScale = typeScales[fontSize];
   const scopedItems = activeSpace === "all" ? items : items.filter((item) => item.spaceId === activeSpace);
   const availableCategories = useMemo(() => {
     const itemCategories = scopedItems.map((item) => item.category);
@@ -550,7 +553,7 @@ function App() {
   const mergeTargets = actionSpace ? spaces.filter((space) => !space.archived && space.id !== actionSpace.id && space.type === actionSpace.type) : [];
 
   return (
-    <div className={`app-shell ${darkMode ? "is-dark" : ""}`}>
+    <div className={`app-shell ${darkMode ? "is-dark" : ""}`} style={{ "--type-scale": typeScale }}>
       <aside className="sidebar">
         <div className="brand-lockup">
           <div className="brand-name">Agent Vault</div>
@@ -624,7 +627,7 @@ function App() {
       </aside>
 
       {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" maxLength={spaceNameMaxLength} placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
-      {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Dark mode" : "Light mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
+      {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row settings-row--stacked"><div><strong>Text size</strong><span>Choose a comfortable reading size.</span></div><div className="font-size-options" role="group" aria-label="Text size">{Object.keys(typeScales).map((size) => <button key={size} type="button" className={`font-size-option ${fontSize === size ? "is-selected" : ""}`} onClick={() => setFontSize(size)} aria-pressed={fontSize === size}>{size[0].toUpperCase() + size.slice(1)}</button>)}</div></div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Dark mode" : "Light mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
       {spaceAction?.action === "rename" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Rename ${actionSpace.name}`} eyebrow={`${actionSpace.type.toUpperCase()} VAULT SPACE`}><form onSubmit={renameSpace}><label className="form-field"><input name="spaceName" maxLength={spaceNameMaxLength} aria-label="Space name" defaultValue={actionSpace.name} required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark">Save name</button></div></form></Modal>}
       {spaceAction?.action === "merge" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Merge ${actionSpace.name}`} eyebrow="MOVE VAULT RECORDS"><form onSubmit={mergeSpace}><div className="form-intro">Move all Vault Items and records into another {actionSpace.type} Vault Space, then remove this space.</div>{mergeTargets.length ? <label className="form-field"><span>Merge into</span><select name="targetSpaceId" defaultValue={mergeTargets[0].id}>{mergeTargets.map((space) => <option key={space.id} value={space.id}>{space.name}</option>)}</select></label> : <div className="settings-empty">No same-type Vault Spaces are available to merge into.</div>}<div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark" disabled={!mergeTargets.length}>Merge space</button></div></form></Modal>}
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}

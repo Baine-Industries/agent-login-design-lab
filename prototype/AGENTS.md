@@ -35,3 +35,5 @@ Vault Space names are limited to 32 characters at creation and rename time. The 
 The center page heading leads with the active Vault Space name. Do not add decorative section numbering such as `01 / VAULT MANAGEMENT` unless it carries a real navigation or workflow purpose.
 
 Adding a Vault Item requires an owning Vault Space. The add form defaults to the active space, allows choosing any non-archived space, and switches to the created space after submission so the new record is visible.
+
+Global Settings includes three tuned text-size presets: Small preserves the current type scale, Medium is a restrained increase, and Large matches the larger reading scale approved in the prototype. The presets scale the app-wide typography without introducing continuous slider states.
