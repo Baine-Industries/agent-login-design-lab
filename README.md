@@ -52,6 +52,7 @@ The current UI concept emphasizes:
 
 See:
 
+- `AGENTS.md`
 - `docs/ui/concept-summary.md`
 - `docs/contracts/engine-ui-boundary.md`
 - `docs/parallel-ui-workflow.md`
