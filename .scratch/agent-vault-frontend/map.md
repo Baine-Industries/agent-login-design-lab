@@ -29,10 +29,10 @@ Remote child tickets:
 - [Agent Vault item and field model](https://github.com/Baine-Industries/agent-login-design-lab/issues/3) — one service/account per Vault Item, reusable Core Info with per-item overrides, typed custom fields, and Site Field Labels for exact website targeting.
 - [Agent Vault taxonomy and navigation](https://github.com/Baine-Industries/agent-login-design-lab/issues/4) — named Personal or Business Vault Spaces own Core Info and items; all-spaces search, space switching, service/person/business grouping, seeded/custom categories, and ERP for Business.
 - [Agent-native record and query contract](https://github.com/Baine-Industries/agent-login-design-lab/issues/5) — the UI relies on secret-safe Vault Records, Field Descriptors, Category Records, and cross-space metadata queries; raw secret values remain outside the adapter payload.
+- [Agent Vault management prototype direction](https://github.com/Baine-Industries/agent-login-design-lab/issues/6) — Vault Space-first layout with a searchable center list and right inspector that exposes Core Info inheritance, redacted login fields, and exact Site Field Labels; interactions stay in memory and exclude approval/live-agent surfaces.
 
 ## Not yet specified
 
-- The visual hierarchy and interaction pattern for the vault-management prototype.
 
 ## Out of scope
 

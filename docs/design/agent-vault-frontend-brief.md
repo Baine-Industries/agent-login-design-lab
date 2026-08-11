@@ -35,3 +35,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 ## Design test
 
 The prototype should answer whether a person can quickly understand, create, and maintain a Vault Item without the product collapsing into either a generic password manager or an unbounded personal database.
+
+## Visual direction
+
+The Agent Vault prototype inherits the Imrahil Website Redesign paper-editorial system: Inter for UI copy, Manrope for display headings, IBM Plex Mono for annotation and machine-readable labels; warm paper ground `#e9e4d8`; panel `#f2eee3`; ink `#212528`; hairlines `#d3ccbc`; restrained gold `#7d5d28`, rust `#83473d`, and moss `#5f7b53` state accents. Use thin rules, left-keyed grid discipline, quiet rounded controls, and soft framed panels. Avoid dark-by-default AI styling, glows, dense card grids, and decorative gradients.
