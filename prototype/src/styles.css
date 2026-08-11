@@ -156,6 +156,8 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 
 .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 24px; background: rgba(33, 37, 40, .20); }
 .modal { width: min(100%, 520px); max-height: min(680px, calc(100vh - 48px)); overflow: auto; padding: 28px; border: 1px solid var(--hairline); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow-panel); }
+.modal { scrollbar-width: none; -ms-overflow-style: none; }
+.modal::-webkit-scrollbar { display: none; }
 .modal-head { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--hairline); }
 .modal-head .eyebrow { margin-bottom: 9px; }
 .modal-head h2 { margin: 0; font-family: var(--display); font-size: 28px; font-weight: 300; letter-spacing: -.03em; }
