@@ -60,6 +60,19 @@ The engine can stream or expose entries like:
 ### 5. Secret-safe redaction rule
 No adapter payload should contain plaintext passwords, tokens, or decrypted secret material.
 
+### 6. Deferred verification handoff
+
+The prototype treats a site-requested one-time verification step as a pause-and-notify state, not as a secret field that the user edits in Agent Vault. The UI uses the human-facing label `Verification — User prompt if required`.
+
+The intended future behavior is:
+
+1. the adapter reports that the current login is waiting for a site verification challenge;
+2. Agent Vault pauses the login and notifies the user through Agent ID;
+3. the user supplies the one-time code for that login;
+4. the code is used for the active session only and is not saved in the Vault Item or Compiled Agent Record.
+
+The event names, delivery channel, user authentication, expiry, retry/lockout behavior, and anti-replay handling are not defined here. This prototype does not implement the Agent ID notification or response transport, and it does not claim that Agent Vault can bypass MFA or generate site codes automatically. A TOTP seed, if ever supported by a separate security design, must not be surfaced as a normal human-editable field in this UI.
+
 ## Allowed transport choices
 
 Any of these are acceptable:

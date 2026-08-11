@@ -17,6 +17,7 @@ Status: active
 - **Access Grant**: A short-lived, scoped authorization issued by Agent Vault and received by Agent ID. Its lifetime may be daily or session-based. An Access Grant authorizes specific field use; it is not a second vault and does not expose raw secrets to the model.
 - **Vault Access Status**: The current human-readable state of access for the active Vault Space: `Vault Access Live` when an agent authorization is active, or `No Vault Access` when it is not. This status does not define the issuer, rotation mechanism, or Agent ID transport.
 - **Agent ID**: The receiving identity and handoff endpoint for an Access Grant. Agent ID is not the source of truth for vault items.
+- **Verification Challenge**: A site-requested one-time step that may pause an agent login. The intended future flow notifies the user through Agent ID and accepts the code for that login only; the code is not saved in a Vault Item or Compiled Agent Record.
 - **Space Type**: The ownership type of a Vault Space, initially `Personal` or `Business`; it is not a separate vault or only a list filter.
 - **Permission Scope**: The authorization boundary named by an adapter event, such as `vault_read`. It is distinct from a Vault Space's Space Type.
 - **Category**: A searchable user-facing service grouping such as Banking, Housing, Utilities, Taxes, ERP, or a custom category. Categories organize Vault Items without requiring a permanent navigation tree.
@@ -28,4 +29,4 @@ Status: active
 
 ## Boundary
 
-Agent Vault owns Vault Spaces, records, Core Info, and controls access. Agent ID receives scoped Access Grants. Core Info is reusable local vault data owned by a Vault Space, not Agent ID. The first frontend slice designs the vault-management experience; it does not implement credential rotation, encryption, live browser execution, approval workflows, or an Agent ID endpoint.
+Agent Vault owns Vault Spaces, records, Core Info, and controls access. Agent ID receives scoped Access Grants and is the intended notification handoff for future Verification Challenges. Core Info is reusable local vault data owned by a Vault Space, not Agent ID. The first frontend slice designs the vault-management experience; it does not implement credential rotation, encryption, live browser execution, approval workflows, verification notification, or an Agent ID endpoint.

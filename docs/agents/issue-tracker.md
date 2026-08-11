@@ -5,7 +5,7 @@ Issues and Wayfinder decisions for this repo live in GitHub Issues at `Baine-Ind
 ## Conventions
 
 - Wayfinder map: [Agent Vault frontend design map](https://github.com/Baine-Industries/agent-login-design-lab/issues/2), labelled `wayfinder:map`.
-- Child tickets: issues 3–6, labelled `wayfinder:grilling`, `wayfinder:research`, or `wayfinder:prototype`.
+- Child tickets: issues 3–9, labelled `wayfinder:grilling`, `wayfinder:research`, or `wayfinder:prototype`.
 - Blocking: GitHub native issue dependencies.
 - Claim: assign the ticket before starting work.
 - Resolve: post the answer as a comment, close the issue, and update the map's Decisions so far.

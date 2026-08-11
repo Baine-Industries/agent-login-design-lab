@@ -22,6 +22,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 - Seed categories for common Personal and Business services, including ERP for Business spaces; categories remain searchable labels and users can add more.
 - Machine-readable field names, categories, and keywords underneath the human UI.
 - The agent-native layer exposes secret-safe Vault Records and Field Descriptors with stable IDs, field types, Site Field Labels, Core Info source/override state, categories, keywords, and cross-space query metadata; it does not expose raw secret values.
+- The editor does not expose an `MFA secret` field. A site verification challenge is handled as a user handoff: Agent Vault pauses, the intended future Agent ID flow notifies the user, and the user supplies a one-time code for that login only. The code is not saved or compiled.
 - Redacted or fake data in all examples and prototypes.
 
 ## Deferred
@@ -30,6 +31,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 - Access Grant issuance and rotation implementation.
 - Browser automation and real-site proof.
 - Agent ID schema, endpoint, or transport.
+- Verification-challenge notification, one-time-code transport, or site-specific MFA automation.
 - Encryption, credential storage, and production security architecture.
 
 ## Design test
