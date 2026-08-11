@@ -97,6 +97,8 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .category-tabs .category-add { margin-left: auto; padding-inline: 7px; color: var(--ink-faint); }
 .list-meta { display: flex; justify-content: space-between; padding: 20px 4px 10px; color: var(--ink-faint); font-size: 9px; }
 .item-list { min-height: 0; flex: 1; overflow-x: hidden; overflow-y: auto; border-top: 1px solid var(--hairline); scrollbar-gutter: stable; }
+.item-list { scrollbar-width: none; -ms-overflow-style: none; }
+.item-list::-webkit-scrollbar { display: none; }
 .item-row { width: 100%; display: grid; grid-template-columns: 26px 36px minmax(150px, 1fr) 78px 42px 60px 18px; align-items: center; gap: 10px; padding: 16px 4px; border: 0; border-bottom: 1px solid var(--hairline); background: transparent; text-align: left; transition: background 180ms var(--ease), padding 180ms var(--ease); }
 .item-row:hover, .item-row.is-selected { background: rgba(125, 93, 40, .055); }
 .item-row.is-selected { box-shadow: inset 2px 0 var(--gold); padding-left: 8px; }
