@@ -144,7 +144,7 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .field-row strong.is-mono { font-family: var(--mono); font-size: calc(11px * var(--type-scale)); letter-spacing: .08em; }
 .field-row small { display: flex; align-items: center; gap: 3px; color: var(--moss); font-family: var(--mono); font-size: calc(9px * var(--type-scale)); }
 .custom-field { display: grid; gap: 5px; padding: 10px 0; border-bottom: 1px solid rgba(211, 204, 188, .7); }
-.custom-field--attention { padding-left: 10px; margin-left: -10px; border-left: 2px solid var(--rust); background: rgba(131, 71, 61, .07); }
+.custom-field--attention { padding-left: 10px; margin-left: -10px; border-left: 2px solid var(--rust); }
 .custom-field__main { display: flex; justify-content: space-between; gap: 12px; font-size: calc(12px * var(--type-scale)); }
 .custom-field__label { display: grid; gap: 4px; min-width: 0; }
 .custom-field__main strong { font-weight: 500; }
@@ -188,10 +188,10 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .reuse-picker .button { flex: none; margin-bottom: 16px; }
 .edit-custom-list { padding-bottom: 4px; }
 .edit-custom-row { padding: 12px 0 8px; border-bottom: 1px solid rgba(211, 204, 188, .7); }
-.edit-custom-row--attention { padding-left: 10px; margin-left: -10px; border-left: 2px solid var(--rust); background: rgba(131, 71, 61, .07); }
+.edit-custom-row--attention { padding-left: 10px; margin-left: -10px; border-left: 2px solid var(--rust); }
 .edit-custom-row__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
 .edit-custom-row__actions { display: flex; align-items: center; gap: 12px; }
-.field-attention-note { padding: 8px 10px; margin: 0 0 11px; border: 1px solid rgba(131, 71, 61, .25); border-radius: 5px; background: rgba(131, 71, 61, .08); color: var(--rust); font-size: 11px; line-height: 1.4; }
+.field-attention-note { padding: 2px 0 10px; margin: 0 0 2px; color: var(--rust); font-size: 11px; line-height: 1.4; }
 .field-number { color: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; }
 .edit-custom-row .form-field { margin-bottom: 10px; }
 .edit-field-meta { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; }
