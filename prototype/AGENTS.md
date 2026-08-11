@@ -28,7 +28,7 @@ Center pane decisions: the right inspector remains structurally open; selecting 
 
 The full category seed set is context-sensitive: Personal and Business Vault Spaces receive different category options, while All Spaces exposes the union and custom categories remain scoped to their owning Space. Manage Core Info belongs in the top-left Vault breadcrumb bar beside the active Vault Space.
 
-Core Info is editable per Vault Space. Saving Full name, Email, Address, or Phone updates the reusable values shown as inherited in that Space's Vault Item inspector.
+Core Info is editable per Vault Space. In the future Vault Item editor, matching Core Info values prefill the item fields for faster entry; the user can edit the populated value directly without an inheritance or override control.
 
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
 
@@ -39,3 +39,5 @@ Adding a Vault Item requires an owning Vault Space. The add form defaults to the
 Global Settings includes three tuned text-size presets: Small preserves the current type scale, Medium is a restrained increase, and Large matches the larger reading scale approved in the prototype. The presets scale the app-wide typography without introducing continuous slider states. The preference is currently in-memory for the prototype; persist it per user or device in the production settings layer.
 
 The closed left and center slice contains no inert inspector actions. Vault Item field editing and custom-field creation belong to the next right-inspector slice. All Spaces shows `No Space Selected` in the footer because Access Status belongs to an active Vault Space.
+
+Record ID remains visible in the inspector footer as a stable pointer for agent-readable records. Access Grant status remains outside the inspector until the access workflow is designed.

@@ -140,11 +140,6 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .field-row strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
 .field-row strong.is-mono { font-family: var(--mono); font-size: calc(11px * var(--type-scale)); letter-spacing: .08em; }
 .field-row small { display: flex; align-items: center; gap: 3px; color: var(--moss); font-family: var(--mono); font-size: calc(9px * var(--type-scale)); }
-.core-info-callout { display: grid; grid-template-columns: 20px 1fr; gap: 8px; padding: 11px; border: 1px solid rgba(95, 123, 83, .32); border-radius: 8px; background: rgba(95, 123, 83, .07); color: var(--moss); }
-.core-info-callout > i { margin-top: 1px; }
-.core-info-callout strong, .core-info-callout span { display: block; }
-.core-info-callout strong { color: var(--ink); font-size: calc(12px * var(--type-scale)); font-weight: 500; }
-.core-info-callout span { margin-top: 3px; color: var(--ink-muted); font-size: calc(11px * var(--type-scale)); line-height: 1.35; }
 .custom-field { display: grid; gap: 5px; padding: 10px 0; border-bottom: 1px solid rgba(211, 204, 188, .7); }
 .custom-field__main { display: flex; justify-content: space-between; gap: 12px; font-size: calc(12px * var(--type-scale)); }
 .custom-field__main strong { font-weight: 500; }
@@ -225,7 +220,6 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 @media (min-width: 981px) and (max-height: 850px) {
   .inspector { padding: 24px 20px 18px; }
   .inspector-head { padding-bottom: 18px; }
-  .inspector-actions { padding: 12px 0 16px; }
   .inspector-section { padding: 14px 0; }
   .record-foot { padding-top: 14px; }
 }

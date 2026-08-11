@@ -37,7 +37,7 @@ Let a person understand one Vault Item at a glance, then move into a deliberate 
 
 1. Keep the default inspector read-only and add one working `Edit item` entry point when the editor exists.
 2. Use a dedicated edit mode for service identity, login fields, site URL, and custom fields.
-3. Let each reusable Core Info row switch between `Use Core Info` and `Override for this item`.
-4. Show the exact Site Field Label in the custom-field editor; keep it secondary or hidden in the default read view unless the user needs mapping detail.
+3. Treat Core Info as direct autofill: prefill matching fields in the item editor, then let the user edit those values normally.
+4. Treat Site Field Label as the exact field name expected by the website. Show it as a secondary mapping detail in the item editor; keep the human-facing field label primary.
 5. Add `Open website` only for records with a valid site URL.
-6. Keep Access Grant status out of this inspector until the approval/access workflow is designed.
+6. Keep the stable Record ID visible for agent targeting, but keep Access Grant status out of this inspector until the access workflow is designed.
