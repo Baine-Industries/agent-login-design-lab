@@ -26,11 +26,10 @@ Remote child tickets:
 
 ## Decisions so far
 
-<!-- Closed child-ticket decisions are indexed here as the map advances. -->
+- [Agent Vault item and field model](https://github.com/Baine-Industries/agent-login-design-lab/issues/3) — one service/account per Vault Item, reusable Core Info with per-item overrides, typed custom fields, and Site Field Labels for exact website targeting.
 
 ## Not yet specified
 
-- The canonical Vault Item and typed-field model.
 - The information architecture for scopes, default categories, and custom categories.
 - The minimum machine-readable record/query surface that keeps the UI agent-native.
 - The visual hierarchy and interaction pattern for the vault-management prototype.
