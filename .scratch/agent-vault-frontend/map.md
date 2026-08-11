@@ -10,7 +10,7 @@ Produce a design-ready specification and prototype direction for the first Agent
 
 ## Notes
 
-- Domain: Agent Vault, Vault Item, Access Grant, Agent ID, scope, category, agent-native.
+- Domain: Agent Vault, Vault Space, Vault Item, Core Info, Access Grant, Agent ID, scope, category, agent-native.
 - Required skills: grilling, domain-modeling, product-design, prototype.
 - The first prototype is vault management only. Approval rail and live agent execution are later work.
 - Agent Vault is the source of truth; Agent ID receives an Access Grant.
@@ -27,10 +27,10 @@ Remote child tickets:
 ## Decisions so far
 
 - [Agent Vault item and field model](https://github.com/Baine-Industries/agent-login-design-lab/issues/3) — one service/account per Vault Item, reusable Core Info with per-item overrides, typed custom fields, and Site Field Labels for exact website targeting.
+- [Agent Vault taxonomy and navigation](https://github.com/Baine-Industries/agent-login-design-lab/issues/4) — named Personal or Business Vault Spaces own Core Info and items; all-spaces search, space switching, service/person/business grouping, seeded/custom categories, and ERP for Business.
 
 ## Not yet specified
 
-- The information architecture for scopes, default categories, and custom categories.
 - The minimum machine-readable record/query surface that keeps the UI agent-native.
 - The visual hierarchy and interaction pattern for the vault-management prototype.
 
