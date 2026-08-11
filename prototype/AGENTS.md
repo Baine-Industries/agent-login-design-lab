@@ -29,3 +29,5 @@ Center pane decisions: the right inspector remains structurally open; selecting 
 The full category seed set is context-sensitive: Personal and Business Vault Spaces receive different category options, while All Spaces exposes the union and custom categories remain scoped to their owning Space. Manage Core Info belongs in the top-left Vault breadcrumb bar beside the active Vault Space.
 
 Core Info is editable per Vault Space. Saving Full name, Email, Address, or Phone updates the reusable values shown as inherited in that Space's Vault Item inspector.
+
+Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
