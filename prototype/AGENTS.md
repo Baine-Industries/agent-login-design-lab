@@ -38,6 +38,10 @@ Reusable custom fields are typed saved values, not hidden inheritance. A user ca
 
 Reusable fields may be offered across Vault Spaces, but selection is always explicit because a value can belong to a different person, family member, business, or legal entity. Core Info remains owned by its Vault Space; a reusable field is a user-owned library value that can be copied into a destination's working values. Cross-space live synchronization is not part of this slice.
 
+The agent-write frontier is agent-first. Website form fields are temporary Form Observations until a Mutation Request is approved. New Vault Items require confirmation; unambiguous updates may use a task-scoped `vault_write` grant. Unknown field types and unstable mappings surface as attention states and cannot become reusable values until classified. Agent mutations are atomic per Vault Item, carry field-level diffs and provenance, and hold a renewable item-level Agent Edit Lock while active. A locked item is view-only to humans; stopping the task safely releases the lock. `vault_delete` and batch writes are separate scopes.
+
+The desktop companion is a compact macOS menu-bar or Windows system-tray surface with Pending Requests, Active Tasks, Needs Attention, and Recent Activity. Agent Activity is also a global left-rail destination beside Settings and contains immutable Audit Records for human and agent changes. Keep the human edit modal focused on direct record editing; agent controls belong in requests, task status, locks, and audit history.
+
 Person identity data should be granular enough for real forms: first name, middle name, middle initial, last name, full name, preferred name, prefix, and suffix. Full name and middle initial may be suggested from the component fields, but the stored value and whether it was manually entered remain explicit so multi-part names are not guessed incorrectly.
 
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.

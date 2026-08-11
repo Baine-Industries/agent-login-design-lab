@@ -25,6 +25,10 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 - The editor does not expose an `MFA secret` field. A site verification challenge is handled as a user handoff: Agent Vault pauses, the intended future Agent ID flow notifies the user, and the user supplies a one-time code for that login only. The code is not saved or compiled.
 - Redacted or fake data in all examples and prototypes.
 
+## Agent-first mutation frontier
+
+The next design frontier is the shared agent-write surface, documented in [the agent-write contract](../research/agent-write-contract.md). It requires Form Observations, Mutation Requests, scoped Access Grants, renewable item-level Agent Edit Locks, provenance, and immutable Agent Activity. The desktop companion is a compact macOS menu-bar or Windows system-tray popover; Agent Vault exposes the full Agent Activity view from the left rail. This frontier is specified but not yet implemented in the first vault-management prototype.
+
 ## Deferred
 
 - Approval rail and live agent task workbench.

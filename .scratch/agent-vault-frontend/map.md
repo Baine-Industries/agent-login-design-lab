@@ -47,6 +47,18 @@ Remote child tickets:
 - The adapter event and response for a site verification challenge: delivery channel, user authentication, expiry, retry/lockout behavior, and anti-replay handling.
 - Whether any future site-specific authenticator integration is allowed; no TOTP seed storage or automatic MFA generation is part of this prototype.
 
+## Agent-write Wayfinder decisions
+
+- The agent is the primary mutation client; the human editor remains the fallback and control surface.
+- Website forms are temporary Form Observations, not Vault Items. Unmatched values stay temporary until a Mutation Request is approved.
+- New Vault Item creation always requires a Mutation Request. Existing unambiguous updates may proceed under a scoped `vault_write` grant.
+- Ambiguous matches pause for user selection. The agent never guesses across Vault Spaces, people, businesses, accounts, or reusable values.
+- Agent mutations are atomic per Vault Item, previewed with field-level diffs and redacted sensitive values, and expire with the task or Access Grant.
+- Agent Edit Locks are renewable and item-level. Human editing is disabled while an agent mutates the item; stopping the task safely releases the lock.
+- `vault_delete` is separate from `vault_write`; agent deletion archives by default, while permanent deletion requires human confirmation. Batch changes require a separate batch scope.
+- Field provenance is retained. Unknown semantic types and unstable mappings are flagged in Agent Activity and the desktop companion.
+- Agent Activity is a global left-rail destination beside Settings. The macOS menu-bar and Windows system-tray companion share the sections Pending Requests, Active Tasks, Needs Attention, and Recent Activity.
+
 
 ## Out of scope
 

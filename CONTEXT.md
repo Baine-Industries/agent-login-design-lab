@@ -6,6 +6,11 @@ Status: active
 
 - **Agent Vault**: The local source of truth for a person's user-owned vault items, including account credentials, account metadata, and personal or business data needed for approved tasks.
 - **Vault Item**: A service or account record in Agent Vault. A Vault Item may contain login fields and typed personal, business, or service-specific fields.
+- **Form Observation**: A temporary, agent-collected description of a website field, including its visible label, input type, required state, and stable site field name when available. It is not saved automatically.
+- **Agent Mutation**: A structured create, update, archive, restore, or delete operation against Agent Vault records. It is scoped by an Access Grant and produces an Audit Record.
+- **Mutation Request**: A human-reviewable proposal for one atomic Agent Mutation. It includes the target Vault Space and record, field-level changes, reason, expiry, and redacted values where needed.
+- **Agent Edit Lock**: A renewable, item-level exclusive lock held while an agent is actively mutating a Vault Item. Human editing is disabled while the lock is active; stopping the task releases it safely.
+- **Audit Record**: An immutable record of a human or agent change, including actor, task, target, permission scope, reason, affected fields, and restore or correction relationships.
 - **Core Info**: Reusable local personal or business information, such as a name, contact detail, or address, that can prefill matching fields in Vault Items. The populated value remains directly editable for the individual item.
 - **Reusable Field**: A typed, user-selected value saved for reuse in more than one Vault Item or Vault Space, such as an email address, credit card, or Tax ID. Reuse is an explicit fill action; it does not silently synchronize every destination.
 - **Working Value**: A human-editable value in an item or Core Info editor. It remains local to the open editor until the user saves it.
@@ -19,14 +24,15 @@ Status: active
 - **Agent ID**: The receiving identity and handoff endpoint for an Access Grant. Agent ID is not the source of truth for vault items.
 - **Verification Challenge**: A site-requested one-time step that may pause an agent login. The intended future flow notifies the user through Agent ID and accepts the code for that login only; the code is not saved in a Vault Item or Compiled Agent Record.
 - **Space Type**: The ownership type of a Vault Space, initially `Personal` or `Business`; it is not a separate vault or only a list filter.
-- **Permission Scope**: The authorization boundary named by an adapter event, such as `vault_read`. It is distinct from a Vault Space's Space Type.
+- **Permission Scope**: The authorization boundary named by an adapter event, such as `vault_read`, `vault_write`, `vault_delete`, or a separately granted batch-write scope. It is distinct from a Vault Space's Space Type.
 - **Category**: A searchable user-facing service grouping such as Banking, Housing, Utilities, Taxes, ERP, or a custom category. Categories organize Vault Items without requiring a permanent navigation tree.
 - **Vault Record**: A secret-safe machine-readable representation of a Vault Space or Vault Item used by the UI and retrieval surfaces. It carries identity and metadata, not raw secret values.
 - **Field Descriptor**: The structured identity and state of a Vault Item field, including its machine key, human label, type, optional Site Field Label, and whether its value was prefilled from Core Info. A descriptor does not contain a secret value.
 - **Field Mapping**: An optional deliberate association between a reusable or Core Info field and a service's Site Field Label. Human labels may be friendly; a mapped Site Field Label must preserve the exact website field name needed by the adapter, while an unknown mapping remains blank.
 - **Agent-native**: A product boundary that is machine-readable and structured for agent access while remaining understandable and useful in the human UI.
 - **Approval rail**: A future UI surface for reviewing and approving Access Grant requests. It is outside the first vault-management prototype.
+- **Agent Activity**: The global, append-only view of pending requests, active tasks, attention states, and completed changes. In the desktop companion it appears as a compact menu-bar or system-tray popover; in Agent Vault it is a left-rail destination beside Settings.
 
 ## Boundary
 
-Agent Vault owns Vault Spaces, records, Core Info, and controls access. Agent ID receives scoped Access Grants and is the intended notification handoff for future Verification Challenges. Core Info is reusable local vault data owned by a Vault Space, not Agent ID. The first frontend slice designs the vault-management experience; it does not implement credential rotation, encryption, live browser execution, approval workflows, verification notification, or an Agent ID endpoint.
+Agent Vault owns Vault Spaces, records, Core Info, and controls access. Agent ID receives scoped Access Grants and is the intended notification handoff for future Verification Challenges. Core Info is reusable local vault data owned by a Vault Space, not Agent ID. Human and agent clients use the same record model; the agent-first mutation path uses temporary Form Observations, Mutation Requests, item-level Agent Edit Locks, and immutable Audit Records. The first frontend slice designs the vault-management experience; it does not implement credential rotation, encryption, live browser execution, verification notification, or an Agent ID endpoint.
