@@ -1,6 +1,6 @@
 # Agent-write contract
 
-Status: Wayfinder-resolved design contract; implementation deferred.
+Status: Wayfinder-resolved design contract; Agent Activity shell prototyped, mutation controls deferred.
 
 ## Purpose
 
