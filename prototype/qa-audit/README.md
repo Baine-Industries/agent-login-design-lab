@@ -61,3 +61,9 @@ This is a visual and interaction audit of in-memory prototype behavior. It does 
 ## Dark mode follow-up — 2026-08-11
 
 The first dark-mode pass changed surface variables but left inherited text color on the light `body` value, making Settings and page headings nearly unreadable. The shell now sets its dark foreground color explicitly, and light buttons receive a visible dark-theme border. Browser computed-style verification confirms light text on the dark shell, Settings modal, heading, and theme control.
+
+## Viewport layout follow-up — 2026-08-11
+
+The desktop app shell is viewport-bound. The left Vault Space rail and right item inspector remain fixed while only the center `.item-list` owns vertical scrolling. This prevents long record lists from pushing the global navigation or the current-user / Vault Access status out of view.
+
+Verify the invariant in the browser: document scroll height equals the viewport height, `.item-list` has more content than its client height for a long list, and `.sidebar-foot` remains within the viewport.
