@@ -660,8 +660,14 @@ function App() {
         </div>
         <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} activityCount={activityCount} />
         <div className="sidebar-foot">
-          <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
-          <div><strong>{currentUser}</strong><small>{!selectedSpace ? "No Space Selected" : selectedSpace.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
+          <div className="sidebar-agent-status" aria-label="Agent working">
+            <span className="agent-working-animation" aria-hidden="true" />
+            <div><strong>Agent working</strong><small>Update Falador Mutual</small></div>
+          </div>
+          <div className="sidebar-user-status">
+            <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
+            <div><strong>{currentUser}</strong><small>{!selectedSpace ? "No Space Selected" : selectedSpace.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
+          </div>
         </div>
       </aside>
 
