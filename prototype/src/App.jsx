@@ -356,7 +356,7 @@ function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, op
       <div className="nav-rule" />
       <button className="nav-link nav-link--quiet" onClick={onActivity} aria-label={`Activity, ${activityCount} unresolved actions`}>
         <Icon name="ph-activity" />
-        <span>Activity{activityCount > 0 && <span className="nav-badge"> {activityCount}</span>}</span>
+        <span className="nav-link__label">Activity{activityCount > 0 && <span className="nav-badge">{activityCount}</span>}</span>
       </button>
       <button className="nav-link nav-link--quiet" onClick={onSettings}>
         <Icon name="ph-gear-six" />
