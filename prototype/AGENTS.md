@@ -31,3 +31,5 @@ The full category seed set is context-sensitive: Personal and Business Vault Spa
 Core Info is editable per Vault Space. Saving Full name, Email, Address, or Phone updates the reusable values shown as inherited in that Space's Vault Item inspector.
 
 Vault Space names are limited to 32 characters at creation and rename time. The left rail wraps long names within the Space row instead of allowing text to overflow its container.
+
+The center page heading leads with the active Vault Space name. Do not add decorative section numbering such as `01 / VAULT MANAGEMENT` unless it carries a real navigation or workflow purpose.

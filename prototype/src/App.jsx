@@ -557,7 +557,6 @@ function App() {
         <div className="content-wrap">
           <section className="page-intro">
             <div>
-              <span className="eyebrow">01 / VAULT MANAGEMENT</span>
               <h1>{selectedSpace ? selectedSpace.name : "All spaces"}</h1>
               <p>{selectedSpace ? `${selectedSpace.type} Vault Space · ${visibleItems.length} items` : `${visibleItems.length} items across your Vault Spaces`}</p>
             </div>
