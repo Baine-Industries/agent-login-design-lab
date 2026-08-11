@@ -62,7 +62,7 @@ No adapter payload should contain plaintext passwords, tokens, or decrypted secr
 
 ### 6. Deferred verification handoff
 
-The prototype treats a site-requested one-time verification step as a pause-and-notify state, not as a secret field that the user edits in Agent Vault. The UI uses the human-facing label `Verification — User prompt if required`.
+The prototype treats a site-requested one-time verification step as a pause-and-notify state, not as a secret field that the user edits in Agent Vault. The read-only inspector may use the concise human-facing label `Verification — User prompt if required`; the item editor does not include a verification block.
 
 The intended future behavior is:
 

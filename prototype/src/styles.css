@@ -194,10 +194,6 @@ kbd { border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 5px; c
 .secret-field { min-width: 0; }
 .secret-field .form-field { margin-bottom: 4px; }
 .secret-field input:disabled { color: var(--ink-muted); cursor: not-allowed; opacity: 1; }
-.verification-note { align-self: stretch; padding: 10px 12px; border: 1px solid rgba(125, 93, 40, .28); border-radius: 7px; background: rgba(125, 93, 40, .08); }
-.verification-note .section-title { margin-bottom: 8px; color: var(--gold); }
-.verification-note strong { display: block; font-size: 12px; font-weight: 500; }
-.verification-note p { margin: 5px 0 0; color: var(--ink-muted); font-size: 11px; line-height: 1.45; }
 .modal-actions--split { align-items: center; justify-content: space-between; }
 .modal-actions--split > div { display: flex; gap: 9px; }
 .compile-note { max-width: 190px; color: var(--ink-muted); font-size: 11px; line-height: 1.35; }

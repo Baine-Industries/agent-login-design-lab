@@ -26,20 +26,21 @@ Remote child tickets:
 
 ## Decisions so far
 
-- [Agent Vault item and field model](https://github.com/Baine-Industries/agent-login-design-lab/issues/3) — one service/account per Vault Item, reusable Core Info with per-item overrides, typed custom fields, and Site Field Labels for exact website targeting.
+- [Agent Vault item and field model](https://github.com/Baine-Industries/agent-login-design-lab/issues/3) — one service/account per Vault Item, reusable Core Info with per-item overrides, typed custom fields, and optional Site Field Labels for exact website targeting when the exact website name is known.
 - [Agent Vault taxonomy and navigation](https://github.com/Baine-Industries/agent-login-design-lab/issues/4) — named Personal or Business Vault Spaces own Core Info and items; all-spaces search, space switching, service/person/business grouping, seeded/custom categories, and ERP for Business.
 - [Agent-native record and query contract](https://github.com/Baine-Industries/agent-login-design-lab/issues/5) — the UI relies on secret-safe Vault Records, Field Descriptors, Category Records, and cross-space metadata queries; raw secret values remain outside the adapter payload.
-- [Agent Vault management prototype direction](https://github.com/Baine-Industries/agent-login-design-lab/issues/6) — Vault Space-first layout with a searchable center list and right inspector that exposes Core Info inheritance, redacted login fields, and exact Site Field Labels; interactions stay in memory and exclude approval/live-agent surfaces.
+- [Agent Vault management prototype direction](https://github.com/Baine-Industries/agent-login-design-lab/issues/6) — Vault Space-first layout with a searchable center list and right inspector that exposes Core Info values, redacted login fields, and optional exact Site Field Labels; interactions stay in memory and exclude approval/live-agent surfaces.
 - [Agent Vault right rail: Vault Item inspector audit](https://github.com/Baine-Industries/agent-login-design-lab/issues/7) — keep the inspector open and read-only by default; show service identity, redacted sign-in fields, Verification status, Core Info values, custom fields, freshness, and stable Record ID. Editing opens a separate draft modal.
 
 ### Edit and verification decisions
 
 - The Vault Item editor is organized into `Record`, `Sign-in`, and `Fields` so a human can maintain an item without seeing the underlying machine model by default.
 - `MFA secret` is not a human-editable Agent Vault field. It usually means a hidden TOTP seed, and Agent Vault cannot universally bypass a site's MFA challenge.
-- The editor shows `Verification — User prompt if required`. If a site pauses for a one-time code, the intended flow is for Agent Vault to pause and notify the user through Agent ID; the user supplies the code for that login, and the code is not saved in the Vault Item or Compiled Agent Record.
+- Verification is runtime behavior, not an item-editing field. The inspector may show the concise status `Verification — User prompt if required`; if a site pauses for a one-time code, the intended flow is for Agent Vault to pause and notify the user through Agent ID. The user supplies the code for that login, and the code is not saved in the Vault Item or Compiled Agent Record.
 - `Save draft` keeps human work uncompiled. `Save & Compile` validates the record and replaces the last Compiled Agent Record available to Agent ID. The prototype implements this state transition locally; it does not claim that the Agent ID notification or verification transport exists.
 - Password replacement is explicit. Saved values are not silently exposed or overwritten while editing.
-- Reusable fields can be selected across Vault Spaces and copied into the destination draft. Exact website field names remain an Advanced mapping detail.
+- Reusable fields can be selected across Vault Spaces and copied into the destination draft. An optional exact website field name remains a per-field detail.
+- Website mapping is opt-in. The editor leaves the Site Field Label blank unless the user explicitly knows the exact website field name; it never creates a suggestion from the human label.
 
 ## Not yet specified
 

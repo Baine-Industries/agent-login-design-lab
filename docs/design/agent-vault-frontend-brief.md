@@ -8,7 +8,7 @@ Design the first user-facing Agent Vault surface: a modular vault for service/ac
 
 ## Product model
 
-Agent Vault is the source of truth. A named `Vault Space` represents one Personal person or Business entity, and each space owns its own Core Info and Vault Items. Users can create multiple spaces for family members or businesses/LLCs. A Vault Item represents one service or account inside a space and is organized by a default or custom category and a site/account identity. Each item has fixed login fields plus typed custom fields. Reusable local `Core Info` can populate matching fields across items, with per-item overrides. Custom fields retain a Site Field Label so an agent can target the website's actual field name. Agent ID is the receiving identity for a short-lived Access Grant, not a second store of secrets.
+Agent Vault is the source of truth. A named `Vault Space` represents one Personal person or Business entity, and each space owns its own Core Info and Vault Items. Users can create multiple spaces for family members or businesses/LLCs. A Vault Item represents one service or account inside a space and is organized by a default or custom category and a site/account identity. Each item has fixed login fields plus typed custom fields. Reusable local `Core Info` can populate matching fields across items, with per-item overrides. Custom fields may include an optional Site Field Label when the exact website field name is known; the UI never guesses it from the human label. Agent ID is the receiving identity for a short-lived Access Grant, not a second store of secrets.
 
 ## First slice
 
@@ -21,7 +21,7 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 - Custom categories available from the start.
 - Seed categories for common Personal and Business services, including ERP for Business spaces; categories remain searchable labels and users can add more.
 - Machine-readable field names, categories, and keywords underneath the human UI.
-- The agent-native layer exposes secret-safe Vault Records and Field Descriptors with stable IDs, field types, Site Field Labels, Core Info source/override state, categories, keywords, and cross-space query metadata; it does not expose raw secret values.
+- The agent-native layer exposes secret-safe Vault Records and Field Descriptors with stable IDs, field types, optional Site Field Labels, Core Info source/override state, categories, keywords, and cross-space query metadata; it does not expose raw secret values.
 - The editor does not expose an `MFA secret` field. A site verification challenge is handled as a user handoff: Agent Vault pauses, the intended future Agent ID flow notifies the user, and the user supplies a one-time code for that login only. The code is not saved or compiled.
 - Redacted or fake data in all examples and prototypes.
 
