@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main, design/studio]
+  pull_request:
+
+jobs:
+  repo-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate repo structure
+        run: |
+          test -f README.md
+          test -f docs/parallel-ui-workflow.md
+          test -f docs/ui/concept-summary.md
+          test -f docs/contracts/engine-ui-boundary.md
+
+      - name: Enforce no secret placeholders in tracked docs
+        run: |
+          ! grep -RInE '(PASSWORD=|API_KEY=|SECRET=|TOKEN=|ghp_[A-Za-z0-9]+)' README.md docs .github examples
+
+      - name: Ensure markdown uses repo references consistently
+        run: |
+          grep -q 'agent-login-harness' README.md
+          grep -q 'Baine-Industries/agent-login-design-lab' docs/parallel-ui-workflow.md
