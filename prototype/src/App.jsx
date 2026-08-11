@@ -412,7 +412,8 @@ function App() {
   const [reusableFields, setReusableFields] = useState(initialReusableFields);
   const [darkMode, setDarkMode] = useState(false);
   const [fontSize, setFontSize] = useState("small");
-  const activityCount = 2;
+  const [pendingRequest, setPendingRequest] = useState(true);
+  const activityCount = (pendingRequest ? 1 : 0) + 1;
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
   const typeScale = typeScales[fontSize];
@@ -472,6 +473,15 @@ function App() {
     setActiveCategory("All items");
     setSelectedId(item.id);
     setModal(null);
+  }
+
+  function openActivityRequest() {
+    setModal("request");
+  }
+
+  function resolvePendingRequest() {
+    setPendingRequest(false);
+    setModal("activity");
   }
 
   function openCreateSpace(type) {
@@ -688,7 +698,8 @@ function App() {
 
       {modal === "space" && <Modal onClose={() => setModal(null)} title={`Add ${spaceDraftType} space`} eyebrow="NEW VAULT SPACE"><form onSubmit={createSpace}><div className="form-intro">Create a named Vault Space for one person or business entity.</div><label className="form-field"><span>Space name</span><input name="spaceName" maxLength={spaceNameMaxLength} placeholder={spaceDraftType === "Personal" ? "e.g. Jordan" : "e.g. Northstar LLC"} required autoFocus /></label><div className="form-field"><span>Choose an icon</span><SpaceIconPicker type={spaceDraftType} value={spaceDraftIcon} onChange={setSpaceDraftIcon} /></div><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="button button--dark">Create space</button></div></form></Modal>}
       {modal === "settings" && <Modal onClose={() => setModal(null)} title="Settings" eyebrow="AGENT VAULT / GLOBAL"><section className="settings-group"><div className="settings-group__title">Appearance</div><div className="settings-row settings-row--stacked"><div><strong>Text size</strong><span>Choose a comfortable reading size.</span></div><div className="font-size-options" role="group" aria-label="Text size">{Object.keys(typeScales).map((size) => <button key={size} type="button" className={`font-size-option ${fontSize === size ? "is-selected" : ""}`} onClick={() => setFontSize(size)} aria-pressed={fontSize === size}>{size[0].toUpperCase() + size.slice(1)}</button>)}</div></div><div className="settings-row"><div><strong>Theme</strong><span>Paper light or dark ink</span></div><button className="button button--light button--small" onClick={() => setDarkMode((current) => !current)}>{darkMode ? "Use light mode" : "Use dark mode"}</button></div></section><section className="settings-group"><div className="settings-group__title">Archived spaces</div>{archivedSpaces.length ? archivedSpaces.map((space) => <div className="settings-row" key={space.id}><div><strong>{space.name}</strong><span>{space.type} Vault Space</span></div><button className="button button--light button--small" onClick={() => setSpaces((current) => current.map((item) => item.id === space.id ? { ...item, archived: false } : item))}>Restore</button></div>) : <div className="settings-empty">No archived Vault Spaces.</div>}</section><div className="modal-actions"><button className="button button--light" onClick={() => setModal(null)}>Close</button></div></Modal>}
-      {modal === "activity" && <ActivityModal onClose={() => setModal(null)} onSelectItem={openActivityItem} />}
+      {modal === "activity" && <ActivityModal pendingRequest={pendingRequest} onClose={() => setModal(null)} onSelectItem={openActivityItem} onSelectRequest={openActivityRequest} />}
+      {modal === "request" && <RequestReviewModal onClose={() => setModal(null)} onApprove={resolvePendingRequest} onReject={resolvePendingRequest} />}
       {spaceAction?.action === "rename" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Rename ${actionSpace.name}`} eyebrow={`${actionSpace.type.toUpperCase()} VAULT SPACE`}><form onSubmit={renameSpace}><label className="form-field"><input name="spaceName" maxLength={spaceNameMaxLength} aria-label="Space name" defaultValue={actionSpace.name} required autoFocus /></label><div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark">Save name</button></div></form></Modal>}
       {spaceAction?.action === "merge" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Merge ${actionSpace.name}`} eyebrow="MOVE VAULT RECORDS"><form onSubmit={mergeSpace}><div className="form-intro">Move all Vault Items and records into another {actionSpace.type} Vault Space, then remove this space.</div>{mergeTargets.length ? <label className="form-field"><span>Merge into</span><select name="targetSpaceId" defaultValue={mergeTargets[0].id}>{mergeTargets.map((space) => <option key={space.id} value={space.id}>{space.name}</option>)}</select></label> : <div className="settings-empty">No same-type Vault Spaces are available to merge into.</div>}<div className="modal-actions"><button type="button" className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button type="submit" className="button button--dark" disabled={!mergeTargets.length}>Merge space</button></div></form></Modal>}
       {spaceAction?.action === "archive" && actionSpace && <Modal onClose={() => setSpaceAction(null)} title={`Archive ${actionSpace.name}?`} eyebrow="HIDE VAULT SPACE"><div className="form-intro">This hides the space from the left rail. Its records remain available under Settings → Archived spaces.</div><div className="modal-actions"><button className="button button--light" onClick={() => setSpaceAction(null)}>Cancel</button><button className="button button--dark" onClick={archiveSpace}>Archive space</button></div></Modal>}
@@ -701,12 +712,12 @@ function App() {
   );
 }
 
-function ActivityModal({ onClose, onSelectItem }) {
+function ActivityModal({ pendingRequest, onClose, onSelectItem, onSelectRequest }) {
   return <Modal onClose={onClose} title="Activity" eyebrow="AGENT VAULT / GLOBAL">
     <div className="activity-intro">Requests, active tasks, and changes across your Vault Spaces.</div>
     <section className="activity-group">
       <div className="activity-group__title">Pending requests</div>
-      <div className="activity-row"><span className="activity-dot activity-dot--request" /><div><strong>Create Vault Item</strong><small>Northstar Health · Family</small></div><em>Pending</em></div>
+      {pendingRequest ? <button className="activity-row activity-row--action" onClick={onSelectRequest} aria-label="Review Create Vault Item request"><span className="activity-dot activity-dot--request" /><div><strong>Create Vault Item</strong><small>Northstar Health · Family</small></div><em>Review</em></button> : <div className="activity-empty">No pending requests.</div>}
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Active tasks</div>
@@ -720,6 +731,18 @@ function ActivityModal({ onClose, onSelectItem }) {
       <div className="activity-group__title">Recent activity</div>
       <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>
     </section>
+  </Modal>;
+}
+
+function RequestReviewModal({ onClose, onApprove, onReject }) {
+  return <Modal onClose={onClose} title="Create Vault Item" eyebrow="PENDING REQUEST">
+    <div className="request-intro">The agent found a new account during setup and is asking to save it in Agent Vault.</div>
+    <section className="request-details">
+      <div><span>Service</span><strong>Northstar Health</strong></div>
+      <div><span>Vault Space</span><strong>Family</strong></div>
+      <div><span>Permission</span><strong><code>vault_write</code> · this task</strong></div>
+    </section>
+    <div className="modal-actions"><button className="button button--light" onClick={onReject}>Reject</button><button className="button button--dark" onClick={onApprove}>Approve</button></div>
   </Modal>;
 }
 

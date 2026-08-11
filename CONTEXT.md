@@ -30,8 +30,8 @@ Status: active
 - **Field Descriptor**: The structured identity and state of a Vault Item field, including its machine key, human label, type, optional Site Field Label, and whether its value was prefilled from Core Info. A descriptor does not contain a secret value.
 - **Field Mapping**: An optional deliberate association between a reusable or Core Info field and a service's Site Field Label. Human labels may be friendly; a mapped Site Field Label must preserve the exact website field name needed by the adapter, while an unknown mapping remains blank.
 - **Agent-native**: A product boundary that is machine-readable and structured for agent access while remaining understandable and useful in the human UI.
-- **Approval rail**: A future UI surface for reviewing and approving Access Grant requests. It is outside the first vault-management prototype.
-- **Agent Activity**: The global, append-only view of pending requests, active tasks, attention states, and completed changes. In the desktop companion it appears as a compact menu-bar or system-tray popover; in Agent Vault it is a left-rail destination beside Settings.
+- **Approval rail**: The request-review surface inside Agent Activity. It reviews human-actionable Mutation Requests and Access Grant requests with a concise summary and explicit Approve or Reject actions.
+- **Agent Activity**: The global view of pending requests, active tasks, attention states, and completed changes. Pending requests are actionable; completed changes remain immutable. In the desktop companion it appears as a compact menu-bar or system-tray popover; in Agent Vault it is a left-rail destination beside Settings.
 
 ## Boundary
 

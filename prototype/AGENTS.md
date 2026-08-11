@@ -10,7 +10,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## Prototype-specific design decision
 
-This slice adapts the Imrahil Website Redesign paper-editorial system: Inter UI copy, Manrope display headings, IBM Plex Mono annotation labels, warm paper surfaces, low-contrast hairlines, and restrained gold/rust/moss accents. The layout is Vault Space-first with a center Vault Item list and right inspector. Keep the approval rail, live browser, and task workbench out of this slice.
+This slice adapts the Imrahil Website Redesign paper-editorial system: Inter UI copy, Manrope display headings, IBM Plex Mono annotation labels, warm paper surfaces, low-contrast hairlines, and restrained gold/rust/moss accents. The layout is Vault Space-first with a center Vault Item list and right inspector. Keep a separate approval rail, live browser, and task workbench out of this slice; request review belongs in Agent Activity.
 
 Use recognizable local service brand marks when a Vault Item represents a known company. Cache display assets in `public/logos/` rather than depending on a live logo request at runtime; keep the logo a visual identifier, not a trust or security claim.
 
@@ -40,9 +40,9 @@ Reusable fields may be offered across Vault Spaces, but selection is always expl
 
 The agent-write frontier is agent-first. Website form fields are temporary Form Observations until a Mutation Request is approved. New Vault Items require confirmation; unambiguous updates may use a task-scoped `vault_write` grant. Unknown field types and unstable mappings surface as attention states and cannot become reusable values until classified. Agent mutations are atomic per Vault Item, carry field-level diffs and provenance, and hold a renewable item-level Agent Edit Lock while active. A locked item is view-only to humans; stopping the task safely releases the lock. `vault_delete` and batch writes are separate scopes.
 
-The desktop companion is a compact macOS menu-bar or Windows system-tray surface with Pending Requests, Active Tasks, Needs Attention, and Recent Activity. Agent Activity is also a global left-rail destination beside Settings and contains immutable Audit Records for human and agent changes. Keep the human edit modal focused on direct record editing; agent controls belong in requests, task status, locks, and audit history.
+The desktop companion is a compact macOS menu-bar or Windows system-tray surface with Pending Requests, Active Tasks, Needs Attention, and Recent Activity. Agent Activity is also a global left-rail destination beside Settings. Pending requests open a compact review with Approve or Reject; the companion mirrors the unresolved count and opens the same Agent Vault review. Keep the human edit modal focused on direct record editing; active-task controls belong in task status, locks, and audit history.
 
-Agent Activity is a glanceable status and history view. Use status labels such as `Pending`, `Running`, `Needs attention`, and `Saved`. A `Needs attention` row may deep-link to the affected Vault Item; approve, reject, stop, and other task actions belong in the desktop companion or a future request-detail surface.
+Agent Activity is a glanceable inbox and status/history view. Use status labels such as `Pending`, `Running`, `Needs attention`, and `Saved`. A `Needs attention` row may deep-link to the affected Vault Item. A pending request opens a concise review; approve or reject it there. Do not add request editing, raw secrets, or active-task stop controls to the record editor.
 
 Person identity data should be granular enough for real forms: first name, middle name, middle initial, last name, full name, preferred name, prefix, and suffix. Full name and middle initial may be suggested from the component fields, but the stored value and whether it was manually entered remain explicit so multi-part names are not guessed incorrectly.
 

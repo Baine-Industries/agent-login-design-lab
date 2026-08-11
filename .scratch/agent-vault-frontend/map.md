@@ -57,13 +57,13 @@ Remote child tickets:
 - Agent Edit Locks are renewable and item-level. Human editing is disabled while an agent mutates the item; stopping the task safely releases the lock.
 - `vault_delete` is separate from `vault_write`; agent deletion archives by default, while permanent deletion requires human confirmation. Batch changes require a separate batch scope.
 - Field provenance is retained. Unknown semantic types and unstable mappings are flagged in Agent Activity and the desktop companion.
-- Agent Activity is a global left-rail destination beside Settings. The macOS menu-bar and Windows system-tray companion share the sections Pending Requests, Active Tasks, Needs Attention, and Recent Activity.
+- Agent Activity is a global left-rail destination beside Settings. It is the human action inbox and status/history view: pending requests open concise Approve or Reject reviews, needs-attention rows deep-link to the affected Vault Item, and running/saved rows remain status/history. The macOS menu-bar and Windows system-tray companion mirrors the unresolved count and opens the same Agent Vault review surface.
 
 
 ## Out of scope
 
 - Implementing the Access Grant issuer, rotation mechanism, or cryptography.
-- Building the approval rail or live browser/task workbench in the first slice.
+- Building a separate approval rail or live browser/task workbench in the first slice.
 - Defining or implementing an Agent ID schema, endpoint, or remote transport.
 - Implementing the verification-challenge notification or one-time-code handoff.
 - Claiming production security, live-site compatibility, or real credential handling.

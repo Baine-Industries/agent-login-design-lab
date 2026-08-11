@@ -1,6 +1,6 @@
 # Agent-write contract
 
-Status: Wayfinder-resolved design contract; Agent Activity shell prototyped, mutation controls deferred.
+Status: Wayfinder-resolved design contract; Agent Activity request review prototyped.
 
 ## Purpose
 
@@ -50,7 +50,7 @@ The desktop companion uses the platform-native surface: a macOS menu-bar popover
 
 Pending requests drive the OS badge count. Active tasks show agent, target site, Vault Space, status, elapsed time, locked record, and Stop/Open actions. Needs Attention includes verification pauses, unknown field types, unstable mappings, expired requests, and blocked tasks. Full details open in Agent Vault.
 
-Agent Vault exposes one global `Agent Activity` destination beside Settings. It is a glanceable status and history view containing immutable Audit Records for agent and human changes, task history, provenance, reasons, and restore/correction relationships. Needs-attention rows may deep-link to the affected Vault Item. Approve, reject, stop, and other task actions belong in the desktop companion or a future request-detail surface.
+Agent Vault exposes one global `Agent Activity` destination beside Settings. It is a glanceable inbox and history view containing pending requests, active tasks, immutable Audit Records for agent and human changes, provenance, reasons, and restore/correction relationships. Needs-attention rows may deep-link to the affected Vault Item. Pending rows open a compact request review with the target, operation, permission scope, and reason; the user can Approve or Reject without editing the request. The desktop companion mirrors the unresolved count and opens the same Agent Vault review surface. Stop and other active-task controls remain separate.
 
 ## Human UI boundary
 
