@@ -52,6 +52,8 @@ Pending requests drive the OS badge count. Active tasks show agent, target site,
 
 Agent Vault exposes one global `Agent Activity` destination beside Settings. It is a glanceable inbox and history view containing pending requests, active tasks, immutable Audit Records for agent and human changes, provenance, reasons, and restore/correction relationships. Needs-attention rows may deep-link to the affected Vault Item. Pending rows open a compact request review with the target, operation, permission scope, and reason; the user can Approve or Reject without editing the request. Running rows open a compact task detail with View locked item and Stop task. A locked item remains view-only until the task stops or completes. The desktop companion mirrors the unresolved count and opens the same Agent Vault review surface.
 
+The design prototype previews both host treatments from the Agent Vault top bar. Native menu-bar/tray registration, OS badge delivery, live event transport, and focus/launch behavior remain host integration work.
+
 ## Human UI boundary
 
 The human edit modal remains a direct record editor with one Save action. Agent actions are represented through Mutation Requests, Agent Edit Locks, Agent Activity, and the desktop companion rather than agent controls embedded inside the form.

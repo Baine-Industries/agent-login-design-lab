@@ -26,6 +26,9 @@ Agent ID, or OS-companion services already exist.
 - Treat Site Field Labels as optional exact mappings. Unknown or dynamic names
   remain blank and unresolved; the system does not infer them from friendly
   labels.
+- Use [`os-companion.md`](os-companion.md) for the frontend prototype of the
+  macOS menu-bar and Windows tray companion. Keep the native host bridge behind
+  the documented adapter boundary.
 
 ## Deferred boundary
 
@@ -33,7 +36,9 @@ Agent ID, or OS-companion services already exist.
 - Agent ID notification and response transport for Verification Challenges.
 - Browser execution, live-site proof, encryption, credential storage, and
   production security architecture.
-- The macOS menu-bar and Windows system-tray companion surfaces.
+- Native menu-bar/tray registration, OS badge delivery, click-away dismissal,
+  Agent Vault focus/launch, and live companion event transport. The companion
+  UI preview itself is now implemented in the prototype.
 
 These boundaries are defined in [`CONTEXT.md`](../../CONTEXT.md), the
 [`engine/UI contract`](../contracts/engine-ui-boundary.md), and the

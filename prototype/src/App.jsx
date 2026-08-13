@@ -415,6 +415,8 @@ function App() {
   const [pendingRequest, setPendingRequest] = useState(true);
   const [taskRunning, setTaskRunning] = useState(true);
   const [recentActivity, setRecentActivity] = useState(null);
+  const [companionOpen, setCompanionOpen] = useState(false);
+  const [companionPlatform, setCompanionPlatform] = useState("macos");
   const attentionItem = items.find((item) => item.custom.some((field) => field.needsAttention));
   const activityCount = (pendingRequest ? 1 : 0) + (attentionItem ? 1 : 0);
 
@@ -685,6 +687,10 @@ function App() {
             <button className="button button--light button--small" onClick={() => setModal("core")}><Icon name="ph-address-book" size={15} /> Manage Core Info</button>
           </div>
           <div className="topbar-actions">
+            <div className="companion-launcher-wrap">
+              <button className="button button--light button--small companion-launcher" onClick={() => setCompanionOpen((current) => !current)} aria-expanded={companionOpen} aria-controls="agent-companion"><Icon name="ph-broadcast" size={15} /> Companion{activityCount > 0 && <span className="companion-launcher__badge">{activityCount}</span>}</button>
+              {companionOpen && <CompanionPopover id="agent-companion" platform={companionPlatform} onPlatformChange={setCompanionPlatform} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setCompanionOpen(false)} onOpenVault={() => { setCompanionOpen(false); setModal("activity"); }} onSelectRequest={() => { setCompanionOpen(false); setModal("request"); }} onSelectTask={() => { setCompanionOpen(false); openActivityTask(); }} onSelectAttention={() => { setCompanionOpen(false); openActivityItem(attentionItem.id, { edit: true }); }} onStopTask={() => { setCompanionOpen(false); stopActiveTask(); }} />}
+            </div>
             <button className="button button--dark" onClick={openAddItem}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
           </div>
         </header>
@@ -776,6 +782,39 @@ function ActivityModal({ pendingRequest, taskRunning, attentionItem, recentActiv
       {recentActivity ? <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>{recentActivity.title}</strong><small>{recentActivity.detail}</small></div><em>{recentActivity.status}</em></div> : <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>}
     </section>
   </Modal>;
+}
+
+function CompanionPopover({ id, platform, onPlatformChange, pendingRequest, taskRunning, attentionItem, recentActivity, activityCount, onClose, onOpenVault, onSelectRequest, onSelectTask, onSelectAttention, onStopTask }) {
+  return <div id={id} className={`companion-popover companion-popover--${platform}`} role="dialog" aria-label={`${platform === "macos" ? "macOS menu bar" : "Windows tray"} companion`}>
+    <div className="companion-head">
+      <div><span className="eyebrow">AGENT VAULT</span><strong>Companion</strong></div>
+      <div className="companion-head__actions"><span className="companion-status"><span className="status-dot" /> Live</span><button className="icon-button" onClick={onClose} aria-label="Close companion"><Icon name="ph-x" size={16} /></button></div>
+    </div>
+    <div className="companion-platform" role="group" aria-label="Companion platform preview">
+      <button className={platform === "macos" ? "is-selected" : ""} onClick={() => onPlatformChange("macos")} aria-pressed={platform === "macos"}>macOS menu bar</button>
+      <button className={platform === "windows" ? "is-selected" : ""} onClick={() => onPlatformChange("windows")} aria-pressed={platform === "windows"}>Windows tray</button>
+    </div>
+    <div className="companion-summary"><span>Vault Access Live</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
+    <div className="companion-body">
+      <section className="companion-group">
+        <div className="companion-group__title">Pending requests</div>
+        {pendingRequest ? <button className="companion-row companion-row--action" onClick={onSelectRequest}><span className="activity-dot activity-dot--request" /><span><strong>Create Vault Item</strong><small>Northstar Health · Family</small></span><em>Review</em></button> : <div className="companion-empty">No pending requests.</div>}
+      </section>
+      <section className="companion-group">
+        <div className="companion-group__title">Active tasks</div>
+        {taskRunning ? <div className="companion-task"><button className="companion-row companion-row--action" onClick={onSelectTask}><span className="activity-dot activity-dot--active" /><span><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></span><em>Running</em></button><div className="companion-task__actions"><button onClick={onSelectTask}>Open task</button><button onClick={onStopTask}>Stop</button></div></div> : <div className="companion-empty">No active tasks.</div>}
+      </section>
+      <section className="companion-group">
+        <div className="companion-group__title">Needs attention</div>
+        {attentionItem ? <button className="companion-row companion-row--action" onClick={onSelectAttention}><span className="activity-dot activity-dot--attention" /><span><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></span><em>Open</em></button> : <div className="companion-empty">No items need attention.</div>}
+      </section>
+      <section className="companion-group companion-group--recent">
+        <div className="companion-group__title">Recent activity</div>
+        <div className="companion-row"><span className="activity-dot activity-dot--recent" /><span><strong>{recentActivity?.title || "Address saved to Chase Checking"}</strong><small>{recentActivity?.detail || "Agent · 2h ago"}</small></span><em>{recentActivity?.status || "Saved"}</em></div>
+      </section>
+    </div>
+    <button className="companion-open" onClick={onOpenVault}>Open Agent Vault <Icon name="ph-arrow-up-right" size={14} /></button>
+  </div>;
 }
 
 function TaskDetailModal({ onClose, onOpenItem, onStop }) {

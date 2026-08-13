@@ -93,6 +93,43 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .crumbs { display: flex; align-items: center; gap: 9px; color: var(--ink-faint); font-size: calc(10px * var(--type-scale)); }
 .crumbs span:last-child { color: var(--gold); }
 .topbar-actions { display: flex; align-items: center; gap: 16px; }
+.companion-launcher-wrap { position: relative; }
+.companion-launcher { position: relative; }
+.companion-launcher__badge { min-width: 17px; height: 17px; display: inline-grid; place-items: center; padding: 0 4px; border: 1px solid var(--gold); border-radius: 999px; color: var(--gold); font-family: var(--mono); font-size: 9px; line-height: 1; }
+.companion-popover { position: absolute; z-index: 12; top: calc(100% + 10px); right: 0; width: min(342px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--hairline); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow-panel); color: var(--ink); }
+.companion-popover--windows { border-radius: 5px; }
+.companion-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 16px 12px; }
+.companion-head .eyebrow { margin: 0 0 5px; font-size: 9px; }
+.companion-head strong { display: block; font-family: var(--display); font-size: 20px; font-weight: 400; letter-spacing: -.02em; }
+.companion-head__actions { display: flex; align-items: center; gap: 10px; }
+.companion-head__actions .icon-button { width: 26px; height: 26px; }
+.companion-status { display: inline-flex; align-items: center; gap: 5px; color: var(--moss); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+.companion-status .status-dot { width: 6px; height: 6px; }
+.companion-platform { display: flex; gap: 4px; padding: 0 16px 12px; border-bottom: 1px solid var(--hairline); }
+.companion-platform button { padding: 5px 7px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; }
+.companion-platform button:hover, .companion-platform button.is-selected { border-color: var(--hairline); background: var(--surface); color: var(--ink); }
+.companion-summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--hairline); color: var(--ink-muted); font-size: 11px; }
+.companion-summary strong { color: var(--rust); font-family: var(--mono); font-size: 9px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; }
+.companion-body { max-height: min(430px, calc(100vh - 280px)); overflow-y: auto; scrollbar-width: none; }
+.companion-body::-webkit-scrollbar { display: none; }
+.companion-group { padding: 13px 16px 12px; border-bottom: 1px solid var(--hairline); }
+.companion-group--recent { border-bottom: 0; }
+.companion-group__title { margin-bottom: 8px; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.companion-row { width: 100%; display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 5px 0; border: 0; background: transparent; color: inherit; text-align: left; }
+.companion-row--action { cursor: pointer; }
+.companion-row--action:hover strong { color: var(--gold); }
+.companion-row:focus-visible, .companion-task__actions button:focus-visible, .companion-open:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+.companion-row > span:nth-child(2) { min-width: 0; }
+.companion-row strong, .companion-row small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.companion-row strong { font-size: 12px; font-weight: 500; }
+.companion-row small { margin-top: 3px; color: var(--ink-muted); font-size: 10px; }
+.companion-row em { color: var(--ink-muted); font-family: var(--mono); font-size: 9px; font-style: normal; letter-spacing: .04em; text-transform: uppercase; }
+.companion-task__actions { display: flex; justify-content: flex-end; gap: 10px; padding: 5px 0 0 16px; }
+.companion-task__actions button { padding: 3px 0; border: 0; background: transparent; color: var(--gold); font-family: var(--mono); font-size: 9px; }
+.companion-task__actions button:last-child { color: var(--rust); }
+.companion-empty { color: var(--ink-faint); font-size: 11px; }
+.companion-open { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 0; border-top: 1px solid var(--hairline); background: var(--surface); color: var(--ink); font-size: 11px; text-align: left; }
+.companion-open:hover { color: var(--gold); }
 .button { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 8px; padding: 0 15px; font-size: calc(13px * var(--type-scale)); font-weight: 500; letter-spacing: .01em; transition: transform 180ms var(--ease), background 180ms var(--ease), border-color 180ms var(--ease); }
 .button:hover { transform: translateY(-1px); }
 .button--dark { background: var(--ink); color: var(--ground); border-color: var(--ink); box-shadow: 0 3px 8px rgba(33, 37, 40, .16); }
