@@ -44,6 +44,8 @@ The desktop companion is a compact macOS menu-bar or Windows system-tray surface
 
 The prototype exposes a browser-preview companion from the top bar so both host treatments can be tested before native wrapping. The macOS presentation uses the rounded paper popover; the Windows presentation uses the same four groups with tighter tray geometry. Both are one Activity surface, not a second data model. Native registration, OS badges, live event transport, focus/launch, and click-away dismissal remain host integration work.
 
+The `/companion` route is the host-focused playground: macOS menu-bar and Windows taskbar/tray chrome sit outside a separate Agent Vault window treatment. Platform switching is an external test control; the popover itself does not expose a platform selector. The route remains demo/in-memory and must not be presented as native integration.
+
 Agent Activity is a glanceable inbox and status/history view. Use status labels such as `Pending`, `Running`, `Needs attention`, and `Saved`. A `Needs attention` row may deep-link to the affected Vault Item. A pending request opens a concise review; approve or reject it there. Do not add request editing, raw secrets, or active-task stop controls to the record editor.
 
 Person identity data should be granular enough for real forms: first name, middle name, middle initial, last name, full name, preferred name, prefix, and suffix. Full name and middle initial may be suggested from the component fields, but the stored value and whether it was manually entered remain explicit so multi-part names are not guessed incorrectly.

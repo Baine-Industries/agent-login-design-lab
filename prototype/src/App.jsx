@@ -394,6 +394,10 @@ function SpaceGroup({ title, spaces: groupSpaces, activeSpace, onSelect, onAddSp
 }
 
 function App() {
+  return window.location.pathname === "/companion" ? <CompanionPlayground /> : <VaultApp />;
+}
+
+function VaultApp() {
   const [spaces, setSpaces] = useState(initialSpaces);
   const [activeSpace, setActiveSpace] = useState("adam");
   const [activeCategory, setActiveCategory] = useState("All items");
@@ -784,16 +788,16 @@ function ActivityModal({ pendingRequest, taskRunning, attentionItem, recentActiv
   </Modal>;
 }
 
-function CompanionPopover({ id, platform, onPlatformChange, pendingRequest, taskRunning, attentionItem, recentActivity, activityCount, onClose, onOpenVault, onSelectRequest, onSelectTask, onSelectAttention, onStopTask }) {
+function CompanionPopover({ id, platform, onPlatformChange, showPlatformToggle = true, pendingRequest, taskRunning, attentionItem, recentActivity, activityCount, onClose, onOpenVault, onSelectRequest, onSelectTask, onSelectAttention, onStopTask }) {
   return <div id={id} className={`companion-popover companion-popover--${platform}`} role="dialog" aria-label={`${platform === "macos" ? "macOS menu bar" : "Windows tray"} companion`}>
     <div className="companion-head">
       <div><span className="eyebrow">AGENT VAULT</span><strong>Companion</strong></div>
       <div className="companion-head__actions"><span className="companion-status"><span className="status-dot" /> Live</span><button className="icon-button" onClick={onClose} aria-label="Close companion"><Icon name="ph-x" size={16} /></button></div>
     </div>
-    <div className="companion-platform" role="group" aria-label="Companion platform preview">
+    {showPlatformToggle && <div className="companion-platform" role="group" aria-label="Companion platform preview">
       <button className={platform === "macos" ? "is-selected" : ""} onClick={() => onPlatformChange("macos")} aria-pressed={platform === "macos"}>macOS menu bar</button>
       <button className={platform === "windows" ? "is-selected" : ""} onClick={() => onPlatformChange("windows")} aria-pressed={platform === "windows"}>Windows tray</button>
-    </div>
+    </div>}
     <div className="companion-summary"><span>Vault Access Live</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
     <div className="companion-body">
       <section className="companion-group">
@@ -815,6 +819,53 @@ function CompanionPopover({ id, platform, onPlatformChange, pendingRequest, task
     </div>
     <button className="companion-open" onClick={onOpenVault}>Open Agent Vault <Icon name="ph-arrow-up-right" size={14} /></button>
   </div>;
+}
+
+function CompanionPlayground() {
+  const [platform, setPlatform] = useState("macos");
+  const [open, setOpen] = useState(true);
+  const [notice, setNotice] = useState("");
+  const pendingRequest = true;
+  const taskRunning = true;
+  const attentionItem = { id: "banking", service: "Chase Checking", custom: [{ label: "Billing address", needsAttention: true }] };
+  const recentActivity = null;
+  const activityCount = 2;
+  const showNotice = (message) => setNotice(message);
+
+  function openVault() {
+    window.location.href = "/";
+  }
+
+  return (
+    <main className={`desktop-playground desktop-playground--${platform}`}>
+      <div className="desktop-playground__topline">
+        <div><span className="eyebrow">HOST EXPLORATION</span><h1>Agent Activity companion</h1></div>
+        <div className="desktop-playground__actions"><div className="desktop-playground__platform-switch" role="group" aria-label="Desktop host preview"><button className={platform === "macos" ? "is-selected" : ""} onClick={() => { setPlatform("macos"); setOpen(true); }}>macOS menu bar</button><button className={platform === "windows" ? "is-selected" : ""} onClick={() => { setPlatform("windows"); setOpen(true); }}>Windows tray</button></div><a className="desktop-playground__back" href="/">Back to Agent Vault <Icon name="ph-arrow-up-right" size={14} /></a></div>
+      </div>
+      <div className="desktop-playground__frame">
+        <div className="desktop-wallpaper">
+          <div className="desktop-window desktop-window--vault" aria-label="Agent Vault window behind the companion">
+            <div className="desktop-window__chrome"><span className="desktop-window__traffic"><i /><i /><i /></span><strong>Agent Vault</strong><span className="desktop-window__window-action"><Icon name="ph-dots-three" size={16} /></span></div>
+            <div className="desktop-window__body"><aside><span>Vault</span><span>Activity</span><span>Settings</span></aside><section><span className="desktop-skeleton desktop-skeleton--wide" /><span className="desktop-skeleton" /><span className="desktop-skeleton" /><span className="desktop-skeleton" /><span className="desktop-skeleton desktop-skeleton--short" /></section></div>
+          </div>
+          {platform === "macos" ? (
+            <div className="desktop-menubar" aria-label="macOS menu bar preview">
+              <div className="desktop-menubar__left"><span className="desktop-apple">●</span><strong>Agent Vault</strong><span>File</span><span>Edit</span><span>View</span><span>Window</span></div>
+              <div className="desktop-menubar__right"><span>Thu Aug 13 6:19 PM</span><button className={`desktop-status-item ${open ? "is-active" : ""}`} onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-controls="desktop-companion-macos"><Icon name="ph-broadcast" size={14} /><span>{activityCount}</span></button></div>
+              {open && <div className="desktop-companion" id="desktop-companion-macos"><CompanionPopover id="companion-playground-macos" platform={platform} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
+            </div>
+          ) : (
+            <div className="desktop-windows-shell" aria-label="Windows desktop and system tray preview">
+              <div className="desktop-windows__topline"><span>Agent Vault</span><span>desktop host preview</span></div>
+              <div className="desktop-taskbar"><div className="desktop-taskbar__apps"><span className="desktop-windows-logo">⊞</span><span className="desktop-taskbar__app is-active"><Icon name="ph-shield-check" size={14} /> Agent Vault</span></div><div className="desktop-taskbar__tray"><span>6:19 PM</span><button className={`desktop-status-item ${open ? "is-active" : ""}`} onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-controls="desktop-companion-windows"><Icon name="ph-broadcast" size={14} /><span>{activityCount}</span></button></div></div>
+              {open && <div className="desktop-companion desktop-companion--windows" id="desktop-companion-windows"><CompanionPopover id="companion-playground-windows" platform={platform} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="desktop-playground__legend"><span><i className="desktop-playground__dot" />Native placement proof: macOS status item</span><span>Visual playground: desktop chrome, tray popover, and demo interactions</span>{notice && <span className="desktop-playground__notice">{notice}</span>}</div>
+    </main>
+  );
 }
 
 function TaskDetailModal({ onClose, onOpenItem, onStop }) {

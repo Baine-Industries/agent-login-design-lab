@@ -1,10 +1,11 @@
 # Agent Vault OS companion
 
-Status: frontend prototype complete; native host integration deferred.
+Status: desktop host playground and macOS placement proof complete; native host integration deferred.
 
 The companion is a compact OS-surface view of Agent Activity. The prototype
-opens it from the Agent Vault top bar so the interaction can be tested before
-the app is wrapped in a macOS menu-bar or Windows system-tray host.
+keeps the existing in-app preview for regression coverage and adds a separate
+`/companion` desktop playground so the surface can be judged outside the Agent
+Vault application frame.
 
 ## Shared surface
 
@@ -27,12 +28,35 @@ Attention. Running tasks and saved history do not increase it.
 - Both surfaces open the same Agent Vault review and task flows. They do not
   create a second Activity model.
 
+## First host proof
+
+The smallest useful proof is both:
+
+1. A disposable AppKit dummy confirms that a real `NSStatusItem` can sit in the
+   macOS menu bar on this machine and display the unresolved badge. It is a
+   local feasibility spike, not a repository target or production shell.
+2. The committed browser playground at `/companion` shows the macOS menu bar
+   and Windows taskbar/tray as host chrome around the same compact companion.
+   The platform switch lives outside the popover because it is a test control,
+   not a product control.
+
+Run the visual proof from `prototype/` with `npm run dev`, then inspect
+`http://localhost:5173/companion`. The existing Agent Vault preview remains at
+`http://localhost:5173/`.
+
 ## Boundary
 
-This prototype uses in-memory state and a web preview trigger. A native shell
-still needs to provide menu-bar/tray registration, OS badge state, click-away
-dismissal, launch/focus of Agent Vault, and a transport for live Activity
-events. Those are integration tasks, not implemented backend behavior.
+This prototype uses in-memory state and a web preview trigger. The native
+spike proves only menu-bar placement and a transient popover can be hosted by
+AppKit; its rows, badge count, and handoff are simulated. The committed
+playground simulates the desktop chrome and Windows tray placement.
+
+A production native shell still needs to provide menu-bar/tray registration,
+OS badge state, click-away dismissal, launch/focus of Agent Vault, and a
+transport for live Activity events. None of those are implemented backend
+behavior. Access Grant issuance/rotation, Agent ID transport, Verification
+Challenge notification, browser execution, encryption, credential storage,
+and live event transport remain out of scope.
 
 The companion must remain secret-safe: show targets, statuses, scopes, and
 redacted summaries; never expose plaintext credentials or verification codes.
