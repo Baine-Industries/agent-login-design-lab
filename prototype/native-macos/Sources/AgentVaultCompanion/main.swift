@@ -80,7 +80,7 @@ private final class CompanionViewController: NSViewController {
         ))
         content.addArrangedSubview(section(
             title: "Active Tasks",
-            rows: [row(title: "Updating Falador Mutual", detail: "Adam · item locked", state: "RUNNING", color: .systemGreen)]
+            rows: [row(title: "Updating Falador Mutual", detail: "Adam · item locked", state: "RUNNING", color: .systemBlue)]
         ))
         content.addArrangedSubview(section(
             title: "Needs Attention",
@@ -88,7 +88,7 @@ private final class CompanionViewController: NSViewController {
         ))
         content.addArrangedSubview(section(
             title: "Recent Activity",
-            rows: [row(title: "Address saved to Chase Checking", detail: "Agent · 2h ago", state: "SAVED", color: .secondaryLabelColor)]
+            rows: [row(title: "Address saved to Chase Checking", detail: "Agent · 2h ago", state: "SAVED", color: .systemGreen)]
         ))
         content.addArrangedSubview(openVaultButton())
 
@@ -166,7 +166,7 @@ private final class CompanionViewController: NSViewController {
         copy.alignment = .leading
         copy.spacing = 2
 
-        let stateLabel = label(state, size: 10, weight: .medium, color: .secondaryLabelColor)
+        let stateLabel = label(state, size: 10, weight: .medium, color: color)
         stateLabel.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
 
         let line = NSStackView(views: [dot, copy, NSView(), stateLabel])

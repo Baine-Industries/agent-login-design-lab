@@ -91,6 +91,26 @@ Attention. Running tasks and saved history do not increase it.
 - Both surfaces open the same Agent Vault review and task flows. They do not
   create a second Activity model.
 
+### State color and typography
+
+The state colors are semantic and shared across the native and browser proofs:
+Pending Requests are orange, Active Tasks are blue, Needs Attention is red,
+and completed Recent Activity is green. The color appears on the state marker
+and its compact status label; it does not replace the text status.
+
+macOS owns the menu-bar/status-item chrome and its type treatment. Apple
+documents SF Pro as the macOS system font and provides AppKit system variants
+for labels, menus, and menu-bar text. The native proof therefore uses AppKit's
+system font for content and the system monospaced font for small state labels.
+The browser preview mirrors that choice with the platform system stack and
+SF Mono-compatible fallbacks. The existing Imrahil type system remains the
+Agent Vault app's editorial language; bringing Inter, Manrope, or IBM Plex
+Mono into the OS companion would make it feel less native. A future branded
+font experiment is possible inside the custom popover content, but it is not
+the selected Wayfinder direction.
+
+Reference: [Apple Typography](https://developer.apple.com/design/human-interface-guidelines/typography).
+
 ## Liquid Glass variants
 
 The localhost playground exposes three presentation tests through controls
