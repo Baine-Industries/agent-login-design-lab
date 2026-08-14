@@ -1,6 +1,6 @@
 # Agent Vault OS companion
 
-Status: desktop host playground and macOS placement proof complete; native host integration deferred.
+Status: desktop host playground and local macOS placement proof complete; production native host integration deferred.
 
 ## Wayfinder rationale
 
@@ -47,6 +47,22 @@ and a concise closeout. The external company standards are not copied here;
 this document carries only the companion-specific decisions future builders
 need.
 
+## Current implementation status
+
+- **Visual product proof — complete:** `/companion` renders the shared Activity
+  surface with macOS and Windows host treatments and demo/in-memory interactions.
+- **Real macOS host proof — complete:** `prototype/native-macos/` builds and
+  runs a real AppKit `NSStatusItem` with a native transient popover using the
+  system popover material. Its status item and popover have been verified on
+  the target machine.
+- **Production integration — not started:** no packaged app, launch-at-login,
+  live Activity transport, OS badge service, Agent Vault focus/launch bridge,
+  or Windows tray host exists yet.
+
+This means the project is beyond a UI-only mockup, but it is not yet a
+production companion. The next meaningful decision is the host integration
+contract, not more visual polish.
+
 The companion is a compact OS-surface view of Agent Activity. The prototype
 keeps the existing in-app preview for regression coverage and adds a separate
 `/companion` desktop playground so the surface can be judged outside the Agent
@@ -77,9 +93,9 @@ Attention. Running tasks and saved history do not increase it.
 
 The smallest useful proof is both:
 
-1. A disposable AppKit dummy confirms that a real `NSStatusItem` can sit in the
-   macOS menu bar on this machine and display the unresolved badge. It is a
-   local feasibility spike, not a repository target or production shell.
+1. The local AppKit proof in `prototype/native-macos/` confirms that a real
+   `NSStatusItem` can sit in the macOS menu bar on this machine and display the
+   unresolved badge. It is a feasibility proof, not a production shell.
 2. The committed browser playground at `/companion` shows the macOS menu bar
    and Windows taskbar/tray as host chrome around the same compact companion.
    The platform switch lives outside the popover because it is a test control,
@@ -92,9 +108,9 @@ Run the visual proof from `prototype/` with `npm run dev`, then inspect
 ## Boundary
 
 This prototype uses in-memory state and a web preview trigger. The native
-spike proves only menu-bar placement and a transient popover can be hosted by
-AppKit; its rows, badge count, and handoff are simulated. The committed
-playground simulates the desktop chrome and Windows tray placement.
+proof proves menu-bar placement and a transient system-material popover can be
+hosted by AppKit; its rows, badge count, and handoff are simulated. The
+committed playground simulates the desktop chrome and Windows tray placement.
 
 A production native shell still needs to provide menu-bar/tray registration,
 OS badge state, click-away dismissal, launch/focus of Agent Vault, and a

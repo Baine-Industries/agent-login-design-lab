@@ -35,6 +35,8 @@ Agent ID, or OS-companion services already exist.
 - Inspect the committed desktop host playground at `/companion` before
   changing the companion anatomy. It keeps the host chrome outside the Agent
   Vault window and uses demo/in-memory Activity state only.
+- Inspect and run `prototype/native-macos/` when validating the macOS host
+  boundary. It is a local AppKit feasibility proof, not a production shell.
 
 ## Deferred boundary
 
