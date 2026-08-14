@@ -96,40 +96,44 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .companion-launcher-wrap { position: relative; }
 .companion-launcher { position: relative; }
 .companion-launcher__badge { min-width: 17px; height: 17px; display: inline-grid; place-items: center; padding: 0 4px; border: 1px solid var(--gold); border-radius: 999px; color: var(--gold); font-family: var(--mono); font-size: 9px; line-height: 1; }
-.companion-popover { position: absolute; z-index: 12; top: calc(100% + 10px); right: 0; width: min(342px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--hairline); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow-panel); color: var(--ink); }
-.companion-popover--windows { border-radius: 5px; }
-.companion-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px 16px 12px; }
-.companion-head .eyebrow { margin: 0 0 5px; font-size: 9px; }
-.companion-head strong { display: block; font-family: var(--display); font-size: 20px; font-weight: 400; letter-spacing: -.02em; }
+.companion-popover { position: absolute; z-index: 12; top: calc(100% + 10px); right: 0; width: min(380px, calc(100vw - 32px)); overflow: hidden; border: 1px solid rgba(255, 255, 255, .22); border-radius: 12px; background: rgba(29, 32, 38, .86); -webkit-backdrop-filter: blur(28px) saturate(1.15); backdrop-filter: blur(28px) saturate(1.15); box-shadow: 0 18px 48px rgba(0, 0, 0, .46), 0 0 0 .5px rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .94); }
+.companion-popover--windows { border-radius: 7px; }
+.companion-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 17px 16px 13px; }
+.companion-head .eyebrow { margin: 0 0 5px; color: rgba(255, 255, 255, .56); font-size: 9px; }
+.companion-head strong { display: block; font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 21px; font-weight: 500; letter-spacing: -.03em; }
 .companion-head__actions { display: flex; align-items: center; gap: 10px; }
-.companion-head__actions .icon-button { width: 26px; height: 26px; }
-.companion-status { display: inline-flex; align-items: center; gap: 5px; color: var(--moss); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+.companion-head__actions .icon-button { width: 26px; height: 26px; color: rgba(255, 255, 255, .72); }
+.companion-status { display: inline-flex; align-items: center; gap: 5px; color: #43ee72; font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
 .companion-status .status-dot { width: 6px; height: 6px; }
-.companion-platform { display: flex; gap: 4px; padding: 0 16px 12px; border-bottom: 1px solid var(--hairline); }
-.companion-platform button { padding: 5px 7px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; }
-.companion-platform button:hover, .companion-platform button.is-selected { border-color: var(--hairline); background: var(--surface); color: var(--ink); }
-.companion-summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--hairline); color: var(--ink-muted); font-size: 11px; }
-.companion-summary strong { color: var(--rust); font-family: var(--mono); font-size: 9px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; }
+.companion-platform { display: flex; gap: 4px; padding: 0 16px 12px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
+.companion-platform button { padding: 5px 7px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: rgba(255, 255, 255, .52); font-family: var(--mono); font-size: 9px; }
+.companion-platform button:hover, .companion-platform button.is-selected { border-color: rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .08); color: rgba(255, 255, 255, .94); }
+.companion-summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 16px; border-bottom: 1px solid rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .66); font-size: 11px; }
+.companion-summary strong { color: #ffb321; font-family: var(--mono); font-size: 9px; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; }
 .companion-body { max-height: min(430px, calc(100vh - 280px)); overflow-y: auto; scrollbar-width: none; }
 .companion-body::-webkit-scrollbar { display: none; }
-.companion-group { padding: 13px 16px 12px; border-bottom: 1px solid var(--hairline); }
+.companion-group { padding: 13px 16px 12px; border-bottom: 1px solid rgba(255, 255, 255, .12); }
 .companion-group--recent { border-bottom: 0; }
-.companion-group__title { margin-bottom: 8px; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.companion-group__title { margin-bottom: 8px; color: rgba(255, 255, 255, .52); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .companion-row { width: 100%; display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 5px 0; border: 0; background: transparent; color: inherit; text-align: left; }
 .companion-row--action { cursor: pointer; }
-.companion-row--action:hover strong { color: var(--gold); }
-.companion-row:focus-visible, .companion-task__actions button:focus-visible, .companion-open:focus-visible { outline: 1px solid var(--gold); outline-offset: 3px; }
+.companion-row--action:hover strong { color: #ffd36b; }
+.companion-row:focus-visible, .companion-task__actions button:focus-visible, .companion-open:focus-visible { outline: 1px solid #ffd36b; outline-offset: 3px; }
 .companion-row > span:nth-child(2) { min-width: 0; }
 .companion-row strong, .companion-row small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.companion-row strong { font-size: 12px; font-weight: 500; }
-.companion-row small { margin-top: 3px; color: var(--ink-muted); font-size: 10px; }
-.companion-row em { color: var(--ink-muted); font-family: var(--mono); font-size: 9px; font-style: normal; letter-spacing: .04em; text-transform: uppercase; }
+.companion-row strong { font-size: 12px; font-weight: 600; }
+.companion-row small { margin-top: 3px; color: rgba(255, 255, 255, .62); font-size: 10px; }
+.companion-row em { color: rgba(255, 255, 255, .58); font-family: var(--mono); font-size: 9px; font-style: normal; letter-spacing: .04em; text-transform: uppercase; }
 .companion-task__actions { display: flex; justify-content: flex-end; gap: 10px; padding: 5px 0 0 16px; }
-.companion-task__actions button { padding: 3px 0; border: 0; background: transparent; color: var(--gold); font-family: var(--mono); font-size: 9px; }
-.companion-task__actions button:last-child { color: var(--rust); }
-.companion-empty { color: var(--ink-faint); font-size: 11px; }
-.companion-open { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 0; border-top: 1px solid var(--hairline); background: var(--surface); color: var(--ink); font-size: 11px; text-align: left; }
-.companion-open:hover { color: var(--gold); }
+.companion-task__actions button { padding: 3px 0; border: 0; background: transparent; color: #ffd36b; font-family: var(--mono); font-size: 9px; }
+.companion-task__actions button:last-child { color: #ff605c; }
+.companion-empty { color: rgba(255, 255, 255, .5); font-size: 11px; }
+.companion-open { width: calc(100% - 16px); display: flex; align-items: center; justify-content: space-between; margin: 8px; padding: 8px 10px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 6px; background: rgba(255, 255, 255, .04); color: rgba(255, 255, 255, .82); font-size: 11px; text-align: left; }
+.companion-open:hover { border-color: rgba(255, 255, 255, .3); color: #fff; }
+.companion-popover .activity-dot--request { background: #ffb321; }
+.companion-popover .activity-dot--active { background: #3ee56e; }
+.companion-popover .activity-dot--attention { background: #ff514c; }
+.companion-popover .activity-dot--recent { background: rgba(255, 255, 255, .66); }
 .desktop-playground { min-height: 100vh; padding: 42px 5vw 28px; background: #d8d1c2; color: var(--ink); }
 .desktop-playground__topline { max-width: 1400px; display: flex; align-items: end; justify-content: space-between; gap: 24px; margin: 0 auto 22px; }
 .desktop-playground__topline h1 { margin: 0; font-family: var(--display); font-size: clamp(28px, 4vw, 42px); font-weight: 300; letter-spacing: -.04em; }

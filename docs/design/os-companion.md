@@ -83,9 +83,11 @@ Attention. Running tasks and saved history do not increase it.
 
 ## Platform treatment
 
-- macOS: rounded menu-bar popover with the paper/editorial Agent Vault style.
-- Windows: same information hierarchy in a tighter tray-popover treatment;
-  platform differences are limited to host chrome and corner treatment.
+- macOS: dark system-material/glass menu-bar popover, matching the native proof
+  and the surrounding macOS companion ecosystem.
+- Windows: the same dark, compact information hierarchy in a tighter
+  tray-popover treatment; platform differences are limited to host chrome and
+  corner treatment.
 - Both surfaces open the same Agent Vault review and task flows. They do not
   create a second Activity model.
 
