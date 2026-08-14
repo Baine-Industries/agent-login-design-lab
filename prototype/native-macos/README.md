@@ -19,7 +19,9 @@ item with the `2` badge to open the companion. Stop it with `Control-C` in the
 terminal.
 
 To open the popover automatically for a visual proof, use
-`AGENT_VAULT_COMPANION_OPEN=1 swift run`.
+`AGENT_VAULT_COMPANION_OPEN=1 swift run`. The `Open Agent Vault` handoff
+defaults to the local companion playground at `http://127.0.0.1:4174/`; set
+`AGENT_VAULT_COMPANION_URL` when the local server uses another port.
 
 ## What this proves
 

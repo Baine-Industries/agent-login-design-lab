@@ -1,6 +1,6 @@
 # Agent Vault OS companion
 
-Status: desktop host playground and local macOS placement proof complete; production native host integration deferred.
+Status: desktop host playground and local macOS placement proof complete; three Liquid Glass variants are available for visual comparison; production native host integration deferred.
 
 ## Wayfinder rationale
 
@@ -91,13 +91,34 @@ Attention. Running tasks and saved history do not increase it.
 - Both surfaces open the same Agent Vault review and task flows. They do not
   create a second Activity model.
 
+## Liquid Glass variants
+
+The localhost playground exposes three presentation tests through controls
+outside the popover:
+
+- **Quiet signal** is the native baseline: the compact four-group stack from
+  the selected macOS reference, with the unresolved count kept in the summary.
+- **Action first** moves Needs Attention to the top and gives the unresolved
+  summary a slightly stronger glass tint. It tests whether the companion
+  should optimize for the next human action rather than the Activity model's
+  canonical order.
+- **Compact stack** keeps the canonical order but reduces vertical density. It
+  tests whether the surface can remain glanceable on shorter displays.
+
+The native proof uses Quiet signal. The variants are design-lab controls, not
+runtime preferences or separate Activity data models. This is intentional:
+the Wayfinder decision is to settle host placement and information hierarchy
+before adding production host configuration or live transport.
+
 ## First host proof
 
 The smallest useful proof is both:
 
 1. The local AppKit proof in `prototype/native-macos/` confirms that a real
    `NSStatusItem` can sit in the macOS menu bar on this machine and display the
-   unresolved badge. It is a feasibility proof, not a production shell.
+   unresolved badge. It is a feasibility proof, not a production shell. The
+   earlier `AV 2` label-only proof was retired; the current native proof is the
+   authoritative local toolbar surface.
 2. The committed browser playground at `/companion` shows the macOS menu bar
    and Windows taskbar/tray as host chrome around the same compact companion.
    The platform switch lives outside the popover because it is a test control,

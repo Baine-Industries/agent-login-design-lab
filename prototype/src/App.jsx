@@ -788,8 +788,16 @@ function ActivityModal({ pendingRequest, taskRunning, attentionItem, recentActiv
   </Modal>;
 }
 
-function CompanionPopover({ id, platform, onPlatformChange, showPlatformToggle = true, pendingRequest, taskRunning, attentionItem, recentActivity, activityCount, onClose, onOpenVault, onSelectRequest, onSelectTask, onSelectAttention, onStopTask }) {
-  return <div id={id} className={`companion-popover companion-popover--${platform}`} role="dialog" aria-label={`${platform === "macos" ? "macOS menu bar" : "Windows tray"} companion`}>
+function CompanionPopover({ id, platform, variant = "quiet", onPlatformChange, showPlatformToggle = true, pendingRequest, taskRunning, attentionItem, recentActivity, activityCount, onClose, onOpenVault, onSelectRequest, onSelectTask, onSelectAttention, onStopTask }) {
+  const groups = [
+    { key: "pending", title: "Pending requests", content: pendingRequest ? <button className="companion-row companion-row--action" onClick={onSelectRequest}><span className="activity-dot activity-dot--request" /><span><strong>Create Vault Item</strong><small>Northstar Health · Family</small></span><em>Review</em></button> : <div className="companion-empty">No pending requests.</div> },
+    { key: "active", title: "Active tasks", content: taskRunning ? <div className="companion-task"><button className="companion-row companion-row--action" onClick={onSelectTask}><span className="activity-dot activity-dot--active" /><span><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></span><em>Running</em></button>{variant !== "quiet" && <div className="companion-task__actions"><button onClick={onSelectTask}>Open task</button><button onClick={onStopTask}>Stop</button></div>}</div> : <div className="companion-empty">No active tasks.</div> },
+    { key: "attention", title: "Needs attention", content: attentionItem ? <button className="companion-row companion-row--action" onClick={onSelectAttention}><span className="activity-dot activity-dot--attention" /><span><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></span><em>Open</em></button> : <div className="companion-empty">No items need attention.</div> },
+    { key: "recent", title: "Recent activity", content: <div className="companion-row"><span className="activity-dot activity-dot--recent" /><span><strong>{recentActivity?.title || "Address saved to Chase Checking"}</strong><small>{recentActivity?.detail || "Agent · 2h ago"}</small></span><em>{recentActivity?.status || "Saved"}</em></div> },
+  ];
+  const orderedGroups = variant === "priority" ? [groups[2], groups[0], groups[1], groups[3]] : groups;
+
+  return <div id={id} className={`companion-popover companion-popover--${platform} companion-popover--${variant}`} role="dialog" aria-label={`${platform === "macos" ? "macOS menu bar" : "Windows tray"} companion`}>
     <div className="companion-head">
       <div><span className="eyebrow">AGENT VAULT</span><strong>Companion</strong></div>
       <div className="companion-head__actions"><span className="companion-status"><span className="status-dot" /> Live</span><button className="icon-button" onClick={onClose} aria-label="Close companion"><Icon name="ph-x" size={16} /></button></div>
@@ -798,24 +806,12 @@ function CompanionPopover({ id, platform, onPlatformChange, showPlatformToggle =
       <button className={platform === "macos" ? "is-selected" : ""} onClick={() => onPlatformChange("macos")} aria-pressed={platform === "macos"}>macOS menu bar</button>
       <button className={platform === "windows" ? "is-selected" : ""} onClick={() => onPlatformChange("windows")} aria-pressed={platform === "windows"}>Windows tray</button>
     </div>}
-    <div className="companion-summary"><span>Vault Access Live</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
+    <div className="companion-summary"><span>{variant === "priority" ? "Attention queue" : "Vault Access Live"}</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
     <div className="companion-body">
-      <section className="companion-group">
-        <div className="companion-group__title">Pending requests</div>
-        {pendingRequest ? <button className="companion-row companion-row--action" onClick={onSelectRequest}><span className="activity-dot activity-dot--request" /><span><strong>Create Vault Item</strong><small>Northstar Health · Family</small></span><em>Review</em></button> : <div className="companion-empty">No pending requests.</div>}
-      </section>
-      <section className="companion-group">
-        <div className="companion-group__title">Active tasks</div>
-        {taskRunning ? <div className="companion-task"><button className="companion-row companion-row--action" onClick={onSelectTask}><span className="activity-dot activity-dot--active" /><span><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></span><em>Running</em></button><div className="companion-task__actions"><button onClick={onSelectTask}>Open task</button><button onClick={onStopTask}>Stop</button></div></div> : <div className="companion-empty">No active tasks.</div>}
-      </section>
-      <section className="companion-group">
-        <div className="companion-group__title">Needs attention</div>
-        {attentionItem ? <button className="companion-row companion-row--action" onClick={onSelectAttention}><span className="activity-dot activity-dot--attention" /><span><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></span><em>Open</em></button> : <div className="companion-empty">No items need attention.</div>}
-      </section>
-      <section className="companion-group companion-group--recent">
-        <div className="companion-group__title">Recent activity</div>
-        <div className="companion-row"><span className="activity-dot activity-dot--recent" /><span><strong>{recentActivity?.title || "Address saved to Chase Checking"}</strong><small>{recentActivity?.detail || "Agent · 2h ago"}</small></span><em>{recentActivity?.status || "Saved"}</em></div>
-      </section>
+      {orderedGroups.map((group) => <section className={`companion-group companion-group--${group.key}`} key={group.key}>
+        <div className="companion-group__title">{group.title}</div>
+        {group.content}
+      </section>)}
     </div>
     <button className="companion-open" onClick={onOpenVault}>Open Agent Vault <Icon name="ph-arrow-up-right" size={14} /></button>
   </div>;
@@ -823,6 +819,7 @@ function CompanionPopover({ id, platform, onPlatformChange, showPlatformToggle =
 
 function CompanionPlayground() {
   const [platform, setPlatform] = useState("macos");
+  const [variant, setVariant] = useState("quiet");
   const [open, setOpen] = useState(true);
   const [notice, setNotice] = useState("");
   const pendingRequest = true;
@@ -842,6 +839,12 @@ function CompanionPlayground() {
         <div><span className="eyebrow">HOST EXPLORATION</span><h1>Agent Activity companion</h1></div>
         <div className="desktop-playground__actions"><div className="desktop-playground__platform-switch" role="group" aria-label="Desktop host preview"><button className={platform === "macos" ? "is-selected" : ""} onClick={() => { setPlatform("macos"); setOpen(true); }}>macOS menu bar</button><button className={platform === "windows" ? "is-selected" : ""} onClick={() => { setPlatform("windows"); setOpen(true); }}>Windows tray</button></div><a className="desktop-playground__back" href="/">Back to Agent Vault <Icon name="ph-arrow-up-right" size={14} /></a></div>
       </div>
+      <div className="desktop-playground__variants" role="group" aria-label="Liquid Glass companion variants">
+        <span>Glass treatments</span>
+        <button className={variant === "quiet" ? "is-selected" : ""} onClick={() => { setVariant("quiet"); setOpen(true); }}>Quiet signal</button>
+        <button className={variant === "priority" ? "is-selected" : ""} onClick={() => { setVariant("priority"); setOpen(true); }}>Action first</button>
+        <button className={variant === "compact" ? "is-selected" : ""} onClick={() => { setVariant("compact"); setOpen(true); }}>Compact stack</button>
+      </div>
       <div className="desktop-playground__frame">
         <div className="desktop-wallpaper">
           <div className="desktop-window desktop-window--vault" aria-label="Agent Vault window behind the companion">
@@ -852,13 +855,13 @@ function CompanionPlayground() {
             <div className="desktop-menubar" aria-label="macOS menu bar preview">
               <div className="desktop-menubar__left"><span className="desktop-apple">●</span><strong>Agent Vault</strong><span>File</span><span>Edit</span><span>View</span><span>Window</span></div>
               <div className="desktop-menubar__right"><span>Thu Aug 13 6:19 PM</span><button className={`desktop-status-item ${open ? "is-active" : ""}`} onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-controls="desktop-companion-macos"><Icon name="ph-broadcast" size={14} /><span>{activityCount}</span></button></div>
-              {open && <div className="desktop-companion" id="desktop-companion-macos"><CompanionPopover id="companion-playground-macos" platform={platform} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
+              {open && <div className="desktop-companion" id="desktop-companion-macos"><CompanionPopover id="companion-playground-macos" platform={platform} variant={variant} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
             </div>
           ) : (
             <div className="desktop-windows-shell" aria-label="Windows desktop and system tray preview">
               <div className="desktop-windows__topline"><span>Agent Vault</span><span>desktop host preview</span></div>
               <div className="desktop-taskbar"><div className="desktop-taskbar__apps"><span className="desktop-windows-logo">⊞</span><span className="desktop-taskbar__app is-active"><Icon name="ph-shield-check" size={14} /> Agent Vault</span></div><div className="desktop-taskbar__tray"><span>6:19 PM</span><button className={`desktop-status-item ${open ? "is-active" : ""}`} onClick={() => setOpen((current) => !current)} aria-expanded={open} aria-controls="desktop-companion-windows"><Icon name="ph-broadcast" size={14} /><span>{activityCount}</span></button></div></div>
-              {open && <div className="desktop-companion desktop-companion--windows" id="desktop-companion-windows"><CompanionPopover id="companion-playground-windows" platform={platform} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
+              {open && <div className="desktop-companion desktop-companion--windows" id="desktop-companion-windows"><CompanionPopover id="companion-playground-windows" platform={platform} variant={variant} onPlatformChange={setPlatform} showPlatformToggle={false} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setOpen(false)} onOpenVault={openVault} onSelectRequest={() => showNotice("Request review would open in Agent Vault.")} onSelectTask={() => showNotice("Task detail would open in Agent Vault.")} onSelectAttention={() => showNotice("The affected Vault Item would open in Agent Vault.")} onStopTask={() => showNotice("Stop is demo-only in this playground.")} /></div>}
             </div>
           )}
         </div>

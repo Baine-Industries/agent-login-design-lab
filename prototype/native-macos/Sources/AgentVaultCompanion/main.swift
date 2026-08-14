@@ -15,6 +15,7 @@ final class AgentVaultCompanionApp: NSObject, NSApplicationDelegate {
         )
         statusItem.button?.imagePosition = .imageLeading
         statusItem.button?.title = "2"
+        statusItem.button?.setAccessibilityLabel("Agent Activity companion, 2 needs action")
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
         print("Agent Vault Companion: status item registered")
@@ -195,7 +196,8 @@ private final class CompanionViewController: NSViewController {
     }
 
     @objc private func openVault() {
-        guard let url = URL(string: "http://localhost:4173/") else { return }
+        let target = ProcessInfo.processInfo.environment["AGENT_VAULT_COMPANION_URL"] ?? "http://127.0.0.1:4174/"
+        guard let url = URL(string: target) else { return }
         NSWorkspace.shared.open(url)
     }
 
