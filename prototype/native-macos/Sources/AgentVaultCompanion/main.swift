@@ -76,6 +76,7 @@ private final class CompanionViewController: NSViewController {
         content.addArrangedSubview(summary())
         content.addArrangedSubview(section(
             title: "Pending Requests",
+            headingColor: .systemOrange,
             rows: [row(title: "Create Vault Item", detail: "Northstar Health · Family", state: "REVIEW", color: .systemOrange)]
         ))
         content.addArrangedSubview(section(
@@ -84,11 +85,12 @@ private final class CompanionViewController: NSViewController {
         ))
         content.addArrangedSubview(section(
             title: "Needs Attention",
-            rows: [row(title: "Billing address", detail: "Chase Checking · exact site label unknown", state: "OPEN", color: .systemRed)]
+            headingColor: .systemOrange,
+            rows: [row(title: "Billing address", detail: "Chase Checking · exact site label unknown", state: "REVIEW", color: .systemRed)]
         ))
         content.addArrangedSubview(section(
             title: "Recent Activity",
-            rows: [row(title: "Address saved to Chase Checking", detail: "Agent · 2h ago", state: "SAVED", color: .systemGreen)]
+            rows: [row(title: "Address saved to Chase Checking", detail: "Agent · 2h ago", state: "", color: .systemGreen)]
         ))
         content.addArrangedSubview(openVaultButton())
 
@@ -111,7 +113,7 @@ private final class CompanionViewController: NSViewController {
         let eyebrow = label("AGENT VAULT", size: 10, weight: .medium, color: .secondaryLabelColor)
         eyebrow.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
         let title = label("Companion", size: 22, weight: .regular, color: .labelColor)
-        let live = label("●  LIVE", size: 10, weight: .medium, color: .systemGreen)
+        let live = label("●  UNLOCKED", size: 10, weight: .medium, color: .systemGreen)
         live.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
 
         let titleLine = NSStackView(views: [title, NSView(), live])
@@ -131,7 +133,7 @@ private final class CompanionViewController: NSViewController {
         stack.spacing = 8
         stack.edgeInsets = NSEdgeInsets(top: 12, left: 18, bottom: 12, right: 18)
 
-        let access = label("Vault Access Live", size: 12, weight: .regular, color: .secondaryLabelColor)
+        let access = label("Vault Access Unlocked", size: 12, weight: .regular, color: .secondaryLabelColor)
         let spacer = NSView()
         let count = label("2 NEEDS ACTION", size: 10, weight: .medium, color: .systemOrange)
         count.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
@@ -141,14 +143,14 @@ private final class CompanionViewController: NSViewController {
         return stack
     }
 
-    private func section(title: String, rows: [NSView]) -> NSView {
+    private func section(title: String, headingColor: NSColor = .secondaryLabelColor, rows: [NSView]) -> NSView {
         let stack = NSStackView()
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 0
         stack.edgeInsets = NSEdgeInsets(top: 11, left: 18, bottom: 11, right: 18)
 
-        let heading = label(title.uppercased(), size: 10, weight: .medium, color: .secondaryLabelColor)
+        let heading = label(title.uppercased(), size: 10, weight: .medium, color: headingColor)
         heading.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
         stack.addArrangedSubview(heading)
         rows.forEach { stack.addArrangedSubview($0) }
@@ -166,10 +168,12 @@ private final class CompanionViewController: NSViewController {
         copy.alignment = .leading
         copy.spacing = 2
 
-        let stateLabel = label(state, size: 10, weight: .medium, color: color)
-        stateLabel.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
-
-        let line = NSStackView(views: [dot, copy, NSView(), stateLabel])
+        let line = NSStackView(views: [dot, copy, NSView()])
+        if !state.isEmpty {
+            let stateLabel = label(state, size: 10, weight: .medium, color: .secondaryLabelColor)
+            stateLabel.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+            line.addArrangedSubview(stateLabel)
+        }
         line.orientation = .horizontal
         line.alignment = .centerY
         line.spacing = 8

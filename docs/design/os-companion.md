@@ -95,8 +95,16 @@ Attention. Running tasks and saved history do not increase it.
 
 The state colors are semantic and shared across the native and browser proofs:
 Pending Requests are orange, Active Tasks are blue, Needs Attention is red,
-and completed Recent Activity is green. The color appears on the state marker
-and its compact status label; it does not replace the text status.
+and completed Recent Activity is green. Only the state marker carries that
+color. Pending Requests and Needs Attention are the prominent review queues;
+their neutral `Review` labels are the clickable affordance. Active Tasks keep a
+neutral `Running` label and remain inspectable without looking like a required
+action. Recent Activity is a green-dot log with no trailing status label.
+
+The access state is written as `Vault Access Unlocked` or `Vault Access
+Locked`, with green and gray treatments respectively. This is the companion's
+plain-language rendering of the access state; it does not define Access Grant
+issuance, rotation, or Agent ID transport.
 
 macOS owns the menu-bar/status-item chrome and its type treatment. Apple
 documents SF Pro as the macOS system font and provides AppKit system variants

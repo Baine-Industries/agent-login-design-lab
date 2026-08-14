@@ -775,15 +775,15 @@ function ActivityModal({ pendingRequest, taskRunning, attentionItem, recentActiv
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Active tasks</div>
-      {taskRunning ? <button className="activity-row activity-row--action" onClick={onSelectTask} aria-label="Open Updating Falador Mutual task"><span className="activity-dot activity-dot--active" /><div><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></div><em>Open</em></button> : <div className="activity-empty">No active tasks.</div>}
+      {taskRunning ? <button className="activity-row activity-row--action" onClick={onSelectTask} aria-label="Open Updating Falador Mutual task"><span className="activity-dot activity-dot--active" /><div><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></div><em>Running</em></button> : <div className="activity-empty">No active tasks.</div>}
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Needs attention</div>
-      {attentionItem ? <button className="activity-row activity-row--action" onClick={() => onSelectItem(attentionItem.id, { edit: true })} aria-label={`Open ${attentionItem.service} field needing attention`}><span className="activity-dot activity-dot--attention" /><div><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></div><em>Open</em></button> : <div className="activity-empty">No items need attention.</div>}
+      {attentionItem ? <button className="activity-row activity-row--action" onClick={() => onSelectItem(attentionItem.id, { edit: true })} aria-label={`Review ${attentionItem.service} field needing attention`}><span className="activity-dot activity-dot--attention" /><div><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></div><em>Review</em></button> : <div className="activity-empty">No items need attention.</div>}
     </section>
     <section className="activity-group">
       <div className="activity-group__title">Recent activity</div>
-      {recentActivity ? <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>{recentActivity.title}</strong><small>{recentActivity.detail}</small></div><em>{recentActivity.status}</em></div> : <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div><em>Saved</em></div>}
+      {recentActivity ? <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>{recentActivity.title}</strong><small>{recentActivity.detail}</small></div></div> : <div className="activity-row"><span className="activity-dot activity-dot--recent" /><div><strong>Address saved to Chase Checking</strong><small>Agent · 2h ago</small></div></div>}
     </section>
   </Modal>;
 }
@@ -792,21 +792,21 @@ function CompanionPopover({ id, platform, variant = "quiet", onPlatformChange, s
   const groups = [
     { key: "pending", title: "Pending requests", content: pendingRequest ? <button className="companion-row companion-row--action" onClick={onSelectRequest}><span className="activity-dot activity-dot--request" /><span><strong>Create Vault Item</strong><small>Northstar Health · Family</small></span><em>Review</em></button> : <div className="companion-empty">No pending requests.</div> },
     { key: "active", title: "Active tasks", content: taskRunning ? <div className="companion-task"><button className="companion-row companion-row--action" onClick={onSelectTask}><span className="activity-dot activity-dot--active" /><span><strong>Updating Falador Mutual</strong><small>Adam · item locked</small></span><em>Running</em></button>{variant !== "quiet" && <div className="companion-task__actions"><button onClick={onSelectTask}>Open task</button><button onClick={onStopTask}>Stop</button></div>}</div> : <div className="companion-empty">No active tasks.</div> },
-    { key: "attention", title: "Needs attention", content: attentionItem ? <button className="companion-row companion-row--action" onClick={onSelectAttention}><span className="activity-dot activity-dot--attention" /><span><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></span><em>Open</em></button> : <div className="companion-empty">No items need attention.</div> },
-    { key: "recent", title: "Recent activity", content: <div className="companion-row"><span className="activity-dot activity-dot--recent" /><span><strong>{recentActivity?.title || "Address saved to Chase Checking"}</strong><small>{recentActivity?.detail || "Agent · 2h ago"}</small></span><em>{recentActivity?.status || "Saved"}</em></div> },
+    { key: "attention", title: "Needs attention", content: attentionItem ? <button className="companion-row companion-row--action" onClick={onSelectAttention}><span className="activity-dot activity-dot--attention" /><span><strong>{attentionItem.custom.find((field) => field.needsAttention)?.label || "Field mapping"}</strong><small>{attentionItem.service} · exact site label unknown</small></span><em>Review</em></button> : <div className="companion-empty">No items need attention.</div> },
+    { key: "recent", title: "Recent activity", content: <div className="companion-row"><span className="activity-dot activity-dot--recent" /><span><strong>{recentActivity?.title || "Address saved to Chase Checking"}</strong><small>{recentActivity?.detail || "Agent · 2h ago"}</small></span></div> },
   ];
   const orderedGroups = variant === "priority" ? [groups[2], groups[0], groups[1], groups[3]] : groups;
 
   return <div id={id} className={`companion-popover companion-popover--${platform} companion-popover--${variant}`} role="dialog" aria-label={`${platform === "macos" ? "macOS menu bar" : "Windows tray"} companion`}>
     <div className="companion-head">
       <div><span className="eyebrow">AGENT VAULT</span><strong>Companion</strong></div>
-      <div className="companion-head__actions"><span className="companion-status"><span className="status-dot" /> Live</span><button className="icon-button" onClick={onClose} aria-label="Close companion"><Icon name="ph-x" size={16} /></button></div>
+      <div className="companion-head__actions"><span className="companion-status"><span className="status-dot" /> Unlocked</span><button className="icon-button" onClick={onClose} aria-label="Close companion"><Icon name="ph-x" size={16} /></button></div>
     </div>
     {showPlatformToggle && <div className="companion-platform" role="group" aria-label="Companion platform preview">
       <button className={platform === "macos" ? "is-selected" : ""} onClick={() => onPlatformChange("macos")} aria-pressed={platform === "macos"}>macOS menu bar</button>
       <button className={platform === "windows" ? "is-selected" : ""} onClick={() => onPlatformChange("windows")} aria-pressed={platform === "windows"}>Windows tray</button>
     </div>}
-    <div className="companion-summary"><span>{variant === "priority" ? "Attention queue" : "Vault Access Live"}</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
+    <div className="companion-summary"><span>Vault Access Unlocked</span>{activityCount > 0 && <strong>{activityCount} needs action</strong>}</div>
     <div className="companion-body">
       {orderedGroups.map((group) => <section className={`companion-group companion-group--${group.key}`} key={group.key}>
         <div className="companion-group__title">{group.title}</div>
