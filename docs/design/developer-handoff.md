@@ -29,6 +29,9 @@ Agent ID, or OS-companion services already exist.
 - Use [`os-companion.md`](os-companion.md) for the frontend prototype of the
   macOS menu-bar and Windows tray companion. Keep the native host bridge behind
   the documented adapter boundary.
+- Read [`0001-os-companion-boundary.md`](../decisions/0001-os-companion-boundary.md)
+  before changing the companion. It records the Wayfinder rationale, proof
+  split, and the native/backend behaviors that remain deferred.
 - Inspect the committed desktop host playground at `/companion` before
   changing the companion anatomy. It keeps the host chrome outside the Agent
   Vault window and uses demo/in-memory Activity state only.

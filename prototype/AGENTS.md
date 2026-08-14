@@ -44,6 +44,8 @@ The desktop companion is a compact macOS menu-bar or Windows system-tray surface
 
 The prototype exposes a browser-preview companion from the top bar so both host treatments can be tested before native wrapping. The macOS presentation uses the rounded paper popover; the Windows presentation uses the same four groups with tighter tray geometry. Both are one Activity surface, not a second data model. Native registration, OS badges, live event transport, focus/launch, and click-away dismissal remain host integration work.
 
+Before changing `/companion`, read [`docs/design/os-companion.md`](../docs/design/os-companion.md) and the accepted companion boundary decision in [`docs/decisions/0001-os-companion-boundary.md`](../docs/decisions/0001-os-companion-boundary.md). They are the Wayfinder execution contract for this slice: preserve the host-level boundary, keep demo state in memory, explain why the visual proof is the smallest useful proof, and validate the route/build behavior before calling the change complete.
+
 The `/companion` route is the host-focused playground: macOS menu-bar and Windows taskbar/tray chrome sit outside a separate Agent Vault window treatment. Platform switching is an external test control; the popover itself does not expose a platform selector. The route remains demo/in-memory and must not be presented as native integration.
 
 Agent Activity is a glanceable inbox and status/history view. Use status labels such as `Pending`, `Running`, `Needs attention`, and `Saved`. A `Needs attention` row may deep-link to the affected Vault Item. A pending request opens a concise review; approve or reject it there. Do not add request editing, raw secrets, or active-task stop controls to the record editor.

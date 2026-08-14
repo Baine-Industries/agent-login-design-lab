@@ -2,6 +2,51 @@
 
 Status: desktop host playground and macOS placement proof complete; native host integration deferred.
 
+## Wayfinder rationale
+
+### Outcome
+
+Give a person a glanceable, OS-level entry point to Agent Activity without
+turning Agent Vault into a second task monitor or coupling this design repo to
+unstable engine internals.
+
+### Why this shape
+
+- The companion belongs at the operating-system boundary because its value is
+  fast awareness and return-to-review while the person is working elsewhere.
+- Agent Vault remains the source of truth for vault records, access control,
+  request review, task detail, and editing. The companion summarizes and hands
+  off; it does not create a second Activity model.
+- The four groups are retained because they map to different human actions:
+  Pending Requests are actionable, Active Tasks are observable, Needs
+  Attention are unresolved blockers, and Recent Activity is history.
+- The macOS and Windows treatments share data meaning but adapt to host chrome.
+  This tests the cross-platform information architecture without pretending a
+  browser preview is native registration.
+- The first proof is intentionally split: the smallest native feasibility
+  spike answers “can this sit at the OS boundary here?”, while the browser
+  playground answers “is the surface understandable and visually credible?”
+  Building live transport or credential behavior before those answers would
+  increase coupling without improving the design decision.
+
+### Current decision and proof contract
+
+The accepted boundary decision is [`0001-os-companion-boundary.md`](../decisions/0001-os-companion-boundary.md).
+For each companion slice, the builder must be able to point to:
+
+1. the user-facing outcome and the smallest changed surface;
+2. the stable contract or in-memory fixture that supplies the visible state;
+3. the distinction between real host behavior, simulated behavior, and
+   deferred backend behavior;
+4. the route/build/browser evidence that establishes the slice; and
+5. the next unresolved decision, if the proof does not settle it.
+
+This is the project-local application of the Wayfinder execution standard:
+bounded outcome, contract-first change, explicit rationale, truthful evidence,
+and a concise closeout. The external company standards are not copied here;
+this document carries only the companion-specific decisions future builders
+need.
+
 The companion is a compact OS-surface view of Agent Activity. The prototype
 keeps the existing in-app preview for regression coverage and adds a separate
 `/companion` desktop playground so the surface can be judged outside the Agent
@@ -60,3 +105,14 @@ and live event transport remain out of scope.
 
 The companion must remain secret-safe: show targets, statuses, scopes, and
 redacted summaries; never expose plaintext credentials or verification codes.
+
+## Unresolved decisions
+
+- Whether the production macOS host should use a transient `NSPopover` with a
+  custom content view or a deliberately opaque nonactivating `NSPanel`.
+- Which native Windows host technology will own tray registration and focus
+  handoff.
+- Which stable live Activity transport will replace the demo fixture.
+
+These are owner/design decisions, not implementation gaps to silently resolve
+inside the browser prototype.

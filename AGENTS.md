@@ -46,6 +46,11 @@ For backend or attach-layer pickup, also read
 `docs/design/developer-handoff.md`. It labels the current implementation
 callouts and the deferred boundaries without duplicating the domain contracts.
 
+For OS companion work, also read `docs/design/os-companion.md` and the accepted
+decision in `docs/decisions/0001-os-companion-boundary.md`. These are the
+project-local Wayfinder record for why the companion is a host-level surface,
+which proof is in scope, and which native/backend behaviors remain deferred.
+
 ## Branch model
 
 ### Protected branch
@@ -169,6 +174,17 @@ Use this order:
 2. preserve the engine/UI contract boundary
 3. avoid secret exposure
 4. favor reversible UI-only work over brittle coupling
+
+## Wayfinder execution loop
+
+For a substantial design or prototype slice, make the smallest outcome
+explicit before editing, name the proof that will establish completion, and
+record the rationale beside the affected design boundary. Keep facts,
+assumptions, decisions, unresolved owner choices, and risks distinguishable.
+Use the project-local decision record for durable architecture; use the design
+doc for the current slice and its acceptance evidence. A prototype is complete
+only when its stated route/build/browser proof has been run and its simulated
+and deferred behavior is still labeled accurately.
 
 ## Short version
 
