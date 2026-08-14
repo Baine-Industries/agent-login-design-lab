@@ -172,6 +172,16 @@ private final class CompanionViewController: NSViewController {
         if !state.isEmpty {
             let stateLabel = label(state, size: 10, weight: .medium, color: .secondaryLabelColor)
             stateLabel.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+            if state == "REVIEW", let font = stateLabel.font {
+                stateLabel.attributedStringValue = NSAttributedString(
+                    string: state,
+                    attributes: [
+                        .font: font,
+                        .foregroundColor: NSColor.secondaryLabelColor,
+                        .underlineStyle: NSUnderlineStyle.single.rawValue,
+                    ]
+                )
+            }
             line.addArrangedSubview(stateLabel)
         }
         line.orientation = .horizontal
