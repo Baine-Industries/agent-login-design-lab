@@ -12,7 +12,7 @@ Produce a design-ready specification and prototype direction for the first Agent
 
 - Domain: Agent Vault, Vault Space, Vault Item, Core Info, Access Grant, Agent ID, Space Type, Permission Scope, category, agent-native.
 - Required skills: grilling, domain-modeling, product-design, prototype.
-- The first prototype is vault management only. Approval rail and live agent execution are later work.
+- The first management slice is vault management. Activity request-review, task-detail, and OS companion proofs are follow-on design-lane surfaces; live agent execution remains later work.
 - Agent Vault is the source of truth; Agent ID receives an Access Grant.
 - Access Grant is scoped and time-limited: daily or session-based. It authorizes field use without exposing raw secrets to the model.
 - GitHub is the shared issue tracker and the remote issue is canonical. Local Markdown mirrors the map for review and offline work.
@@ -31,6 +31,8 @@ Remote child tickets:
 - [Agent-native record and query contract](https://github.com/Baine-Industries/agent-login-design-lab/issues/5) — the UI relies on secret-safe Vault Records, Field Descriptors, Category Records, and cross-space metadata queries; raw secret values remain outside the adapter payload.
 - [Agent Vault management prototype direction](https://github.com/Baine-Industries/agent-login-design-lab/issues/6) — Vault Space-first layout with a searchable center list and right inspector that exposes Core Info values, redacted login fields, and optional exact Site Field Labels; interactions stay in memory, with concise request review in Agent Activity and live browser execution deferred.
 - [Agent Vault right rail: Vault Item inspector audit](https://github.com/Baine-Industries/agent-login-design-lab/issues/7) — keep the inspector open and read-only by default; show service identity, redacted sign-in fields, Verification status, Core Info values, custom fields, freshness, and stable Record ID. Editing opens a separate save modal.
+- The design-lane implementation also includes the global Agent Activity request-review and task-detail proofs, plus the separate OS companion proof. These remain demo/in-memory surfaces and do not change the engine/UI boundary.
+- [Agent Activity OS companion boundary](../../docs/decisions/0001-os-companion-boundary.md) — keep the companion at the macOS menu-bar or Windows system-tray boundary, share the four-group Activity model, and hand off approvals, task detail, editing, and recovery to Agent Vault.
 
 ### Edit and verification decisions
 
@@ -63,7 +65,17 @@ Remote child tickets:
 ## Out of scope
 
 - Implementing the Access Grant issuer, rotation mechanism, or cryptography.
-- Building a separate approval rail or live browser/task workbench in the first slice.
+- Building live browser/task execution or a production companion host in the design slice.
 - Defining or implementing an Agent ID schema, endpoint, or remote transport.
 - Implementing the verification-challenge notification or one-time-code handoff.
 - Claiming production security, live-site compatibility, or real credential handling.
+
+## Convergence note
+
+The later UI and interaction refinements on `design/studio` are an
+exploratory implementation pass against these resolved Wayfinder decisions,
+not a replacement for them. The final baseline is the Vault Space-first
+three-pane Agent Vault surface with an adjustable desktop layout, a global
+Activity destination, and a separate OS companion proof. The next work should
+return to the documented engine/UI contracts and unresolved host/transport
+decisions rather than extend the browser prototype into a backend.

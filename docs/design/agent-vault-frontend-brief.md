@@ -29,6 +29,16 @@ Agent Vault is the source of truth. A named `Vault Space` represents one Persona
 
 The shared agent-write surface is documented in [the agent-write contract](../research/agent-write-contract.md). It requires Form Observations, Mutation Requests, scoped Access Grants, renewable item-level Agent Edit Locks, provenance, and immutable Agent Activity. The desktop companion is a compact macOS menu-bar or Windows system-tray popover; Agent Vault exposes the full Agent Activity view from the left rail. The Activity request-review, active-task lock, and companion preview paths are now prototyped; native host integration, live engine mutation, and task transport remain deferred.
 
+## Agent Working visual treatment
+
+The React prototype uses the MIT-licensed [`thinking-orbs`](https://www.npmjs.com/package/thinking-orbs) package for the small Agent Working indicator. It provides a 20px inline canvas orb, explicit states, accessible labels, reduced-motion behavior, and light/dark theme selection without introducing WebGL or a second visual system. The current demo maps `Updating Falador Mutual` to `working`; future activity events can map to `searching`, `listening`, `connecting`, `weaving`, or `composing` as the engine contract becomes concrete.
+
+This is a visual status treatment, not an activity transport. The package is appropriate for the React proof; it does not make the native macOS companion real. The future AppKit/SwiftUI host must make its own rendering decision rather than assuming the npm package can be embedded in the menu-bar process.
+
+## Desktop pane baseline
+
+The standard desktop layout keeps the left Vault Space rail at 220px, gives the central record workbench roughly 780px at a 1920px viewport, and assigns the remaining space to the Vault Item inspector. This matches the reference composition: the record list remains readable while the inspector has room for long labels and empty-state context. The existing dividers still allow session-only resizing; resizing is an exploration affordance, not persisted layout state.
+
 ## Deferred
 
 - Native menu-bar/tray registration, OS badge delivery, and live companion event transport.

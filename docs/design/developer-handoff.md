@@ -53,6 +53,22 @@ These boundaries are defined in [`CONTEXT.md`](../../CONTEXT.md), the
 [`agent-write contract`](../research/agent-write-contract.md). Update those
 authoritative files before changing an integration assumption.
 
+## Design-lane convergence
+
+The current `design/studio` UI pass is the implementation closeout for the
+resolved Wayfinder design direction, not a new product architecture. It keeps
+the Vault Space-first three-pane Agent Vault surface, the global Agent Activity
+destination, and the separate macOS/Windows companion proof. The standard
+desktop preset uses a 220px left rail, a readable center workbench, and the
+remaining wide-screen space for the inspector; dividers are session-only
+exploration controls. The companion continues to use the shared four-group
+Activity model and demo/in-memory state.
+
+The late UI refinements do not authorize engine coupling or backend claims.
+Before the next implementation batch, return to the Wayfinder map and the
+stable engine/UI contract for live Activity transport, Access Grants, Agent ID,
+verification handoff, native packaging, and production security boundaries.
+
 ## Completion check
 
 The backend handoff is complete when the UI can create and review a Vault Item,

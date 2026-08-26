@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { ThinkingOrb } from "thinking-orbs";
 
 const initialSpaces = [
   { id: "adam", name: "Adam", type: "Personal", icon: "ph-user", accessLive: true },
@@ -340,7 +341,7 @@ function ServiceLogo({ item, size = "row" }) {
   return <Icon name={item.icon} size={size === "inspector" ? 32 : 21} weight="duotone" />;
 }
 
-function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, openMenuId, onToggleMenu, onActivity, onSettings, activityCount }) {
+function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, openMenuId, onToggleMenu, onActivity, activityCount }) {
   const visibleSpaces = spaces.filter((space) => !space.archived);
   const personal = visibleSpaces.filter((space) => space.type === "Personal");
   const business = visibleSpaces.filter((space) => space.type === "Business");
@@ -351,17 +352,13 @@ function SpaceNav({ spaces, activeSpace, onSelect, onAddSpace, onSpaceAction, op
         <Icon name="ph-squares-four" />
         <span>All spaces</span>
       </button>
-      <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
-      <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
-      <div className="nav-rule" />
       <button className="nav-link nav-link--quiet" onClick={onActivity} aria-label={`Activity, ${activityCount} unresolved actions`}>
         <Icon name="ph-activity" />
         <span className="nav-link__label">Activity{activityCount > 0 && <span className="nav-badge">{activityCount}</span>}</span>
       </button>
-      <button className="nav-link nav-link--quiet" onClick={onSettings}>
-        <Icon name="ph-gear-six" />
-        <span>Settings</span>
-      </button>
+      <SpaceGroup title="Personal spaces" spaces={personal} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
+      <SpaceGroup title="Business spaces" spaces={business} activeSpace={activeSpace} onSelect={onSelect} onAddSpace={onAddSpace} openMenuId={openMenuId} onToggleMenu={onToggleMenu} onSpaceAction={onSpaceAction} />
+      <div className="nav-rule" />
     </nav>
   );
 }
@@ -378,7 +375,6 @@ function SpaceGroup({ title, spaces: groupSpaces, activeSpace, onSelect, onAddSp
           <button className={`nav-link ${activeSpace === space.id ? "is-active" : ""}`} onClick={() => onSelect(space.id)}>
             <Icon name={space.icon} />
             <span>{space.name}</span>
-            {activeSpace === space.id && <span className="nav-active-dot" />}
           </button>
           <button className="space-more" onClick={() => onToggleMenu(space.id)} aria-label={`Manage ${space.name}`} aria-expanded={openMenuId === space.id}><Icon name="ph-dots-three" size={17} /></button>
           {openMenuId === space.id && <div className="space-menu" role="menu">
@@ -393,6 +389,33 @@ function SpaceGroup({ title, spaces: groupSpaces, activeSpace, onSelect, onAddSp
   );
 }
 
+function PaneDivider({ side, value, onStart, onNudge }) {
+  const paneName = side === "sidebar" ? "left" : "right";
+  return (
+    <div
+      className={`pane-divider pane-divider--${side}`}
+      role="separator"
+      aria-label={`Resize ${paneName} pane`}
+      aria-orientation="vertical"
+      aria-valuenow={Math.round(value)}
+      tabIndex={0}
+      onPointerDown={(event) => {
+        event.preventDefault();
+        onStart(side);
+      }}
+      onKeyDown={(event) => {
+        const step = event.shiftKey ? 32 : 16;
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          event.preventDefault();
+          const direction = side === "sidebar" ? (event.key === "ArrowRight" ? 1 : -1) : (event.key === "ArrowLeft" ? 1 : -1);
+          onNudge(side, direction * step);
+        }
+      }}
+      title="Drag to resize"
+    />
+  );
+}
+
 function App() {
   return window.location.pathname === "/companion" ? <CompanionPlayground /> : <VaultApp />;
 }
@@ -402,7 +425,7 @@ function VaultApp() {
   const [activeSpace, setActiveSpace] = useState("adam");
   const [activeCategory, setActiveCategory] = useState("All items");
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState("banking");
+  const [selectedId, setSelectedId] = useState(null);
   const [items, setItems] = useState(initialItems);
   const [customCategories, setCustomCategories] = useState([]);
   const [modal, setModal] = useState(null);
@@ -419,10 +442,44 @@ function VaultApp() {
   const [pendingRequest, setPendingRequest] = useState(true);
   const [taskRunning, setTaskRunning] = useState(true);
   const [recentActivity, setRecentActivity] = useState(null);
-  const [companionOpen, setCompanionOpen] = useState(false);
-  const [companionPlatform, setCompanionPlatform] = useState("macos");
+  const [paneWidths, setPaneWidths] = useState(() => {
+    const viewportWidth = typeof window === "undefined" ? 1280 : window.innerWidth;
+    const maxInspectorWidth = viewportWidth - 16 - 520 - 220;
+    return { sidebar: 220, inspector: Math.max(370, Math.min(maxInspectorWidth, Math.round(viewportWidth * 0.472))) };
+  });
+  const [resizingPane, setResizingPane] = useState(null);
   const attentionItem = items.find((item) => item.custom.some((field) => field.needsAttention));
   const activityCount = (pendingRequest ? 1 : 0) + (attentionItem ? 1 : 0);
+
+  function resizePane(side, requestedWidth) {
+    setPaneWidths((current) => {
+      const minimumWidth = side === "sidebar" ? 180 : 300;
+      const otherWidth = side === "sidebar" ? current.inspector : current.sidebar;
+      const maximumWidth = Math.max(minimumWidth, window.innerWidth - 16 - 520 - otherWidth);
+      const width = Math.min(Math.max(requestedWidth, minimumWidth), maximumWidth);
+      return { ...current, [side]: width };
+    });
+  }
+
+  function nudgePane(side, delta) {
+    resizePane(side, paneWidths[side] + delta);
+  }
+
+  useEffect(() => {
+    if (!resizingPane) return undefined;
+    const handlePointerMove = (event) => resizePane(resizingPane, resizingPane === "sidebar" ? event.clientX : window.innerWidth - event.clientX);
+    const handlePointerUp = () => setResizingPane(null);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    return () => {
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [resizingPane]);
 
   const selectedSpace = spaces.find((space) => space.id === activeSpace);
   const typeScale = typeScales[fontSize];
@@ -461,7 +518,7 @@ function VaultApp() {
     });
   }, [activeCategory, activeSpace, items, query]);
 
-  const selectedItem = items.find((item) => item.id === selectedId && (activeSpace === "all" || item.spaceId === activeSpace)) || visibleItems[0];
+  const selectedItem = items.find((item) => item.id === selectedId && (activeSpace === "all" || item.spaceId === activeSpace));
   const selectedItemSpace = selectedItem ? spaces.find((space) => space.id === selectedItem.spaceId) : undefined;
   const selectedItemLocked = taskRunning && selectedItem?.id === "insurance";
   const coreInfoSpace = selectedItemSpace || selectedSpace;
@@ -472,8 +529,7 @@ function VaultApp() {
     setActiveSpace(spaceId);
     setActiveCategory("All items");
     setSpaceMenuId(null);
-    const next = items.find((item) => spaceId === "all" || item.spaceId === spaceId);
-    if (next) setSelectedId(next.id);
+    setSelectedId(null);
   }
 
   function openActivityItem(itemId, { edit = false } = {}) {
@@ -665,37 +721,38 @@ function VaultApp() {
   const editItem = modal?.type === "edit" ? items.find((item) => item.id === modal.itemId) : null;
 
   return (
-    <div className={`app-shell ${darkMode ? "is-dark" : ""}`} style={{ "--type-scale": typeScale }}>
+    <div className={`app-shell ${darkMode ? "is-dark" : ""} ${resizingPane ? "is-resizing" : ""}`} style={{ "--type-scale": typeScale, "--sidebar-width": `${paneWidths.sidebar}px`, "--inspector-width": `${paneWidths.inspector}px` }}>
       <aside className="sidebar">
         <div className="brand-lockup">
           <div className="brand-name">Agent Vault</div>
         </div>
-        <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} onSettings={() => { setSpaceMenuId(null); setModal("settings"); }} activityCount={activityCount} />
+        <SpaceNav spaces={spaces} activeSpace={activeSpace} onSelect={selectSpace} onAddSpace={openCreateSpace} openMenuId={spaceMenuId} onToggleMenu={(spaceId) => setSpaceMenuId((current) => current === spaceId ? null : spaceId)} onSpaceAction={openSpaceAction} onActivity={() => { setSpaceMenuId(null); setModal("activity"); }} activityCount={activityCount} />
         <div className="sidebar-foot">
-          {taskRunning && <div className="sidebar-agent-status" aria-label="Agent Working">
-              <span className="agent-working-animation" aria-hidden="true" />
-              <strong>Agent Working</strong>
-              <small>Updating Falador Mutual</small>
+          {taskRunning && <div className="sidebar-agent-status" aria-label="Working">
+              <ThinkingOrb state="working" size={20} theme={darkMode ? "dark" : "light"} aria-label="Working" className="agent-working-orb" />
+              <span>Working…</span>
             </div>}
           <div className="sidebar-user-status">
             <span className={`status-dot ${!selectedSpace ? "status-dot--neutral" : selectedSpace.accessLive ? "" : "status-dot--offline"}`} />
             <div><strong>{currentUser}</strong><small>{!selectedSpace ? "No Space Selected" : selectedSpace.accessLive ? "Vault Access Live" : "No Vault Access"}</small></div>
           </div>
+          <button className="nav-link nav-link--quiet sidebar-settings" onClick={() => { setSpaceMenuId(null); setModal("settings"); }}>
+            <Icon name="ph-gear-six" />
+            <span>Settings</span>
+          </button>
+          <a className="sidebar-credit" href="https://nazgul.sh" target="_blank" rel="noreferrer"><span>Built By </span><span className="sidebar-credit__brand">Nazgul.sh</span></a>
         </div>
       </aside>
+      <PaneDivider side="sidebar" value={paneWidths.sidebar} onStart={setResizingPane} onNudge={nudgePane} />
 
       <main className="main-stage">
         <header className="topbar">
           <div className="topbar-left">
             <div className="crumbs"><span>VAULT</span><Icon name="ph-slash" size={12} /><span>{selectedSpace?.name || "ALL SPACES"}</span></div>
-            <button className="button button--light button--small" onClick={() => setModal("core")}><Icon name="ph-address-book" size={15} /> Manage Core Info</button>
           </div>
           <div className="topbar-actions">
-            <div className="companion-launcher-wrap">
-              <button className="button button--light button--small companion-launcher" onClick={() => setCompanionOpen((current) => !current)} aria-expanded={companionOpen} aria-controls="agent-companion"><Icon name="ph-broadcast" size={15} /> Companion{activityCount > 0 && <span className="companion-launcher__badge">{activityCount}</span>}</button>
-              {companionOpen && <CompanionPopover id="agent-companion" platform={companionPlatform} onPlatformChange={setCompanionPlatform} pendingRequest={pendingRequest} taskRunning={taskRunning} attentionItem={attentionItem} recentActivity={recentActivity} activityCount={activityCount} onClose={() => setCompanionOpen(false)} onOpenVault={() => { setCompanionOpen(false); setModal("activity"); }} onSelectRequest={() => { setCompanionOpen(false); setModal("request"); }} onSelectTask={() => { setCompanionOpen(false); openActivityTask(); }} onSelectAttention={() => { setCompanionOpen(false); openActivityItem(attentionItem.id, { edit: true }); }} onStopTask={() => { setCompanionOpen(false); stopActiveTask(); }} />}
-            </div>
-            <button className="button button--dark" onClick={openAddItem}> <Icon name="ph-plus" size={15} /> Add Vault Item</button>
+            <button className="button button--light" onClick={() => setModal("core")}>Manage</button>
+            <button className="button button--dark" onClick={openAddItem}>Create</button>
           </div>
         </header>
 
@@ -703,7 +760,6 @@ function VaultApp() {
           <section className="page-intro">
             <div>
               <h1>{selectedSpace ? selectedSpace.name : "All spaces"}</h1>
-              <p>{selectedSpace ? `${selectedSpace.type} Vault Space · ${visibleItems.length} items` : `${visibleItems.length} items across your Vault Spaces`}</p>
             </div>
           </section>
 
@@ -725,7 +781,7 @@ function VaultApp() {
           <div className="list-meta"><span>{visibleItems.length.toString().padStart(2, "0")} RECORDS</span></div>
           <section className="item-list" aria-label="Vault items">
             {visibleItems.length ? visibleItems.map((item, index) => (
-              <button key={item.id} className={`item-row ${selectedItem?.id === item.id ? "is-selected" : ""}`} onClick={() => setSelectedId(item.id)}>
+              <button key={item.id} className="item-row" onClick={() => setSelectedId((current) => current === item.id ? null : item.id)} aria-pressed={selectedItem?.id === item.id}>
                 <span className="item-index">{String(index + 1).padStart(2, "0")}</span>
                 <span className="service-glyph"><ServiceLogo item={item} /></span>
                 <span className="item-copy"><strong>{item.service}</strong><small>{item.descriptor} · {item.account}</small></span>
@@ -736,16 +792,17 @@ function VaultApp() {
         </div>
       </main>
 
+      <PaneDivider side="inspector" value={paneWidths.inspector} onStart={setResizingPane} onNudge={nudgePane} />
       <aside className="inspector" aria-label="Selected Vault Item">
         {selectedItem ? <>
         <div className="inspector-head">
-          <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><span className="eyebrow">VAULT ITEM / {selectedItemSpace?.name}</span><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
-          <div className="inspector-action"><span className={selectedItemLocked ? "lock-note" : "lock-note lock-note--hidden"}>{selectedItemLocked && <><Icon name="ph-lock-key" size={12} /> Agent Working</>}</span><button className="button button--light button--small inspector-edit" onClick={openEditItem} disabled={selectedItemLocked}><Icon name="ph-pencil-simple" size={14} /> {selectedItemLocked ? "View only" : "Edit"}</button></div>
+          <div className="inspector-identity"><div className="inspector-logo"><ServiceLogo item={selectedItem} size="inspector" /></div><div><h2>{selectedItem.service}</h2><p>{selectedItem.descriptor} · {selectedItem.category}</p></div></div>
+          <div className="inspector-action"><span className={selectedItemLocked ? "lock-note" : "lock-note lock-note--hidden"}>{selectedItemLocked && <><Icon name="ph-lock-key" size={12} /> Agent Working</>}</span><button className="icon-button inspector-edit" onClick={openEditItem} disabled={selectedItemLocked} aria-label={selectedItemLocked ? "Edit item unavailable while agent is working" : "Edit item"} title={selectedItemLocked ? "Edit unavailable while agent is working" : "Edit item"}><Icon name="ph-pencil-simple" size={16} /></button></div>
         </div>
-        <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> secrets redacted</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="Verification" value="User prompt if required" /></section>
-        <section className="inspector-section"><div className="section-title"><span>CORE INFO</span><span className="source-label"><span className="source-dot" /> {selectedItemSpace?.name}</span></div><FieldRow label="Full name" value={coreInfo.fullName} prefilled /><FieldRow label="Email" value={coreInfo.email} prefilled /><FieldRow label="Address" value={coreInfo.address} prefilled /></section>
+        <section className="inspector-section"><div className="section-title"><span>LOGIN</span><span className="redacted-note"><Icon name="ph-eye-slash" size={14} /> Password hidden</span></div><FieldRow label="Username" value={selectedItem.username} /><FieldRow label="Password" value={selectedItem.password} mono /><FieldRow label="Verification" value="User prompt if required" /></section>
+        <section className="inspector-section"><div className="section-title"><span>CORE INFO</span></div><FieldRow label="Full name" value={coreInfo.fullName} /><FieldRow label="Email" value={coreInfo.email} /><FieldRow label="Address" value={coreInfo.address} /></section>
         <section className="inspector-section"><div className="section-title"><span>CUSTOM FIELDS</span></div>{selectedItem.custom.map((field) => <div className={`custom-field ${field.needsAttention ? "custom-field--attention" : ""}`} key={`${field.label}-${field.siteLabel}`}><div className="custom-field__main"><div className="custom-field__label"><strong>{field.label}</strong>{field.needsAttention && <span className="field-attention"><Icon name="ph-warning" size={12} /> Needs attention</span>}</div><span>{field.value}</span></div><code>{field.siteLabel || "site label not set"}</code></div>)}</section>
-        <div className="record-foot"><span>SAVED {selectedItem.updated}</span><span>RECORD ID <code>item_{selectedItem.id}</code></span></div>
+        <div className="record-foot">Saved {selectedItem.updated}</div>
         </> : <div className="inspector-empty"><span className="eyebrow">VAULT ITEM</span><h2>No Vault Item selected</h2><p>Select a record to inspect it.</p></div>}
       </aside>
 
@@ -1036,8 +1093,8 @@ function EditItemModal({ item, spaces, categoryOptions, reusableFields, onSave, 
   </Modal>;
 }
 
-function FieldRow({ label, value, mono = false, prefilled = false }) {
-  return <div className="field-row"><span>{label}</span><strong className={mono ? "is-mono" : ""}>{value}</strong>{prefilled && <small><Icon name="ph-arrows-clockwise" size={12} /> prefilled</small>}</div>;
+function FieldRow({ label, value, mono = false }) {
+  return <div className="field-row"><span>{label}</span><strong className={mono ? "is-mono" : ""}>{value}</strong></div>;
 }
 
 function SpaceIconPicker({ type, value, onChange }) {
