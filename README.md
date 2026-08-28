@@ -1,3 +1,13 @@
+# ⚠️ Archived
+
+> **This repository has been archived.**
+>
+> Active development of the Agent Vault product has moved to the private repository [`Nazgul-sh/agent-vault`](https://github.com/Nazgul-sh/agent-vault).
+> The engine code is rebased on [`AdamGeorgesForges/agent-login-harness`](https://github.com/AdamGeorgesForges/agent-login-harness) release `v0.1.0`.
+> A durable recovery bundle and immutable archive tags for this repo are preserved locally and on GitHub.
+
+---
+
 # agent-login-design-lab
 
 Parallel UI coworking repo for **Agent Login**.
